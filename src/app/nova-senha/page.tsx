@@ -17,29 +17,27 @@ export default function NovaSenhaPage() {
   useEffect(() => {
     const supabase = createClient()
 
-    // O Supabase JS client processa automaticamente o code/hash da URL
-    // Só precisamos ouvir o evento e checar a sessão
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
+    // O callback já fez exchangeCodeForSession — só verifica se tem sessão
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
         setPronto(true)
+      } else {
+        // Aguarda o evento caso venha direto com hash fragment
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+          if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
+            setPronto(true)
+            subscription.unsubscribe()
+          }
+        })
+
+        // Após 8s sem sessão = link expirado
+        setTimeout(() => {
+          supabase.auth.getSession().then(({ data: { session } }) => {
+            if (!session) setExpirou(true)
+          })
+        }, 8000)
       }
     })
-
-    // Também verifica se já há sessão ativa (caso o cliente já processou)
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) setPronto(true)
-    })
-
-    // Timeout generoso de 10s — se não autenticou, link expirou
-    const timer = setTimeout(async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) setExpirou(true)
-    }, 10000)
-
-    return () => {
-      subscription.unsubscribe()
-      clearTimeout(timer)
-    }
   }, [])
 
   async function handleSubmit(e: React.FormEvent) {
@@ -54,6 +52,7 @@ export default function NovaSenhaPage() {
     const { error } = await supabase.auth.updateUser({ password: senha })
 
     if (error) {
+      console.error('updateUser error:', error)
       setErro('Erro ao salvar. Solicite um novo link.')
       setLoading(false)
       return
