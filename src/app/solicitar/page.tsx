@@ -18,6 +18,10 @@ export default function SolicitarPage() {
   const [endereco, setEndereco] = useState('')
 
   async function getLocalizacao() {
+    if (!navigator.geolocation) {
+      alert('Seu dispositivo não suporta geolocalização. Digite o endereço manualmente.')
+      return
+    }
     setLocalizando(true)
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -25,15 +29,26 @@ export default function SolicitarPage() {
         setEndereco('Localização obtida automaticamente')
         setLocalizando(false)
       },
-      () => {
+      (err) => {
         setLocalizando(false)
-        alert('Não foi possível obter localização. Digite o endereço manualmente.')
-      }
+        if (err.code === 1) {
+          alert('Permissão de localização negada.\n\nPara ativar:\n• Android: Configurações > Apps > AgroLink > Permissões > Localização\n• iPhone: Configurações > AgroLink > Localização')
+        } else if (err.code === 2) {
+          alert('Não foi possível obter sua localização. Verifique se o GPS está ativado.')
+        } else {
+          alert('Tempo esgotado. Tente novamente ou digite o endereço manualmente.')
+        }
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     )
   }
 
   async function handleSubmit() {
-    if (!tipo || !coords) return
+    if (!tipo) return
+    if (!coords && !endereco) {
+      alert('Informe a localização ou digite o endereço.')
+      return
+    }
     setLoading(true)
 
     const res = await fetch('/api/servicos', {
@@ -44,8 +59,8 @@ export default function SolicitarPage() {
         area: area ? parseFloat(area) : null,
         urgencia,
         descricao,
-        latitude: coords.lat,
-        longitude: coords.lng,
+        latitude: coords?.lat ?? -15.7801,
+        longitude: coords?.lng ?? -47.9292,
         endereco,
       })
     })
@@ -182,7 +197,7 @@ export default function SolicitarPage() {
 
             <button
               onClick={handleSubmit}
-              disabled={loading || (!coords && !endereco)}
+              disabled={loading}
               className="w-full py-5 bg-green-700 text-white font-bold text-xl rounded-2xl hover:bg-green-800 active:scale-95 transition disabled:opacity-50 shadow-lg"
             >
               {loading ? 'Procurando prestador...' : '🔍 CONFIRMAR PEDIDO'}
