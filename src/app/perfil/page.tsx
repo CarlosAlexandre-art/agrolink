@@ -122,6 +122,14 @@ export default async function PerfilPage() {
           ✏️ Editar perfil
         </Link>
 
+        {/* Help center */}
+        <Link
+          href="/ajuda"
+          className="block w-full py-4 border-2 border-blue-600 text-blue-600 text-center font-bold rounded-2xl hover:bg-blue-50 transition"
+        >
+          ❓ Central de Ajuda
+        </Link>
+
         {/* Logout */}
         <LogoutButton />
       </div>

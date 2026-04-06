@@ -124,7 +124,7 @@ function CadastroForm() {
                 value={nome}
                 onChange={e => setNome(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-lg text-gray-900 bg-white"
                 placeholder="Seu nome"
               />
             </div>
@@ -136,7 +136,7 @@ function CadastroForm() {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-lg text-gray-900 bg-white"
                 placeholder="seu@email.com"
               />
             </div>
@@ -147,7 +147,7 @@ function CadastroForm() {
                 type="tel"
                 value={telefone}
                 onChange={e => setTelefone(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-lg text-gray-900 bg-white"
                 placeholder="(99) 99999-9999"
               />
             </div>
@@ -159,7 +159,7 @@ function CadastroForm() {
                   type="text"
                   value={nomeFazenda}
                   onChange={e => setNomeFazenda(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-lg text-gray-900 bg-white"
                   placeholder="Fazenda Boa Vista"
                 />
               </div>
@@ -195,7 +195,7 @@ function CadastroForm() {
                 onChange={e => setSenha(e.target.value)}
                 required
                 minLength={6}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-lg text-gray-900 bg-white"
                 placeholder="Mínimo 6 caracteres"
               />
             </div>
