@@ -26,9 +26,6 @@ export async function POST() {
         type: 'express',
         country: 'BR',
         email: dbUser.email,
-        capabilities: {
-          transfers: { requested: true },
-        },
         business_type: 'individual',
         metadata: { prestadorId: dbUser.prestador.id },
       })
