@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(req: Request) {
   try {
@@ -16,16 +19,35 @@ export async function POST(req: Request) {
 
     const dbUser = await prisma.user.findUnique({ where: { supabaseId: user.id } })
 
-    // Log the report — in production, also send email to admin
-    console.log('DENUNCIA RECEBIDA:', {
-      denunciante: dbUser?.email,
-      motivo,
-      emailDenunciado,
-      descricao,
-      data: new Date().toISOString(),
+    // Salvar no banco
+    await prisma.denuncia.create({
+      data: {
+        denuncianteId: dbUser?.id,
+        denuncianteEmail: dbUser?.email,
+        motivo,
+        descricao,
+        emailDenunciado: emailDenunciado || null,
+      }
     })
 
-    // TODO: send email to admin using Resend or similar
+    // Enviar email para o admin
+    if (process.env.RESEND_API_KEY) {
+      await resend.emails.send({
+        from: 'AgroLink <onboarding@resend.dev>',
+        to: 'alexandre@parceirosdeproposito.com',
+        subject: `🚨 Nova denúncia: ${motivo}`,
+        html: `
+          <h2>Nova denúncia recebida no AgroLink</h2>
+          <table style="border-collapse:collapse;width:100%;max-width:600px">
+            <tr><td style="padding:8px;background:#f3f4f6;font-weight:bold">Motivo</td><td style="padding:8px">${motivo}</td></tr>
+            <tr><td style="padding:8px;background:#f3f4f6;font-weight:bold">Denunciante</td><td style="padding:8px">${dbUser?.nome || '—'} (${dbUser?.email || '—'})</td></tr>
+            <tr><td style="padding:8px;background:#f3f4f6;font-weight:bold">Denunciado</td><td style="padding:8px">${emailDenunciado || 'Não informado'}</td></tr>
+            <tr><td style="padding:8px;background:#f3f4f6;font-weight:bold">Descrição</td><td style="padding:8px">${descricao}</td></tr>
+            <tr><td style="padding:8px;background:#f3f4f6;font-weight:bold">Data</td><td style="padding:8px">${new Date().toLocaleString('pt-BR')}</td></tr>
+          </table>
+        `,
+      })
+    }
 
     return NextResponse.json({ ok: true })
   } catch (error) {
