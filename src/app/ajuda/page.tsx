@@ -78,8 +78,8 @@ const SECOES = [
           'O produtor paga pelo serviço antes do início',
           'O valor fica retido em custódia segura (escrow)',
           'O dinheiro é liberado ao prestador somente após a conclusão do serviço',
-          'O AgroLink retém 15% de comissão sobre o valor total',
-          'O prestador recebe 85% do valor acordado',
+          'O AgroLink retém apenas 5% de comissão sobre o valor total',
+          'O prestador recebe 95% do valor acordado',
           'Pagamentos são processados em até 2 dias úteis',
         ]
       },
@@ -174,12 +174,8 @@ export default function AjudaPage() {
   const router = useRouter()
 
   function refazerTour() {
-    localStorage.removeItem('tour_v2_PRODUTOR')
-    localStorage.removeItem('tour_v2_PRODUTOR_step')
-    localStorage.removeItem('tour_v2_PRESTADOR')
-    localStorage.removeItem('tour_v2_PRESTADOR_step')
-    localStorage.setItem('tour_v2_PRODUTOR', 'ativo')
-    localStorage.setItem('tour_v2_PRESTADOR', 'ativo')
+    localStorage.removeItem('tour_v3_PRODUTOR')
+    localStorage.removeItem('tour_v3_PRESTADOR')
     router.push('/dashboard')
   }
 

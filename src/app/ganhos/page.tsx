@@ -100,7 +100,7 @@ export default async function GanhosPage() {
             <span className="font-medium">R$ {totalBruto.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
           </div>
           <div className="flex justify-between text-sm mb-1">
-            <span className="text-gray-600">Comissão AgroLink (15%)</span>
+            <span className="text-gray-600">Comissão AgroLink (5%)</span>
             <span className="font-medium text-red-500">- R$ {(totalBruto * COMISSAO).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
           </div>
           <div className="flex justify-between text-sm font-bold border-t border-green-200 pt-2 mt-2">

@@ -56,7 +56,7 @@ const SLIDES_PRESTADOR = [
   {
     icon: '💰',
     titulo: 'Receba seu pagamento',
-    texto: 'O pagamento é garantido. Após concluir o serviço, o valor é liberado para você automaticamente. AgroLink retém apenas 15% de comissão.',
+    texto: 'O pagamento é garantido. Após concluir o serviço, o valor é liberado para você automaticamente. AgroLink retém apenas 5% de comissão para manutenção e segurança da plataforma.',
   },
 ]
 

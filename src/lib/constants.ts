@@ -25,7 +25,7 @@ export const URGENCIAS = [
   { value: 'BAIXA', label: 'Baixa — Sem pressa', cor: 'green' },
 ] as const
 
-export const COMISSAO = 0.15 // 15%
+export const COMISSAO = 0.05 // 5%
 
 export const ESTADOS_BRASIL = [
   'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO',
