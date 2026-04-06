@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { SERVICOS } from '@/lib/constants'
 import PwaPrompt from '@/components/PwaPrompt'
+import Tour from '@/components/Tour'
 
 export default function DashboardProdutor({ user }: { user: any }) {
   const services = user.produtor?.services || []
@@ -47,6 +48,7 @@ export default function DashboardProdutor({ user }: { user: any }) {
 
         {/* Botão principal */}
         <Link
+          data-tour="solicitar"
           href="/solicitar"
           className="block w-full py-5 bg-green-700 text-white text-center font-bold text-xl rounded-2xl shadow-lg hover:bg-green-800 active:scale-95 transition"
         >
@@ -55,7 +57,7 @@ export default function DashboardProdutor({ user }: { user: any }) {
 
         {/* Em andamento */}
         {emAndamento.length > 0 && (
-          <div>
+          <div data-tour="status">
             <h2 className="font-bold text-gray-700 mb-3">Serviços em andamento</h2>
             <div className="space-y-3">
               {emAndamento.map((s: any) => {
@@ -146,15 +148,16 @@ export default function DashboardProdutor({ user }: { user: any }) {
         <Link href="/solicitar" className="flex-1 py-3 text-center text-gray-500 text-xs">
           <div className="text-xl">➕</div>Solicitar
         </Link>
-        <Link href="/historico" className="flex-1 py-3 text-center text-gray-500 text-xs">
+        <Link data-tour="nav-historico" href="/historico" className="flex-1 py-3 text-center text-gray-500 text-xs">
           <div className="text-xl">📋</div>Histórico
         </Link>
-        <Link href="/perfil" className="flex-1 py-3 text-center text-gray-500 text-xs">
+        <Link data-tour="nav-perfil" href="/perfil" className="flex-1 py-3 text-center text-gray-500 text-xs">
           <div className="text-xl">👤</div>Perfil
         </Link>
       </nav>
       <div className="h-16" />
       <PwaPrompt />
+      <Tour tipo="PRODUTOR" />
     </div>
   )
 }

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { SERVICOS } from '@/lib/constants'
 import PwaPrompt from '@/components/PwaPrompt'
+import Tour from '@/components/Tour'
 
 export default function DashboardPrestador({ user }: { user: any }) {
   const [disponivel, setDisponivel] = useState(user.prestador?.disponivel ?? true)
@@ -43,7 +44,7 @@ export default function DashboardPrestador({ user }: { user: any }) {
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
 
         {/* Toggle disponibilidade */}
-        <div className="bg-white rounded-2xl p-5 shadow-sm flex items-center justify-between">
+        <div data-tour="disponivel" className="bg-white rounded-2xl p-5 shadow-sm flex items-center justify-between">
           <div>
             <div className="font-bold text-gray-800 text-lg">Status</div>
             <div className={`text-sm font-medium ${disponivel ? 'text-green-600' : 'text-gray-400'}`}>
@@ -60,7 +61,7 @@ export default function DashboardPrestador({ user }: { user: any }) {
 
         {/* Chamados pendentes */}
         {pendentes.length > 0 && (
-          <div>
+          <div data-tour="chamados">
             <h2 className="font-bold text-gray-700 mb-3">
               🔔 Chamados disponíveis ({pendentes.length})
             </h2>
@@ -165,15 +166,16 @@ export default function DashboardPrestador({ user }: { user: any }) {
         <Link href="/historico" className="flex-1 py-3 text-center text-gray-500 text-xs">
           <div className="text-xl">📋</div>Histórico
         </Link>
-        <Link href="/ganhos" className="flex-1 py-3 text-center text-gray-500 text-xs">
+        <Link data-tour="nav-ganhos" href="/ganhos" className="flex-1 py-3 text-center text-gray-500 text-xs">
           <div className="text-xl">💰</div>Ganhos
         </Link>
-        <Link href="/perfil" className="flex-1 py-3 text-center text-gray-500 text-xs">
+        <Link data-tour="nav-perfil" href="/perfil" className="flex-1 py-3 text-center text-gray-500 text-xs">
           <div className="text-xl">👤</div>Perfil
         </Link>
       </nav>
       <div className="h-16" />
       <PwaPrompt />
+      <Tour tipo="PRESTADOR" />
     </div>
   )
 }
