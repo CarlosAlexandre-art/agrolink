@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
-import { sendPushToUser } from '@/lib/push'
+import { notificarPrestador } from '@/lib/push'
 
 export async function PATCH(req: Request) {
   try {
@@ -60,11 +60,12 @@ export async function PATCH(req: Request) {
 
       // Notify produtor that they have a proposal
       const produtorUserId = match.service.produtor.userId
-      await sendPushToUser(produtorUserId, {
-        title: '💰 Nova proposta recebida!',
-        body: `${dbUser.nome} enviou uma proposta de R$ ${valorProposto.toFixed(2)} para seu serviço.`,
-        url: `/servico/${match.serviceId}`,
-      }).catch(() => {})
+      await notificarPrestador(
+        produtorUserId,
+        '💰 Nova proposta recebida!',
+        `${dbUser.nome} enviou uma proposta de R$ ${valorProposto.toFixed(2)} para seu serviço.`,
+        `/servico/${match.serviceId}`
+      )
 
     } else {
       await prisma.match.update({
