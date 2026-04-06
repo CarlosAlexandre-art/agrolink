@@ -1,0 +1,170 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum UserType {
+  PRODUTOR
+  PRESTADOR
+}
+
+enum ServiceType {
+  PULVERIZACAO
+  COLHEITA
+  TRANSPORTE
+  MANUTENCAO_MAQUINAS
+  PLANTIO
+  TRATORACAO
+  ANALISE_SOLO
+  CONSULTORIA_AGRONOMICA
+  IRRIGACAO
+  DRONE_AGRICOLA
+  CERCAMENTO
+  ASSISTENCIA_VETERINARIA
+  TERRAPLANAGEM
+  ARMAZENAGEM
+  APLICACAO_FERTILIZANTES
+  CONTROLE_PRAGAS
+  CAPINA
+  OUTROS
+}
+
+enum ServiceStatus {
+  AGUARDANDO
+  PROCURANDO
+  MATCH_ENCONTRADO
+  EM_ROTA
+  EXECUTANDO
+  CONCLUIDO
+  CANCELADO
+  DISPUTA
+}
+
+enum MatchStatus {
+  PENDENTE
+  ACEITO
+  RECUSADO
+  CANCELADO
+}
+
+enum PaymentStatus {
+  PENDENTE
+  RESERVADO
+  LIBERADO
+  REEMBOLSADO
+}
+
+model User {
+  id         String   @id @default(cuid())
+  supabaseId String   @unique
+  nome       String
+  email      String   @unique
+  telefone   String?
+  tipo       UserType
+  avatarUrl  String?
+  estado     String?
+  cidade     String?
+  latitude   Float?
+  longitude  Float?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  produtor  Produtor?
+  prestador Prestador?
+}
+
+model Produtor {
+  id          String    @id @default(cuid())
+  userId      String    @unique
+  user        User      @relation(fields: [userId], references: [id])
+  nomeFazenda String?
+  areaTotal   Float?
+  services    Service[]
+  createdAt   DateTime  @default(now())
+}
+
+model Prestador {
+  id                 String        @id @default(cuid())
+  userId             String        @unique
+  user               User          @relation(fields: [userId], references: [id])
+  bio                String?
+  avaliacao          Float         @default(0)
+  totalAvaliacoes    Int           @default(0)
+  disponivel         Boolean       @default(true)
+  raioAtendamento    Int           @default(50)
+  stripeAccountId    String?
+  verificado         Boolean       @default(false)
+  servicosOferecidos ServiceType[]
+  matches            Match[]
+  avaliacoes         Avaliacao[]
+  createdAt          DateTime      @default(now())
+}
+
+model Service {
+  id            String        @id @default(cuid())
+  produtorId    String
+  produtor      Produtor      @relation(fields: [produtorId], references: [id])
+  tipo          ServiceType
+  descricao     String?
+  area          Float?
+  urgencia      String        @default("MEDIA")
+  status        ServiceStatus @default(AGUARDANDO)
+  latitude      Float
+  longitude     Float
+  endereco      String?
+  precoEstimado Float?
+  precoFinal    Float?
+  agendadoPara  DateTime?
+  fotoProva     String?
+  gpsLat        Float?
+  gpsLng        Float?
+  matches       Match[]
+  payment       Payment?
+  avaliacao     Avaliacao?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model Match {
+  id          String      @id @default(cuid())
+  serviceId   String
+  service     Service     @relation(fields: [serviceId], references: [id])
+  prestadorId String
+  prestador   Prestador   @relation(fields: [prestadorId], references: [id])
+  status      MatchStatus @default(PENDENTE)
+  distancia   Float?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@unique([serviceId, prestadorId])
+}
+
+model Payment {
+  id               String        @id @default(cuid())
+  serviceId        String        @unique
+  service          Service       @relation(fields: [serviceId], references: [id])
+  valor            Float
+  comissao         Float
+  valorPrestador   Float
+  status           PaymentStatus @default(PENDENTE)
+  stripePaymentId  String?
+  stripeTransferId String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+}
+
+model Avaliacao {
+  id          String    @id @default(cuid())
+  serviceId   String    @unique
+  service     Service   @relation(fields: [serviceId], references: [id])
+  prestadorId String
+  prestador   Prestador @relation(fields: [prestadorId], references: [id])
+  nota        Int
+  comentario  String?
+  createdAt   DateTime  @default(now())
+}
