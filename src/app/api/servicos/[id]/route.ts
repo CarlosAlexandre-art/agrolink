@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
+import { stripe } from '@/lib/stripe'
 
 const STATUS_FLOW: Record<string, string> = {
   MATCH_ENCONTRADO: 'EM_ROTA',
@@ -8,7 +9,7 @@ const STATUS_FLOW: Record<string, string> = {
   EXECUTANDO: 'CONCLUIDO',
 }
 
-export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
 
@@ -55,7 +56,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
         matches: {
           some: { prestadorId: dbUser.prestador.id, status: 'ACEITO' }
         }
-      }
+      },
+      include: { payment: true }
     })
 
     if (!service) {
@@ -71,6 +73,39 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       where: { id },
       data: { status: novoStatus as any }
     })
+
+    // Quando concluído, transferir pagamento para o prestador
+    if (novoStatus === 'CONCLUIDO' && service.payment?.status === 'RESERVADO') {
+      const stripeAccountId = dbUser.prestador.stripeAccountId
+
+      if (stripeAccountId) {
+        const valorCentavos = Math.round(service.payment.valorPrestador * 100)
+
+        const transfer = await stripe.transfers.create({
+          amount: valorCentavos,
+          currency: 'brl',
+          destination: stripeAccountId,
+          metadata: {
+            serviceId: id,
+            paymentId: service.payment.id,
+          },
+        })
+
+        await prisma.payment.update({
+          where: { id: service.payment.id },
+          data: {
+            status: 'LIBERADO',
+            stripeTransferId: transfer.id,
+          }
+        })
+      } else {
+        // Sem conta conectada: apenas marca como liberado (pagamento manual depois)
+        await prisma.payment.update({
+          where: { id: service.payment.id },
+          data: { status: 'LIBERADO' }
+        })
+      }
+    }
 
     return NextResponse.json(updated)
   } catch (error) {

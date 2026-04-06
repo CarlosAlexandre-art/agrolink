@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { SERVICOS } from '@/lib/constants'
 import LogoutButton from '@/components/LogoutButton'
+import ConnectStripeButton from '@/components/ConnectStripeButton'
 
 export default async function PerfilPage() {
   const supabase = await createClient()
@@ -111,6 +112,8 @@ export default async function PerfilPage() {
                 </div>
               </div>
             )}
+
+            <ConnectStripeButton conectado={!!dbUser.prestador.stripeAccountId} />
           </>
         )}
 
