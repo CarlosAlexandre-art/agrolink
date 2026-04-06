@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { SERVICOS } from '@/lib/constants'
+import PwaPrompt from '@/components/PwaPrompt'
 
 export default function DashboardProdutor({ user }: { user: any }) {
   const services = user.produtor?.services || []
@@ -153,6 +154,7 @@ export default function DashboardProdutor({ user }: { user: any }) {
         </Link>
       </nav>
       <div className="h-16" />
+      <PwaPrompt />
     </div>
   )
 }

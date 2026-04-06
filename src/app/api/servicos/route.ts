@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
+import { notificarPrestador } from '@/lib/push'
 
 // Haversine distance in km
 function calcDistancia(lat1: number, lng1: number, lat2: number, lng2: number): number {
@@ -81,6 +82,16 @@ export async function POST(req: Request) {
     }
 
     await Promise.all(matchPromises)
+
+    // Send push notifications to matched prestadores
+    for (const prestador of prestadores) {
+      notificarPrestador(
+        prestador.userId,
+        '🔔 Novo chamado disponível!',
+        `Serviço de ${tipo.replace(/_/g, ' ')} próximo a você`,
+        `/dashboard`
+      ).catch(() => {})
+    }
 
     return NextResponse.json(service, { status: 201 })
   } catch (error) {

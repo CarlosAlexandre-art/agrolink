@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { SERVICOS } from '@/lib/constants'
+import PwaPrompt from '@/components/PwaPrompt'
 
 export default function DashboardPrestador({ user }: { user: any }) {
   const [disponivel, setDisponivel] = useState(user.prestador?.disponivel ?? true)
@@ -172,6 +173,7 @@ export default function DashboardPrestador({ user }: { user: any }) {
         </Link>
       </nav>
       <div className="h-16" />
+      <PwaPrompt />
     </div>
   )
 }

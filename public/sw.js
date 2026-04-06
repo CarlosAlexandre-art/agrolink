@@ -1,9 +1,5 @@
-const CACHE_NAME = 'agrolink-v1'
-const STATIC_ASSETS = [
-  '/',
-  '/dashboard',
-  '/manifest.json',
-]
+const CACHE_NAME = 'agrolink-v2'
+const STATIC_ASSETS = ['/', '/dashboard', '/manifest.json']
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -22,10 +18,7 @@ self.addEventListener('activate', (event) => {
 })
 
 self.addEventListener('fetch', (event) => {
-  // Only cache GET requests
   if (event.request.method !== 'GET') return
-
-  // Skip API routes and auth
   const url = new URL(event.request.url)
   if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/_next/')) return
 
@@ -37,5 +30,42 @@ self.addEventListener('fetch', (event) => {
         return response
       })
       .catch(() => caches.match(event.request))
+  )
+})
+
+// Push notification received
+self.addEventListener('push', (event) => {
+  if (!event.data) return
+
+  const data = event.data.json()
+  const { titulo, corpo, url } = data
+
+  event.waitUntil(
+    self.registration.showNotification(titulo, {
+      body: corpo,
+      icon: '/icons/icon-192.png',
+      badge: '/icons/icon-192.png',
+      data: { url },
+      vibrate: [200, 100, 200],
+    })
+  )
+})
+
+// Notification clicked
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close()
+  const url = event.notification.data?.url || '/dashboard'
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
+          client.focus()
+          client.navigate(url)
+          return
+        }
+      }
+      clients.openWindow(url)
+    })
   )
 })
