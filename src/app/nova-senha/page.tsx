@@ -1,16 +1,36 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
 export default function NovaSenhaPage() {
   const router = useRouter()
+  const [pronto, setPronto] = useState(false)
   const [senha, setSenha] = useState('')
   const [confirmar, setConfirmar] = useState('')
   const [loading, setLoading] = useState(false)
   const [erro, setErro] = useState('')
+
+  useEffect(() => {
+    const supabase = createClient()
+
+    // Fluxo PKCE (token_hash via query param já tratado no callback)
+    // Fluxo implícito (hash fragment com access_token)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setPronto(true)
+      }
+    })
+
+    // Se já veio do callback com sessão ativa, mostra o form direto
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setPronto(true)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -35,6 +55,17 @@ export default function NovaSenhaPage() {
     }
 
     router.push('/dashboard')
+  }
+
+  if (!pronto) {
+    return (
+      <div className="min-h-screen bg-green-50 flex items-center justify-center px-4">
+        <div className="text-center">
+          <div className="text-4xl mb-3 animate-pulse">🔐</div>
+          <p className="text-gray-500">Validando link...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
