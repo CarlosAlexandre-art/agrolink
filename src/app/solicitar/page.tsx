@@ -19,21 +19,27 @@ export default function SolicitarPage() {
 
   async function getLocalizacao() {
     if (!navigator.geolocation) {
-      alert('Seu dispositivo não suporta geolocalização. Digite o endereço manualmente.')
+      setLocalizando(false)
       return
     }
     setLocalizando(true)
+
+    const timeout = setTimeout(() => {
+      setLocalizando(false)
+    }, 6000)
+
     navigator.geolocation.getCurrentPosition(
       (pos) => {
+        clearTimeout(timeout)
         setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude })
         setEndereco('Localização obtida automaticamente')
         setLocalizando(false)
       },
       () => {
+        clearTimeout(timeout)
         setLocalizando(false)
-        // Silently fall back to manual address input
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      { enableHighAccuracy: false, timeout: 5000, maximumAge: 60000 }
     )
   }
 
