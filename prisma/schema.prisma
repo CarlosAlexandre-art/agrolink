@@ -37,6 +37,7 @@ enum ServiceType {
 enum ServiceStatus {
   AGUARDANDO
   PROCURANDO
+  AGUARDANDO_PROPOSTA
   MATCH_ENCONTRADO
   EM_ROTA
   EXECUTANDO
@@ -134,15 +135,17 @@ model Service {
 }
 
 model Match {
-  id          String      @id @default(cuid())
-  serviceId   String
-  service     Service     @relation(fields: [serviceId], references: [id])
-  prestadorId String
-  prestador   Prestador   @relation(fields: [prestadorId], references: [id])
-  status      MatchStatus @default(PENDENTE)
-  distancia   Float?
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id             String      @id @default(cuid())
+  serviceId      String
+  service        Service     @relation(fields: [serviceId], references: [id])
+  prestadorId    String
+  prestador      Prestador   @relation(fields: [prestadorId], references: [id])
+  status         MatchStatus @default(PENDENTE)
+  distancia      Float?
+  valorProposto  Float?
+  mensagemProposta String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
 
   @@unique([serviceId, prestadorId])
 }

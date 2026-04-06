@@ -7,13 +7,14 @@ import { SERVICOS } from '@/lib/constants'
 
 const STATUS_STEPS = [
   { key: 'PROCURANDO', label: 'Procurando prestador', icon: '🔍' },
-  { key: 'MATCH_ENCONTRADO', label: 'Prestador encontrado', icon: '🤝' },
+  { key: 'AGUARDANDO_PROPOSTA', label: 'Proposta recebida', icon: '💰' },
+  { key: 'MATCH_ENCONTRADO', label: 'Prestador confirmado', icon: '🤝' },
   { key: 'EM_ROTA', label: 'Prestador a caminho', icon: '🚗' },
   { key: 'EXECUTANDO', label: 'Serviço em execução', icon: '⚙️' },
   { key: 'CONCLUIDO', label: 'Concluído', icon: '✅' },
 ]
 
-const STATUS_ORDER = ['PROCURANDO', 'MATCH_ENCONTRADO', 'EM_ROTA', 'EXECUTANDO', 'CONCLUIDO']
+const STATUS_ORDER = ['PROCURANDO', 'AGUARDANDO_PROPOSTA', 'MATCH_ENCONTRADO', 'EM_ROTA', 'EXECUTANDO', 'CONCLUIDO']
 
 const BOTAO_PROXIMO: Record<string, string> = {
   MATCH_ENCONTRADO: '🚗 Estou a caminho',
@@ -35,6 +36,7 @@ export default function ServicoClient({
   const searchParams = useSearchParams()
   const [service, setService] = useState(initialService)
   const [loadingAvancar, setLoadingAvancar] = useState(false)
+  const [loadingProposta, setLoadingProposta] = useState<'ACEITAR' | 'RECUSAR' | null>(null)
   const [loadingAvaliar, setLoadingAvaliar] = useState(false)
   const [nota, setNota] = useState(0)
   const [comentario, setComentario] = useState('')
@@ -101,6 +103,23 @@ export default function ServicoClient({
       }
     }
     setLoadingAvancar(false)
+  }
+
+  async function responderProposta(acao: 'ACEITAR' | 'RECUSAR') {
+    setLoadingProposta(acao)
+    const matchAceitoId = matchAceito?.id
+    const res = await fetch('/api/matches/proposta', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ matchId: matchAceitoId, acao })
+    })
+    if (res.ok) {
+      await fetchStatus()
+    } else {
+      const data = await res.json()
+      alert(data.error || 'Erro ao processar proposta.')
+    }
+    setLoadingProposta(null)
   }
 
   async function enviarAvaliacaoProdutor() {
@@ -234,6 +253,69 @@ export default function ServicoClient({
             <div className="text-4xl mb-2">❌</div>
             <div className="font-bold text-red-700">Serviço Cancelado</div>
           </div>
+        )}
+
+        {/* Proposta aguardando decisão do produtor */}
+        {service.status === 'AGUARDANDO_PROPOSTA' && matchAceito && (
+          <>
+            {isProdutor && (
+              <div className="bg-orange-50 rounded-2xl p-5 border border-orange-300">
+                <h2 className="font-bold text-gray-800 mb-1">💰 Proposta recebida!</h2>
+                <p className="text-sm text-gray-500 mb-4">
+                  <strong>{matchAceito.prestador.user.nome}</strong> enviou uma proposta para o seu serviço. Revise e decida.
+                </p>
+
+                <div className="space-y-2 mb-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 text-sm">Valor proposto</span>
+                    <span className="font-bold text-green-700 text-2xl">R$ {matchAceito.valorProposto?.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs text-gray-400">
+                    <span>Prestador recebe (após 5%)</span>
+                    <span>R$ {(matchAceito.valorProposto * 0.95).toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs text-gray-400">
+                    <span>Taxa da plataforma (5%)</span>
+                    <span>R$ {(matchAceito.valorProposto * 0.05).toFixed(2)}</span>
+                  </div>
+                </div>
+
+                {matchAceito.mensagemProposta && (
+                  <div className="bg-white rounded-xl p-3 border border-gray-200 mb-4">
+                    <p className="text-xs text-gray-400 mb-1">Mensagem do prestador:</p>
+                    <p className="text-sm text-gray-700">"{matchAceito.mensagemProposta}"</p>
+                  </div>
+                )}
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => responderProposta('RECUSAR')}
+                    disabled={!!loadingProposta}
+                    className="flex-1 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition disabled:opacity-50"
+                  >
+                    {loadingProposta === 'RECUSAR' ? '...' : 'Recusar'}
+                  </button>
+                  <button
+                    onClick={() => responderProposta('ACEITAR')}
+                    disabled={!!loadingProposta}
+                    className="flex-[2] py-3 bg-green-700 text-white font-bold rounded-xl hover:bg-green-800 active:scale-95 transition disabled:opacity-50 shadow-md"
+                  >
+                    {loadingProposta === 'ACEITAR' ? 'Aceitando...' : '✅ Aceitar proposta'}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {isPrestador && (
+              <div className="bg-yellow-50 rounded-2xl p-5 border border-yellow-200 text-center">
+                <div className="text-3xl mb-2">⏳</div>
+                <div className="font-bold text-yellow-700 mb-1">Proposta enviada!</div>
+                <p className="text-sm text-gray-600">
+                  Sua proposta de <strong>R$ {matchAceito.valorProposto?.toFixed(2)}</strong> foi enviada ao produtor. Aguardando resposta.
+                </p>
+              </div>
+            )}
+          </>
         )}
 
         {/* Botão de pagamento — só para produtor quando prestador foi encontrado */}

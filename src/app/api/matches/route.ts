@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
+import { sendPushToUser } from '@/lib/push'
 
 export async function PATCH(req: Request) {
   try {
@@ -17,15 +18,19 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: 'Usuário não é prestador' }, { status: 403 })
     }
 
-    const { matchId, acao } = await req.json() // acao: 'ACEITAR' | 'RECUSAR'
+    const { matchId, acao, valorProposto, mensagemProposta } = await req.json()
 
     if (!matchId || !['ACEITAR', 'RECUSAR'].includes(acao)) {
       return NextResponse.json({ error: 'Dados inválidos' }, { status: 400 })
     }
 
+    if (acao === 'ACEITAR' && (!valorProposto || valorProposto <= 0)) {
+      return NextResponse.json({ error: 'Informe o valor da proposta' }, { status: 400 })
+    }
+
     const match = await prisma.match.findFirst({
       where: { id: matchId, prestadorId: dbUser.prestador.id, status: 'PENDENTE' },
-      include: { service: true }
+      include: { service: { include: { produtor: { include: { user: true } } } } }
     })
 
     if (!match) {
@@ -33,11 +38,15 @@ export async function PATCH(req: Request) {
     }
 
     if (acao === 'ACEITAR') {
-      // Accept this match and cancel others for same service
+      // Prestador aceita E envia proposta de valor
       await prisma.$transaction([
         prisma.match.update({
           where: { id: matchId },
-          data: { status: 'ACEITO' }
+          data: {
+            status: 'ACEITO',
+            valorProposto,
+            mensagemProposta: mensagemProposta || null,
+          }
         }),
         prisma.match.updateMany({
           where: { serviceId: match.serviceId, id: { not: matchId }, status: 'PENDENTE' },
@@ -45,9 +54,18 @@ export async function PATCH(req: Request) {
         }),
         prisma.service.update({
           where: { id: match.serviceId },
-          data: { status: 'MATCH_ENCONTRADO' }
+          data: { status: 'AGUARDANDO_PROPOSTA' }
         })
       ])
+
+      // Notify produtor that they have a proposal
+      const produtorUserId = match.service.produtor.userId
+      await sendPushToUser(produtorUserId, {
+        title: '💰 Nova proposta recebida!',
+        body: `${dbUser.nome} enviou uma proposta de R$ ${valorProposto.toFixed(2)} para seu serviço.`,
+        url: `/servico/${match.serviceId}`,
+      }).catch(() => {})
+
     } else {
       await prisma.match.update({
         where: { id: matchId },
