@@ -129,7 +129,7 @@ export default function AjudaPage() {
           <p className="text-green-100 text-sm mb-4">Nossa equipe está disponível para te atender.</p>
           <div className="flex gap-3">
             <a
-              href="https://wa.me/5565999999999?text=Olá, preciso de ajuda com o AgroLink"
+              href="https://wa.me/5585986027333?text=Olá, preciso de ajuda com o AgroLink"
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 py-3 bg-white text-green-700 font-bold rounded-xl text-center text-sm hover:bg-green-50 transition"
@@ -137,7 +137,7 @@ export default function AjudaPage() {
               📱 WhatsApp
             </a>
             <a
-              href="mailto:suporte@agrolink.com.br"
+              href="mailto:alexandre@parceirosdeproposito.com"
               className="flex-1 py-3 bg-green-600 text-white font-bold rounded-xl text-center text-sm hover:bg-green-500 transition border border-green-500"
             >
               ✉️ Email
