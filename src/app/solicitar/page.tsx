@@ -29,15 +29,9 @@ export default function SolicitarPage() {
         setEndereco('Localização obtida automaticamente')
         setLocalizando(false)
       },
-      (err) => {
+      () => {
         setLocalizando(false)
-        if (err.code === 1) {
-          alert('Permissão de localização negada.\n\nPara ativar:\n• Android: Configurações > Apps > AgroLink > Permissões > Localização\n• iPhone: Configurações > AgroLink > Localização')
-        } else if (err.code === 2) {
-          alert('Não foi possível obter sua localização. Verifique se o GPS está ativado.')
-        } else {
-          alert('Tempo esgotado. Tente novamente ou digite o endereço manualmente.')
-        }
+        // Silently fall back to manual address input
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     )
@@ -136,7 +130,7 @@ export default function SolicitarPage() {
                   type="text"
                   value={endereco}
                   onChange={e => setEndereco(e.target.value)}
-                  placeholder="Ou digite o endereço/cidade"
+                  placeholder="Ex: Fazenda Boa Vista, Sorriso - MT"
                   className="mt-2 w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               )}
