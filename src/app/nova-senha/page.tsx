@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client'
 export default function NovaSenhaPage() {
   const router = useRouter()
   const [pronto, setPronto] = useState(false)
+  const [expirou, setExpirou] = useState(false)
   const [senha, setSenha] = useState('')
   const [confirmar, setConfirmar] = useState('')
   const [loading, setLoading] = useState(false)
@@ -16,20 +17,57 @@ export default function NovaSenhaPage() {
   useEffect(() => {
     const supabase = createClient()
 
-    // Fluxo PKCE (token_hash via query param já tratado no callback)
-    // Fluxo implícito (hash fragment com access_token)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') {
-        setPronto(true)
+    async function init() {
+      // Fluxo PKCE: código na query string
+      const params = new URLSearchParams(window.location.search)
+      const code = params.get('code')
+
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code)
+        if (!error) {
+          setPronto(true)
+          return
+        }
+        setExpirou(true)
+        return
       }
-    })
 
-    // Se já veio do callback com sessão ativa, mostra o form direto
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) setPronto(true)
-    })
+      // Fluxo implícito: hash fragment (#access_token=...&type=recovery)
+      const hash = window.location.hash
+      if (hash.includes('type=recovery') || hash.includes('access_token')) {
+        // O cliente Supabase processa o hash automaticamente
+        const { data: { session } } = await supabase.auth.getSession()
+        if (session) {
+          setPronto(true)
+          return
+        }
+      }
 
-    return () => subscription.unsubscribe()
+      // Sessão já ativa (veio do /api/auth/callback)
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        setPronto(true)
+        return
+      }
+
+      // Aguarda evento PASSWORD_RECOVERY via hash
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+        if (event === 'PASSWORD_RECOVERY') {
+          setPronto(true)
+          subscription.unsubscribe()
+        }
+      })
+
+      // Timeout: se em 5s não autenticou, link expirou
+      setTimeout(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+          if (!session) setExpirou(true)
+        })
+        subscription.unsubscribe()
+      }, 5000)
+    }
+
+    init()
   }, [])
 
   async function handleSubmit(e: React.FormEvent) {
@@ -49,12 +87,32 @@ export default function NovaSenhaPage() {
     const { error } = await supabase.auth.updateUser({ password: senha })
 
     if (error) {
-      setErro('Erro ao atualizar senha. O link pode ter expirado.')
+      setErro('Erro ao atualizar senha. Tente solicitar um novo link.')
       setLoading(false)
       return
     }
 
     router.push('/dashboard')
+  }
+
+  if (expirou) {
+    return (
+      <div className="min-h-screen bg-green-50 flex items-center justify-center px-4">
+        <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md text-center">
+          <div className="text-5xl mb-4">⏰</div>
+          <h1 className="text-xl font-bold text-gray-800 mb-2">Link expirado</h1>
+          <p className="text-gray-500 mb-6">
+            Este link de recuperação já expirou. Solicite um novo.
+          </p>
+          <Link
+            href="/recuperar-senha"
+            className="block w-full py-3 bg-green-700 text-white font-bold rounded-xl hover:bg-green-800 transition text-center"
+          >
+            Solicitar novo link
+          </Link>
+        </div>
+      </div>
+    )
   }
 
   if (!pronto) {
