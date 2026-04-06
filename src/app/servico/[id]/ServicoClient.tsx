@@ -59,6 +59,22 @@ export default function ServicoClient({
     return () => clearInterval(interval)
   }, [fetchStatus, service.status])
 
+  async function pagarServico() {
+    setLoadingAvancar(true)
+    const res = await fetch('/api/pagamento', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ serviceId })
+    })
+    if (res.ok) {
+      const { url } = await res.json()
+      window.location.href = url
+    } else {
+      alert('Erro ao iniciar pagamento. Tente novamente.')
+      setLoadingAvancar(false)
+    }
+  }
+
   async function avancarStatus() {
     setLoadingAvancar(true)
     const res = await fetch(`/api/servicos/${serviceId}`, { method: 'PATCH' })
@@ -165,6 +181,38 @@ export default function ServicoClient({
           <div className="bg-red-50 rounded-2xl p-5 text-center">
             <div className="text-4xl mb-2">❌</div>
             <div className="font-bold text-red-700">Serviço Cancelado</div>
+          </div>
+        )}
+
+        {/* Botão de pagamento — só para produtor quando prestador foi encontrado */}
+        {isProdutor && service.status === 'MATCH_ENCONTRADO' && !service.payment && (
+          <div className="bg-blue-50 rounded-2xl p-5 border border-blue-200">
+            <h2 className="font-bold text-gray-700 mb-2">💳 Confirmar pagamento</h2>
+            <p className="text-sm text-gray-600 mb-4">
+              O prestador foi encontrado. Realize o pagamento para liberar o serviço.
+              O valor só é repassado após a conclusão.
+            </p>
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-gray-600 text-sm">Valor estimado</span>
+              <span className="font-bold text-green-700 text-xl">
+                R$ {(service.precoEstimado || (service.area ? service.area * 5 : 200)).toFixed(2)}
+              </span>
+            </div>
+            <button
+              onClick={pagarServico}
+              disabled={loadingAvancar}
+              className="w-full py-4 bg-blue-600 text-white font-bold text-lg rounded-2xl hover:bg-blue-700 active:scale-95 transition disabled:opacity-50 shadow-lg"
+            >
+              {loadingAvancar ? 'Redirecionando...' : '💳 PAGAR AGORA'}
+            </button>
+          </div>
+        )}
+
+        {/* Pagamento já realizado */}
+        {isProdutor && service.payment?.status === 'RESERVADO' && (
+          <div className="bg-green-50 rounded-xl p-4 border border-green-200 text-center">
+            <div className="text-green-700 font-semibold">✅ Pagamento confirmado — em custódia</div>
+            <div className="text-xs text-gray-500 mt-1">Será liberado ao prestador após conclusão</div>
           </div>
         )}
 
