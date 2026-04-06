@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { SERVICOS } from '@/lib/constants'
 
 const STATUS_STEPS = [
@@ -31,11 +32,22 @@ export default function ServicoClient({
   isProdutor: boolean
   isPrestador: boolean
 }) {
+  const searchParams = useSearchParams()
   const [service, setService] = useState(initialService)
   const [loadingAvancar, setLoadingAvancar] = useState(false)
   const [loadingAvaliar, setLoadingAvaliar] = useState(false)
   const [nota, setNota] = useState(0)
   const [comentario, setComentario] = useState('')
+  const [agradecimento, setAgradecimento] = useState<string | null>(
+    searchParams.get('obrigado') === '1' ? 'confianca' : null
+  )
+
+  useEffect(() => {
+    if (agradecimento) {
+      const t = setTimeout(() => setAgradecimento(null), 5000)
+      return () => clearTimeout(t)
+    }
+  }, [agradecimento])
 
   const servico = SERVICOS.find(s => s.value === service.tipo) || { label: service.tipo, icon: '📋' }
   const currentStepIndex = STATUS_ORDER.indexOf(service.status)
@@ -81,6 +93,9 @@ export default function ServicoClient({
     if (res.ok) {
       const data = await res.json()
       setService((prev: any) => ({ ...prev, status: data.status }))
+      if (data.status === 'CONCLUIDO') {
+        setAgradecimento('servico')
+      }
     }
     setLoadingAvancar(false)
   }
@@ -99,6 +114,7 @@ export default function ServicoClient({
       })
     })
     await fetchStatus()
+    setAgradecimento('avaliacao')
     setLoadingAvaliar(false)
   }
 
@@ -110,6 +126,21 @@ export default function ServicoClient({
           <h1 className="font-bold text-lg">Acompanhar Serviço</h1>
         </div>
       </header>
+
+      {/* Banner de agradecimento */}
+      {agradecimento && (
+        <div className="fixed top-0 left-0 right-0 z-50 px-4 pt-4 flex justify-center">
+          <div className={`w-full max-w-md py-4 px-5 rounded-2xl shadow-lg text-white text-center font-semibold text-sm animate-bounce-once ${
+            agradecimento === 'servico' ? 'bg-green-600' :
+            agradecimento === 'avaliacao' ? 'bg-yellow-500' :
+            'bg-green-700'
+          }`}>
+            {agradecimento === 'confianca' && '🌿 AgroLink agradece a sua confiança! Estamos encontrando o melhor prestador para você.'}
+            {agradecimento === 'servico' && '🤝 AgroLink agradece seus serviços! O pagamento será transferido em breve.'}
+            {agradecimento === 'avaliacao' && '⭐ AgroLink agradece sua contribuição! Sua avaliação ajuda toda a comunidade.'}
+          </div>
+        </div>
+      )}
 
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
 

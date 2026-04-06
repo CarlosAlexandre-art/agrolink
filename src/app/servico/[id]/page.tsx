@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import ServicoClient from './ServicoClient'
@@ -28,11 +29,13 @@ export default async function ServicoPage({ params }: { params: Promise<{ id: st
   if (!isProdutor && !isPrestador) redirect('/dashboard')
 
   return (
-    <ServicoClient
-      serviceId={id}
-      initialService={JSON.parse(JSON.stringify(service))}
-      isProdutor={isProdutor}
-      isPrestador={isPrestador}
-    />
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="text-green-700 font-semibold">Carregando...</div></div>}>
+      <ServicoClient
+        serviceId={id}
+        initialService={JSON.parse(JSON.stringify(service))}
+        isProdutor={isProdutor}
+        isPrestador={isPrestador}
+      />
+    </Suspense>
   )
 }

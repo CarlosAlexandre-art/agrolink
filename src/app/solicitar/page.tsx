@@ -67,7 +67,7 @@ export default function SolicitarPage() {
 
     if (res.ok) {
       const data = await res.json()
-      router.push(`/servico/${data.id}`)
+      router.push(`/servico/${data.id}?obrigado=1`)
     } else {
       alert('Erro ao solicitar serviço. Tente novamente.')
       setLoading(false)

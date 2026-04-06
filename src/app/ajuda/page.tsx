@@ -1,4 +1,42 @@
+'use client'
+
+import { useState } from 'react'
 import Link from 'next/link'
+
+const FAQ = [
+  {
+    pergunta: 'O pagamento é seguro?',
+    resposta: 'Sim. O dinheiro fica retido em custódia (escrow) e só é liberado ao prestador após você confirmar que o serviço foi concluído. Se o serviço não for realizado, você recebe o reembolso total.',
+  },
+  {
+    pergunta: 'Quando o prestador recebe o pagamento?',
+    resposta: 'O prestador recebe automaticamente após a conclusão do serviço, em até 2 dias úteis diretamente na conta bancária cadastrada.',
+  },
+  {
+    pergunta: 'Preciso ter conta em banco para usar?',
+    resposta: 'Para contratar serviços, não precisa de conta bancária — basta um cartão de crédito ou débito. Para receber pagamentos como prestador, é necessário cadastrar uma conta bancária uma única vez.',
+  },
+  {
+    pergunta: 'O prestador precisa criar conta no Stripe ou outro app?',
+    resposta: 'Não. Todo o processo de cadastro bancário é feito dentro do próprio AgroLink, em uma tela segura. O prestador não precisa baixar nenhum aplicativo extra.',
+  },
+  {
+    pergunta: 'E se o prestador não aparecer para fazer o serviço?',
+    resposta: 'Você pode abrir uma disputa pelo app. Nossa equipe analisa em até 48h e, se confirmado que o serviço não foi realizado, o valor é reembolsado integralmente.',
+  },
+  {
+    pergunta: 'Posso combinar o pagamento diretamente com o prestador?',
+    resposta: 'Não recomendamos. Pagamentos fora da plataforma não têm nenhuma proteção. Se algo der errado, não podemos intervir. Sempre pague pelo AgroLink para ter garantia.',
+  },
+  {
+    pergunta: 'Meus dados pessoais e bancários estão seguros?',
+    resposta: 'Sim. Seus dados bancários nunca ficam armazenados no AgroLink — são processados diretamente pelo sistema de pagamentos certificado. Seus dados pessoais são criptografados e nunca compartilhados com terceiros.',
+  },
+  {
+    pergunta: 'Como funciona a avaliação?',
+    resposta: 'Após a conclusão do serviço, o produtor avalia o prestador com 1 a 5 estrelas. A média das avaliações fica visível no perfil público do prestador, ajudando outros produtores a escolher com confiança.',
+  },
+]
 
 const SECOES = [
   {
@@ -111,6 +149,26 @@ const SECOES = [
   },
 ]
 
+function FaqItem({ pergunta, resposta }: { pergunta: string; resposta: string }) {
+  const [aberto, setAberto] = useState(false)
+  return (
+    <div className="border-b border-gray-100 last:border-0">
+      <button
+        onClick={() => setAberto(!aberto)}
+        className="w-full p-4 text-left flex items-center justify-between gap-3 hover:bg-gray-50 transition"
+      >
+        <span className="font-medium text-gray-800 text-sm">{pergunta}</span>
+        <span className={`text-gray-400 flex-shrink-0 transition-transform ${aberto ? 'rotate-180' : ''}`}>▼</span>
+      </button>
+      {aberto && (
+        <div className="px-4 pb-4 text-sm text-gray-600 leading-relaxed">
+          {resposta}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function AjudaPage() {
   return (
     <div className="min-h-screen bg-gray-50 pb-8">
@@ -181,6 +239,16 @@ export default function AjudaPage() {
             ))}
           </div>
         ))}
+
+        {/* FAQ */}
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+          <div className="p-5 border-b border-gray-100">
+            <h2 className="font-bold text-gray-800 text-lg">❓ Perguntas Frequentes</h2>
+          </div>
+          {FAQ.map((item, i) => (
+            <FaqItem key={i} pergunta={item.pergunta} resposta={item.resposta} />
+          ))}
+        </div>
 
         {/* Tour */}
         <Link
