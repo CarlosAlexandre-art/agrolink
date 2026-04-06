@@ -53,11 +53,21 @@ export default async function PerfilPage() {
         {/* Basic info */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <h2 className="font-bold text-gray-700 mb-3">Informações</h2>
-          <div className="space-y-3 text-sm">
+          <div className="space-y-0 text-sm">
+            <div className="flex justify-between py-2 border-b border-gray-50">
+              <span className="text-gray-500">Nome</span>
+              <span className="font-medium text-gray-700">{dbUser.nome}</span>
+            </div>
+            <div className="flex justify-between py-2 border-b border-gray-50">
+              <span className="text-gray-500">Email</span>
+              <span className="font-medium text-gray-700 text-right break-all">{dbUser.email}</span>
+            </div>
             {dbUser.telefone && (
               <div className="flex justify-between py-2 border-b border-gray-50">
-                <span className="text-gray-500">Telefone</span>
-                <span className="font-medium text-gray-700">{dbUser.telefone}</span>
+                <span className="text-gray-500">WhatsApp</span>
+                <span className="font-medium text-gray-700">
+                  🇧🇷 +55 {dbUser.telefone.replace(/\D/g, '').replace(/^55/, '').replace(/^(\d{2})(\d{4,5})(\d{4})$/, '($1) $2-$3')}
+                </span>
               </div>
             )}
             {dbUser.estado && (
@@ -78,6 +88,12 @@ export default async function PerfilPage() {
                 <span className="font-medium text-gray-700">{dbUser.produtor.nomeFazenda}</span>
               </div>
             )}
+            <div className="flex justify-between py-2">
+              <span className="text-gray-500">Membro desde</span>
+              <span className="font-medium text-gray-700">
+                {new Date(dbUser.createdAt).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+              </span>
+            </div>
           </div>
         </div>
 

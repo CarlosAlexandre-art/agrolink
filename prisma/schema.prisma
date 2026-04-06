@@ -83,10 +83,11 @@ model Produtor {
   id          String    @id @default(cuid())
   userId      String    @unique
   user        User      @relation(fields: [userId], references: [id])
-  nomeFazenda String?
-  areaTotal   Float?
-  services    Service[]
-  createdAt   DateTime  @default(now())
+  nomeFazenda        String?
+  areaTotal          Float?
+  services           Service[]
+  avaliacoesRecebidas AvaliacaoProdutor[]
+  createdAt          DateTime  @default(now())
 }
 
 model Prestador {
@@ -124,11 +125,12 @@ model Service {
   fotoProva     String?
   gpsLat        Float?
   gpsLng        Float?
-  matches       Match[]
-  payment       Payment?
-  avaliacao     Avaliacao?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  matches           Match[]
+  payment           Payment?
+  avaliacao         Avaliacao?
+  avaliacaoProdutor AvaliacaoProdutor?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
 }
 
 model Match {
@@ -168,6 +170,17 @@ model Avaliacao {
   nota        Int
   comentario  String?
   createdAt   DateTime  @default(now())
+}
+
+model AvaliacaoProdutor {
+  id         String   @id @default(cuid())
+  serviceId  String   @unique
+  service    Service  @relation(fields: [serviceId], references: [id])
+  produtorId String
+  produtor   Produtor @relation(fields: [produtorId], references: [id])
+  nota       Int
+  comentario String?
+  createdAt  DateTime @default(now())
 }
 
 model PushSubscription {

@@ -58,14 +58,16 @@ export async function POST(req: Request) {
       },
     })
 
+    const COMISSAO = 0.05
+
     // Save payment record
     await prisma.payment.upsert({
       where: { serviceId },
       create: {
         serviceId,
         valor: valorEstimado,
-        comissao: valorEstimado * 0.15,
-        valorPrestador: valorEstimado * 0.85,
+        comissao: valorEstimado * COMISSAO,
+        valorPrestador: valorEstimado * (1 - COMISSAO),
         status: 'PENDENTE',
         stripePaymentId: session.id,
       },

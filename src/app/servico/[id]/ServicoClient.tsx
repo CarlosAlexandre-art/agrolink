@@ -38,6 +38,9 @@ export default function ServicoClient({
   const [loadingAvaliar, setLoadingAvaliar] = useState(false)
   const [nota, setNota] = useState(0)
   const [comentario, setComentario] = useState('')
+  const [notaProdutor, setNotaProdutor] = useState(0)
+  const [comentarioProdutor, setComentarioProdutor] = useState('')
+  const [loadingAvaliarProdutor, setLoadingAvaliarProdutor] = useState(false)
   const [agradecimento, setAgradecimento] = useState<string | null>(
     searchParams.get('obrigado') === '1' ? 'confianca' : null
   )
@@ -98,6 +101,24 @@ export default function ServicoClient({
       }
     }
     setLoadingAvancar(false)
+  }
+
+  async function enviarAvaliacaoProdutor() {
+    if (!notaProdutor) return
+    setLoadingAvaliarProdutor(true)
+    await fetch('/api/avaliacoes/produtor', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        serviceId,
+        produtorId: service.produtor?.prestador?.id || service.produtorId,
+        nota: notaProdutor,
+        comentario: comentarioProdutor,
+      })
+    })
+    await fetchStatus()
+    setAgradecimento('avaliacao')
+    setLoadingAvaliarProdutor(false)
   }
 
   async function enviarAvaliacao() {
@@ -221,14 +242,32 @@ export default function ServicoClient({
             <h2 className="font-bold text-gray-700 mb-2">💳 Confirmar pagamento</h2>
             <p className="text-sm text-gray-600 mb-4">
               O prestador foi encontrado. Realize o pagamento para liberar o serviço.
-              O valor só é repassado após a conclusão.
+              O valor fica em custódia segura e só é repassado ao prestador após a conclusão.
             </p>
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-gray-600 text-sm">Valor estimado</span>
-              <span className="font-bold text-green-700 text-xl">
-                R$ {(service.precoEstimado || (service.area ? service.area * 5 : 200)).toFixed(2)}
-              </span>
-            </div>
+            {(() => {
+              const valor = service.precoEstimado || (service.area ? service.area * 5 : 200)
+              const comissao = valor * 0.05
+              const prestador = valor * 0.95
+              return (
+                <div className="space-y-2 mb-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 text-sm">Valor do serviço</span>
+                    <span className="font-bold text-green-700 text-xl">R$ {valor.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs text-gray-400">
+                    <span>Prestador recebe</span>
+                    <span>R$ {prestador.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs text-gray-400">
+                    <span>Taxa plataforma (5%)</span>
+                    <span>R$ {comissao.toFixed(2)}</span>
+                  </div>
+                  <div className="text-xs text-gray-400 bg-gray-100 rounded-lg p-2 mt-1">
+                    💡 A taxa de 5% é usada para manutenção da plataforma, segurança dos pagamentos e melhorias contínuas para você.
+                  </div>
+                </div>
+              )
+            })()}
             <button
               onClick={pagarServico}
               disabled={loadingAvancar}
@@ -331,6 +370,46 @@ export default function ServicoClient({
             {service.avaliacao.comentario && (
               <p className="text-sm text-gray-600 mt-1">"{service.avaliacao.comentario}"</p>
             )}
+          </div>
+        )}
+
+        {/* Prestador avalia o produtor */}
+        {isPrestador && service.status === 'CONCLUIDO' && !service.avaliacaoProdutor && (
+          <div className="bg-blue-50 rounded-2xl p-5 shadow-sm border border-blue-200">
+            <h2 className="font-bold text-gray-700 mb-1">Como foi trabalhar com este produtor?</h2>
+            <p className="text-xs text-gray-500 mb-3">Sua avaliação ajuda a comunidade a identificar bons clientes</p>
+            <div className="flex gap-2 justify-center mb-4">
+              {[1, 2, 3, 4, 5].map(n => (
+                <button
+                  key={n}
+                  onClick={() => setNotaProdutor(n)}
+                  className={`text-3xl transition-transform hover:scale-110 ${n <= notaProdutor ? 'opacity-100' : 'opacity-30'}`}
+                >
+                  ⭐
+                </button>
+              ))}
+            </div>
+            <textarea
+              value={comentarioProdutor}
+              onChange={e => setComentarioProdutor(e.target.value)}
+              rows={2}
+              placeholder="Comentário opcional..."
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-sm mb-3 text-gray-900 bg-white"
+            />
+            <button
+              onClick={enviarAvaliacaoProdutor}
+              disabled={!notaProdutor || loadingAvaliarProdutor}
+              className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition disabled:opacity-50"
+            >
+              {loadingAvaliarProdutor ? 'Enviando...' : 'Avaliar produtor'}
+            </button>
+          </div>
+        )}
+
+        {service.avaliacaoProdutor && isPrestador && (
+          <div className="bg-blue-50 rounded-2xl p-5 text-center border border-blue-100">
+            <div className="text-3xl mb-1">{'⭐'.repeat(service.avaliacaoProdutor.nota)}</div>
+            <div className="font-bold text-blue-700">Avaliação do produtor enviada!</div>
           </div>
         )}
 

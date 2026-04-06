@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 const FAQ = [
@@ -170,6 +171,18 @@ function FaqItem({ pergunta, resposta }: { pergunta: string; resposta: string })
 }
 
 export default function AjudaPage() {
+  const router = useRouter()
+
+  function refazerTour() {
+    localStorage.removeItem('tour_v2_PRODUTOR')
+    localStorage.removeItem('tour_v2_PRODUTOR_step')
+    localStorage.removeItem('tour_v2_PRESTADOR')
+    localStorage.removeItem('tour_v2_PRESTADOR_step')
+    localStorage.setItem('tour_v2_PRODUTOR', 'ativo')
+    localStorage.setItem('tour_v2_PRESTADOR', 'ativo')
+    router.push('/dashboard')
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 pb-8">
       <header className="bg-green-700 text-white px-4 py-4">
@@ -251,12 +264,12 @@ export default function AjudaPage() {
         </div>
 
         {/* Tour */}
-        <Link
-          href="/dashboard"
-          className="block w-full py-4 border-2 border-green-700 text-green-700 text-center font-bold rounded-2xl hover:bg-green-50 transition"
+        <button
+          onClick={refazerTour}
+          className="w-full py-4 border-2 border-green-700 text-green-700 text-center font-bold rounded-2xl hover:bg-green-50 transition"
         >
           🎯 Refazer o tour da plataforma
-        </Link>
+        </button>
 
       </div>
     </div>

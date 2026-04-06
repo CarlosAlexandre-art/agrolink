@@ -22,6 +22,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
           include: { prestador: { include: { user: true } } }
         },
         avaliacao: true,
+        avaliacaoProdutor: true,
       }
     })
 

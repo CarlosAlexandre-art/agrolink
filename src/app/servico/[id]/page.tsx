@@ -15,7 +15,6 @@ export default async function ServicoPage({ params }: { params: Promise<{ id: st
     include: {
       produtor: { include: { user: true } },
       matches: {
-        where: { status: 'ACEITO' },
         include: { prestador: { include: { user: true } } }
       },
       avaliacao: true,
@@ -28,11 +27,16 @@ export default async function ServicoPage({ params }: { params: Promise<{ id: st
   const isPrestador = service.matches.some((m: any) => m.prestador.user.supabaseId === user.id)
   if (!isProdutor && !isPrestador) redirect('/dashboard')
 
+  const serviceForClient = {
+    ...service,
+    matches: service.matches.filter((m: any) => m.status === 'ACEITO'),
+  }
+
   return (
     <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="text-green-700 font-semibold">Carregando...</div></div>}>
       <ServicoClient
         serviceId={id}
-        initialService={JSON.parse(JSON.stringify(service))}
+        initialService={JSON.parse(JSON.stringify(serviceForClient))}
         isProdutor={isProdutor}
         isPrestador={isPrestador}
       />
