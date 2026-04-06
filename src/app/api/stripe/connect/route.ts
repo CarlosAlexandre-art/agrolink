@@ -47,8 +47,13 @@ export async function POST() {
     })
 
     return NextResponse.json({ url: accountLink.url })
-  } catch (error) {
-    console.error(error)
+  } catch (error: any) {
+    console.error('STRIPE CONNECT ERROR:', JSON.stringify({
+      message: error?.message,
+      type: error?.type,
+      code: error?.code,
+      param: error?.param,
+    }))
     return NextResponse.json({ error: 'Erro ao conectar conta' }, { status: 500 })
   }
 }
