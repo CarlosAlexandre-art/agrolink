@@ -1,12 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { SERVICOS } from '@/lib/constants'
 
-export default function CadastroPage() {
+function CadastroForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const tipoParam = searchParams.get('tipo') as 'PRODUTOR' | 'PRESTADOR' | null
@@ -225,5 +225,13 @@ export default function CadastroPage() {
         </p>
       </div>
     </div>
+  )
+}
+
+export default function CadastroPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-green-50 flex items-center justify-center"><div className="text-green-700 font-semibold">Carregando...</div></div>}>
+      <CadastroForm />
+    </Suspense>
   )
 }
