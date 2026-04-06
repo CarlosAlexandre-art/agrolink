@@ -108,7 +108,7 @@ export default function Tour({ tipo }: { tipo: 'PRODUTOR' | 'PRESTADOR' }) {
 
   if (!ativo) return null
 
-  const tooltipTop = pos.posicao === 'top' || atual.posicao === 'top'
+  const tooltipTop = (atual.posicao ?? 'bottom') === 'top'
     ? pos.top - 140
     : pos.top + pos.height + 12
 
