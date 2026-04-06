@@ -2,31 +2,49 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-export default function LoginPage() {
-  const router = useRouter()
+export default function RecuperarSenhaPage() {
   const [email, setEmail] = useState('')
-  const [senha, setSenha] = useState('')
   const [loading, setLoading] = useState(false)
+  const [enviado, setEnviado] = useState(false)
   const [erro, setErro] = useState('')
 
-  async function handleLogin(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setErro('')
 
     const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({ email, password: senha })
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/api/auth/callback?next=/nova-senha`,
+    })
 
     if (error) {
-      setErro('Email ou senha incorretos.')
+      setErro('Erro ao enviar email. Verifique o endereço e tente novamente.')
       setLoading(false)
       return
     }
 
-    window.location.href = '/dashboard'
+    setEnviado(true)
+    setLoading(false)
+  }
+
+  if (enviado) {
+    return (
+      <div className="min-h-screen bg-green-50 flex items-center justify-center px-4">
+        <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md text-center">
+          <div className="text-5xl mb-4">📧</div>
+          <h1 className="text-xl font-bold text-gray-800 mb-2">Email enviado!</h1>
+          <p className="text-gray-500 mb-6">
+            Verifique sua caixa de entrada e clique no link para redefinir sua senha.
+          </p>
+          <Link href="/login" className="text-green-700 font-semibold hover:underline">
+            ← Voltar ao login
+          </Link>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -34,12 +52,12 @@ export default function LoginPage() {
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="text-3xl font-bold text-green-700">🌿 AgroLink</Link>
-          <p className="text-gray-500 mt-2">Entre na sua conta</p>
+          <p className="text-gray-500 mt-2">Recuperar senha</p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Seu email</label>
             <input
               type="email"
               value={email}
@@ -47,17 +65,6 @@ export default function LoginPage() {
               required
               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-lg text-gray-900 bg-white"
               placeholder="seu@email.com"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Senha</label>
-            <input
-              type="password"
-              value={senha}
-              onChange={e => setSenha(e.target.value)}
-              required
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-lg text-gray-900 bg-white"
-              placeholder="••••••••"
             />
           </div>
 
@@ -72,20 +79,14 @@ export default function LoginPage() {
             disabled={loading}
             className="w-full py-4 bg-green-700 text-white font-bold text-lg rounded-xl hover:bg-green-800 transition disabled:opacity-50"
           >
-            {loading ? 'Entrando...' : 'Entrar'}
+            {loading ? 'Enviando...' : 'Enviar link de recuperação'}
           </button>
         </form>
 
-        <div className="text-center mt-4">
-          <Link href="/recuperar-senha" className="text-sm text-gray-400 hover:text-green-700 hover:underline">
-            Esqueci minha senha
-          </Link>
-        </div>
-
-        <p className="text-center text-gray-500 mt-4">
-          Não tem conta?{' '}
-          <Link href="/cadastro" className="text-green-700 font-semibold hover:underline">
-            Cadastre-se grátis
+        <p className="text-center text-gray-500 mt-6">
+          Lembrou a senha?{' '}
+          <Link href="/login" className="text-green-700 font-semibold hover:underline">
+            Fazer login
           </Link>
         </p>
       </div>
