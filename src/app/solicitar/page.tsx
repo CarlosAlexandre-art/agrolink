@@ -124,21 +124,31 @@ export default function SolicitarPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 📍 Localização da propriedade
               </label>
-              <button
-                onClick={getLocalizacao}
-                disabled={localizando}
-                className="w-full py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition disabled:opacity-50"
-              >
-                {localizando ? 'Obtendo localização...' : coords ? '✓ Localização obtida' : 'Usar minha localização'}
-              </button>
-              {!coords && (
-                <input
-                  type="text"
-                  value={endereco}
-                  onChange={e => setEndereco(e.target.value)}
-                  placeholder="Ex: Fazenda Boa Vista, Sorriso - MT"
-                  className="mt-2 w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
+              {coords ? (
+                <div className="flex items-center gap-2 p-3 bg-green-50 rounded-xl border border-green-200">
+                  <span className="text-green-600">✓</span>
+                  <span className="text-green-700 text-sm font-medium">Localização obtida pelo GPS</span>
+                  <button onClick={() => setCoords(null)} className="ml-auto text-xs text-gray-400 hover:text-gray-600">
+                    Remover
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <button
+                    onClick={getLocalizacao}
+                    disabled={localizando}
+                    className="w-full py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition disabled:opacity-50 mb-2"
+                  >
+                    {localizando ? '📡 Obtendo GPS...' : '📡 Usar GPS'}
+                  </button>
+                  <input
+                    type="text"
+                    value={endereco}
+                    onChange={e => setEndereco(e.target.value)}
+                    placeholder="Ou digite: Fazenda Boa Vista, Sorriso - MT"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </>
               )}
             </div>
 
