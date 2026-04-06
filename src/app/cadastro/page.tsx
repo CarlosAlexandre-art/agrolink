@@ -70,7 +70,7 @@ function CadastroForm() {
       return
     }
 
-    window.location.href = '/dashboard'
+    window.location.href = `/bem-vindo?tipo=${tipo}`
   }
 
   return (
