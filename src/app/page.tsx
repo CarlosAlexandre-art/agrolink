@@ -95,7 +95,7 @@ export default function Home() {
           </div>
           <div className="text-center mt-8">
             <Link
-              href="/cadastro"
+              href="/servicos"
               className="text-green-700 font-semibold hover:underline"
             >
               Ver todos os serviços →

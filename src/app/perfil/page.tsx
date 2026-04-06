@@ -34,8 +34,18 @@ export default async function PerfilPage() {
 
         {/* Avatar and name */}
         <div className="bg-white rounded-2xl p-6 shadow-sm text-center">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-3xl font-bold text-green-700 mx-auto mb-3">
-            {dbUser.nome[0].toUpperCase()}
+          <div className="w-20 h-20 mx-auto mb-3">
+            {dbUser.avatarUrl ? (
+              <img
+                src={dbUser.avatarUrl}
+                alt="Foto de perfil"
+                className="w-20 h-20 rounded-full object-cover border-4 border-green-100"
+              />
+            ) : (
+              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-3xl font-bold text-green-700">
+                {dbUser.nome[0].toUpperCase()}
+              </div>
+            )}
           </div>
           <div className="font-bold text-gray-800 text-xl">{dbUser.nome}</div>
           <div className="text-sm text-gray-500 mt-1">{dbUser.email}</div>

@@ -161,9 +161,11 @@ export default async function HistoricoPage() {
         <Link href="/historico" className="flex-1 py-3 text-center text-green-700 font-semibold text-xs">
           <div className="text-xl">📋</div>Histórico
         </Link>
-        <Link href="/ganhos" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">💰</div>Ganhos
-        </Link>
+        {dbUser.tipo === 'PRESTADOR' && (
+          <Link href="/ganhos" className="flex-1 py-3 text-center text-gray-500 text-xs">
+            <div className="text-xl">💰</div>Ganhos
+          </Link>
+        )}
         <Link href="/perfil" className="flex-1 py-3 text-center text-gray-500 text-xs">
           <div className="text-xl">👤</div>Perfil
         </Link>
