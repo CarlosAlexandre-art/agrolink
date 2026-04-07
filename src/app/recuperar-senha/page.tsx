@@ -21,7 +21,11 @@ export default function RecuperarSenhaPage() {
     })
 
     if (error) {
-      setErro('Erro ao enviar email. Verifique o endereço e tente novamente.')
+      if (error.message?.includes('60 seconds') || error.status === 429) {
+        setErro('Aguarde 1 minuto antes de solicitar outro link.')
+      } else {
+        setErro(`Erro: ${error.message}`)
+      }
       setLoading(false)
       return
     }
