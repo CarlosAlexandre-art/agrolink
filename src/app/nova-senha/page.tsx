@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
@@ -14,40 +14,39 @@ export default function NovaSenhaPage() {
   const [loading, setLoading] = useState(false)
   const [erro, setErro] = useState('')
 
+  // Captura o hash ANTES do Supabase processar e limpar
+  const hashRef = useRef(typeof window !== 'undefined' ? window.location.hash : '')
+  const searchRef = useRef(typeof window !== 'undefined' ? window.location.search : '')
+
   useEffect(() => {
     const supabase = createClient()
 
     async function processar() {
-      // Fluxo PKCE: ?code=xxx na query string
-      const queryParams = new URLSearchParams(window.location.search)
+      // Fluxo PKCE: ?code=xxx
+      const queryParams = new URLSearchParams(searchRef.current)
       const code = queryParams.get('code')
       if (code) {
         const { error } = await supabase.auth.exchangeCodeForSession(code)
-        if (!error) {
-          setPronto(true)
-          window.history.replaceState(null, '', window.location.pathname)
-        } else {
-          setExpirou(true)
-        }
-        return
+        if (!error) { setPronto(true); return }
+        setExpirou(true); return
       }
 
-      // Fluxo implícito: #access_token=xxx&type=recovery no hash
-      const hash = window.location.hash.substring(1)
-      const hashParams = new URLSearchParams(hash)
+      // Fluxo implícito: #access_token=xxx&type=recovery
+      const hashParams = new URLSearchParams(hashRef.current.substring(1))
       const access_token = hashParams.get('access_token')
       const refresh_token = hashParams.get('refresh_token')
       const type = hashParams.get('type')
 
       if (type === 'recovery' && access_token && refresh_token) {
         const { error } = await supabase.auth.setSession({ access_token, refresh_token })
-        if (!error) {
-          setPronto(true)
-          window.history.replaceState(null, '', window.location.pathname)
-        } else {
-          setExpirou(true)
-        }
-        return
+        if (!error) { setPronto(true); return }
+        setExpirou(true); return
+      }
+
+      // Supabase já processou o hash — verifica se há sessão ativa de recovery
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        setPronto(true); return
       }
 
       // Nenhum token encontrado
@@ -61,19 +60,11 @@ export default function NovaSenhaPage() {
     e.preventDefault()
     if (senha !== confirmar) { setErro('As senhas não coincidem.'); return }
     if (senha.length < 6) { setErro('A senha deve ter pelo menos 6 caracteres.'); return }
-
     setLoading(true)
     setErro('')
-
     const supabase = createClient()
     const { error } = await supabase.auth.updateUser({ password: senha })
-
-    if (error) {
-      setErro('Erro ao salvar. Solicite um novo link.')
-      setLoading(false)
-      return
-    }
-
+    if (error) { setErro('Erro ao salvar. Solicite um novo link.'); setLoading(false); return }
     router.push('/dashboard')
   }
 
