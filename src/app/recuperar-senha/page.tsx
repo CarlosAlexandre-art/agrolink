@@ -16,9 +16,7 @@ export default function RecuperarSenhaPage() {
     setErro('')
 
     const supabase = createClient()
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/nova-senha`,
-    })
+    const { error } = await supabase.auth.resetPasswordForEmail(email)
 
     if (error) {
       if (error.message?.includes('60 seconds') || error.status === 429) {
