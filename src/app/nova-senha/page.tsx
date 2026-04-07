@@ -17,28 +17,44 @@ export default function NovaSenhaPage() {
   useEffect(() => {
     const supabase = createClient()
 
-    // Lê o hash da URL diretamente: #access_token=xxx&refresh_token=xxx&type=recovery
-    const hash = window.location.hash.substring(1)
-    const params = new URLSearchParams(hash)
-    const access_token = params.get('access_token')
-    const refresh_token = params.get('refresh_token')
-    const type = params.get('type')
-
-    if (type === 'recovery' && access_token && refresh_token) {
-      // Seta a sessão manualmente com os tokens do hash
-      supabase.auth.setSession({ access_token, refresh_token }).then(({ error }) => {
-        if (error) {
-          setExpirou(true)
-        } else {
+    async function processar() {
+      // Fluxo PKCE: ?code=xxx na query string
+      const queryParams = new URLSearchParams(window.location.search)
+      const code = queryParams.get('code')
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code)
+        if (!error) {
           setPronto(true)
-          // Limpa o hash da URL para não ficar exposto
           window.history.replaceState(null, '', window.location.pathname)
+        } else {
+          setExpirou(true)
         }
-      })
-    } else {
-      // Sem tokens de recovery no hash = link inválido ou expirado
+        return
+      }
+
+      // Fluxo implícito: #access_token=xxx&type=recovery no hash
+      const hash = window.location.hash.substring(1)
+      const hashParams = new URLSearchParams(hash)
+      const access_token = hashParams.get('access_token')
+      const refresh_token = hashParams.get('refresh_token')
+      const type = hashParams.get('type')
+
+      if (type === 'recovery' && access_token && refresh_token) {
+        const { error } = await supabase.auth.setSession({ access_token, refresh_token })
+        if (!error) {
+          setPronto(true)
+          window.history.replaceState(null, '', window.location.pathname)
+        } else {
+          setExpirou(true)
+        }
+        return
+      }
+
+      // Nenhum token encontrado
       setExpirou(true)
     }
+
+    processar()
   }, [])
 
   async function handleSubmit(e: React.FormEvent) {
