@@ -17,27 +17,26 @@ export default function NovaSenhaPage() {
   useEffect(() => {
     const supabase = createClient()
 
-    // O callback já fez exchangeCodeForSession — só verifica se tem sessão
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
+    // Escuta APENAS o evento PASSWORD_RECOVERY — nunca sessão comum
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
         setPronto(true)
-      } else {
-        // Aguarda o evento caso venha direto com hash fragment
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-          if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
-            setPronto(true)
-            subscription.unsubscribe()
-          }
-        })
-
-        // Após 8s sem sessão = link expirado
-        setTimeout(() => {
-          supabase.auth.getSession().then(({ data: { session } }) => {
-            if (!session) setExpirou(true)
-          })
-        }, 8000)
+        subscription.unsubscribe()
       }
     })
+
+    // Timeout: se em 10s o evento não chegou, link expirado
+    const timer = setTimeout(() => {
+      setPronto(prev => {
+        if (!prev) setExpirou(true)
+        return prev
+      })
+    }, 10000)
+
+    return () => {
+      subscription.unsubscribe()
+      clearTimeout(timer)
+    }
   }, [])
 
   async function handleSubmit(e: React.FormEvent) {
@@ -52,7 +51,6 @@ export default function NovaSenhaPage() {
     const { error } = await supabase.auth.updateUser({ password: senha })
 
     if (error) {
-      console.error('updateUser error:', error)
       setErro('Erro ao salvar. Solicite um novo link.')
       setLoading(false)
       return
