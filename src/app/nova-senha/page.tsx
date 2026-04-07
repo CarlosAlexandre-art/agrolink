@@ -17,25 +17,27 @@ export default function NovaSenhaPage() {
   useEffect(() => {
     const supabase = createClient()
 
-    // Escuta APENAS o evento PASSWORD_RECOVERY — nunca sessão comum
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') {
-        setPronto(true)
-        subscription.unsubscribe()
-      }
-    })
+    // Lê o hash da URL diretamente: #access_token=xxx&refresh_token=xxx&type=recovery
+    const hash = window.location.hash.substring(1)
+    const params = new URLSearchParams(hash)
+    const access_token = params.get('access_token')
+    const refresh_token = params.get('refresh_token')
+    const type = params.get('type')
 
-    // Timeout: se em 10s o evento não chegou, link expirado
-    const timer = setTimeout(() => {
-      setPronto(prev => {
-        if (!prev) setExpirou(true)
-        return prev
+    if (type === 'recovery' && access_token && refresh_token) {
+      // Seta a sessão manualmente com os tokens do hash
+      supabase.auth.setSession({ access_token, refresh_token }).then(({ error }) => {
+        if (error) {
+          setExpirou(true)
+        } else {
+          setPronto(true)
+          // Limpa o hash da URL para não ficar exposto
+          window.history.replaceState(null, '', window.location.pathname)
+        }
       })
-    }, 10000)
-
-    return () => {
-      subscription.unsubscribe()
-      clearTimeout(timer)
+    } else {
+      // Sem tokens de recovery no hash = link inválido ou expirado
+      setExpirou(true)
     }
   }, [])
 
