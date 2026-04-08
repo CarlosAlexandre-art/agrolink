@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
@@ -170,8 +170,89 @@ function FaqItem({ pergunta, resposta }: { pergunta: string; resposta: string })
   )
 }
 
+interface Prefs {
+  textoGrande: boolean
+  altoContraste: boolean
+  reduzirAnimacoes: boolean
+}
+
+const PREFS_KEY = 'agrolink_acessibilidade'
+const AGROBOT_KEY = 'agrobot_visivel'
+
+function aplicarPrefs(prefs: Prefs) {
+  const html = document.documentElement
+  html.classList.toggle('acesso-texto-grande', prefs.textoGrande)
+  html.classList.toggle('acesso-alto-contraste', prefs.altoContraste)
+  html.classList.toggle('acesso-reduzir-animacoes', prefs.reduzirAnimacoes)
+}
+
+function ToggleSwitch({
+  label,
+  descricao,
+  ativo,
+  onChange,
+}: {
+  label: string
+  descricao: string
+  ativo: boolean
+  onChange: () => void
+}) {
+  return (
+    <button
+      onClick={onChange}
+      className="w-full flex items-center justify-between gap-3 text-left py-1"
+      role="switch"
+      aria-checked={ativo}
+    >
+      <div>
+        <div className="text-sm font-medium text-gray-800">{label}</div>
+        <div className="text-xs text-gray-500">{descricao}</div>
+      </div>
+      <div className={`w-11 h-6 rounded-full transition-colors flex-shrink-0 flex items-center px-0.5 ${ativo ? 'bg-green-600' : 'bg-gray-300'}`}>
+        <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${ativo ? 'translate-x-5' : 'translate-x-0'}`} />
+      </div>
+    </button>
+  )
+}
+
 export default function AjudaPage() {
   const router = useRouter()
+  const [agrobotSumido, setAgrobotSumido] = useState(false)
+  const [prefs, setPrefs] = useState<Prefs>({
+    textoGrande: false,
+    altoContraste: false,
+    reduzirAnimacoes: false,
+  })
+
+  useEffect(() => {
+    // Checar se AgroBot foi dispensado
+    const bot = localStorage.getItem(AGROBOT_KEY)
+    setAgrobotSumido(bot === 'false')
+
+    // Carregar prefs de acessibilidade
+    try {
+      const salvo = localStorage.getItem(PREFS_KEY)
+      if (salvo) {
+        const p = JSON.parse(salvo) as Prefs
+        setPrefs(p)
+        aplicarPrefs(p)
+      }
+    } catch {}
+  }, [])
+
+  function togglePref(key: keyof Prefs) {
+    const novas = { ...prefs, [key]: !prefs[key] }
+    setPrefs(novas)
+    aplicarPrefs(novas)
+    localStorage.setItem(PREFS_KEY, JSON.stringify(novas))
+  }
+
+  function reativarAgroBot() {
+    localStorage.setItem(AGROBOT_KEY, 'true')
+    setAgrobotSumido(false)
+    // Força recarga para o AgroBot aparecer
+    window.location.reload()
+  }
 
   function refazerTour() {
     localStorage.removeItem('tour_v3_PRODUTOR')
@@ -226,6 +307,58 @@ export default function AjudaPage() {
             <span className="ml-auto text-red-400">→</span>
           </div>
         </Link>
+
+        {/* AgroBot — reativar se dispensado */}
+        {agrobotSumido && (
+          <div className="bg-green-50 border border-green-200 rounded-2xl p-4">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">🌿</span>
+              <div className="flex-1">
+                <div className="font-bold text-green-700">AgroBot desativado</div>
+                <div className="text-sm text-green-600">Reative o assistente virtual quando quiser</div>
+              </div>
+              <button
+                onClick={reativarAgroBot}
+                className="px-4 py-2 bg-green-700 text-white text-sm font-bold rounded-xl hover:bg-green-800 transition flex-shrink-0"
+              >
+                Reativar
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Acessibilidade */}
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+          <div className="p-5 border-b border-gray-100">
+            <h2 className="font-bold text-gray-800 text-lg">♿ Acessibilidade</h2>
+            <p className="text-sm text-gray-500 mt-1">Ajuste o app conforme sua necessidade</p>
+          </div>
+          <div className="p-5 space-y-4">
+            <ToggleSwitch
+              label="Texto maior"
+              descricao="Aumenta o tamanho de todas as letras do app"
+              ativo={prefs.textoGrande}
+              onChange={() => togglePref('textoGrande')}
+            />
+            <div className="border-t border-gray-100" />
+            <ToggleSwitch
+              label="Alto contraste"
+              descricao="Melhora a visibilidade das cores na tela"
+              ativo={prefs.altoContraste}
+              onChange={() => togglePref('altoContraste')}
+            />
+            <div className="border-t border-gray-100" />
+            <ToggleSwitch
+              label="Reduzir animações"
+              descricao="Remove movimentos e transições (indicado para epilepsia ou enjoo)"
+              ativo={prefs.reduzirAnimacoes}
+              onChange={() => togglePref('reduzirAnimacoes')}
+            />
+            <p className="text-xs text-gray-400 pt-1">
+              Preferências salvas automaticamente neste dispositivo.
+            </p>
+          </div>
+        </div>
 
         {/* Seções */}
         {SECOES.map(secao => (

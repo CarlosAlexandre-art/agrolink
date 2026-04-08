@@ -24,3 +24,43 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ─── Acessibilidade ─── */
+
+/* Texto maior */
+html.acesso-texto-grande body {
+  font-size: 1.15rem;
+}
+html.acesso-texto-grande .text-xs { font-size: 0.85rem !important; }
+html.acesso-texto-grande .text-sm { font-size: 1rem !important; }
+html.acesso-texto-grande .text-base { font-size: 1.15rem !important; }
+html.acesso-texto-grande .text-lg { font-size: 1.3rem !important; }
+html.acesso-texto-grande .text-xl { font-size: 1.5rem !important; }
+html.acesso-texto-grande .text-2xl { font-size: 1.7rem !important; }
+
+/* Alto contraste */
+html.acesso-alto-contraste {
+  filter: contrast(1.25);
+}
+html.acesso-alto-contraste body {
+  background: #fff;
+  color: #000;
+}
+html.acesso-alto-contraste a,
+html.acesso-alto-contraste button {
+  outline: 2px solid transparent;
+}
+html.acesso-alto-contraste a:focus,
+html.acesso-alto-contraste button:focus {
+  outline: 3px solid #000 !important;
+  outline-offset: 2px;
+}
+
+/* Reduzir animações */
+html.acesso-reduzir-animacoes *,
+html.acesso-reduzir-animacoes *::before,
+html.acesso-reduzir-animacoes *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}

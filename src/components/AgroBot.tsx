@@ -14,8 +14,11 @@ const SUGESTOES = [
   'Como conectar minha conta bancária?',
 ]
 
+const STORAGE_KEY = 'agrobot_visivel'
+
 export default function AgroBot() {
   const [open, setOpen] = useState(false)
+  const [visivel, setVisivel] = useState(true)
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -23,6 +26,11 @@ export default function AgroBot() {
   const [userType, setUserType] = useState<string | undefined>()
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const salvo = localStorage.getItem(STORAGE_KEY)
+    if (salvo === 'false') setVisivel(false)
+  }, [])
 
   useEffect(() => {
     fetch('/api/perfil/me').then(r => r.ok ? r.json() : null).then(data => {
@@ -46,6 +54,12 @@ export default function AgroBot() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+
+  function dispensar() {
+    setOpen(false)
+    setVisivel(false)
+    localStorage.setItem(STORAGE_KEY, 'false')
+  }
 
   async function enviar(texto?: string) {
     const msg = texto || input.trim()
@@ -75,13 +89,16 @@ export default function AgroBot() {
     setLoading(false)
   }
 
+  if (!visivel) return null
+
   return (
     <>
       {/* Chat window */}
       {open && (
-        <div className="fixed bottom-20 right-4 z-50 w-[340px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden"
-          style={{ height: '480px' }}>
-
+        <div
+          className="fixed right-4 z-50 w-[340px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden"
+          style={{ bottom: '9rem', height: '480px' }}
+        >
           {/* Header */}
           <div className="bg-green-700 px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -121,7 +138,7 @@ export default function AgroBot() {
             <div ref={bottomRef} />
           </div>
 
-          {/* Suggestions (only on first message) */}
+          {/* Suggestions */}
           {messages.length === 1 && (
             <div className="px-3 pb-2 bg-gray-50 flex flex-wrap gap-1">
               {SUGESTOES.map(s => (
@@ -158,16 +175,28 @@ export default function AgroBot() {
         </div>
       )}
 
-      {/* FAB button */}
-      <button
-        onClick={() => setOpen(prev => !prev)}
-        className="fixed bottom-4 right-4 z-50 w-14 h-14 bg-green-700 text-white rounded-full shadow-lg hover:bg-green-800 active:scale-95 transition flex items-center justify-center text-2xl"
-      >
-        {open ? '×' : '🌿'}
-        {unread && !open && (
-          <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-white" />
+      {/* FAB + X para dispensar */}
+      <div className="fixed right-4 z-50" style={{ bottom: '5.5rem' }}>
+        {/* X pequeno no canto superior esquerdo do botão */}
+        {!open && (
+          <button
+            onClick={dispensar}
+            className="absolute -top-2 -left-2 w-5 h-5 bg-gray-500 hover:bg-gray-700 text-white rounded-full flex items-center justify-center text-xs shadow-md transition z-10"
+            title="Fechar AgroBot"
+          >
+            ×
+          </button>
         )}
-      </button>
+        <button
+          onClick={() => setOpen(prev => !prev)}
+          className="w-14 h-14 bg-green-700 text-white rounded-full shadow-lg hover:bg-green-800 active:scale-95 transition flex items-center justify-center text-2xl relative"
+        >
+          {open ? '×' : '🌿'}
+          {unread && !open && (
+            <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-white" />
+          )}
+        </button>
+      </div>
     </>
   )
 }

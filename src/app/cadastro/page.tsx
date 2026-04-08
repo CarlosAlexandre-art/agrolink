@@ -177,7 +177,7 @@ function CadastroForm() {
                       className={`p-2 border rounded-lg text-left text-sm transition ${
                         servicosSelecionados.includes(s.value)
                           ? 'border-green-500 bg-green-50 text-green-700 font-semibold'
-                          : 'border-gray-200 hover:border-gray-300'
+                          : 'border-gray-200 hover:border-gray-300 text-gray-700'
                       }`}
                     >
                       {s.icon} {s.label}
