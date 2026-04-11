@@ -25,7 +25,7 @@ export async function GET() {
       return NextResponse.json({ conectado: false, saldo: 0, saldoPendente: 0 })
     }
 
-    const balance = await stripe.balance.retrieve({ stripeAccount: stripeAccountId })
+    const balance = await stripe.balance.retrieve({}, { stripeAccount: stripeAccountId })
 
     const disponivel = balance.available.find(b => b.currency === 'brl')?.amount ?? 0
     const pendente = balance.pending.find(b => b.currency === 'brl')?.amount ?? 0
@@ -60,7 +60,7 @@ export async function POST() {
     const stripeAccountId = dbUser.prestador.stripeAccountId
 
     // Verificar saldo disponível
-    const balance = await stripe.balance.retrieve({ stripeAccount: stripeAccountId })
+    const balance = await stripe.balance.retrieve({}, { stripeAccount: stripeAccountId })
     const disponivel = balance.available.find(b => b.currency === 'brl')?.amount ?? 0
 
     if (disponivel <= 0) {
