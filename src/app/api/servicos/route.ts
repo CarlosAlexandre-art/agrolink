@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { notificarPrestador } from '@/lib/push'
 import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
 import { SERVICOS } from '@/lib/constants'
+import { sanitizeString, sanitizePositiveNumber } from '@/lib/sanitize'
 
 // Haversine distance in km
 function calcDistancia(lat1: number, lng1: number, lat2: number, lng2: number): number {
@@ -35,21 +36,35 @@ export async function POST(req: Request) {
     const body = await req.json()
     const { tipo, area, urgencia, descricao, latitude, longitude, endereco } = body
 
-    if (!tipo || !latitude || !longitude) {
-      return NextResponse.json({ error: 'Campos obrigatórios faltando' }, { status: 400 })
+    const TIPOS_VALIDOS = SERVICOS.map(s => s.value)
+    const URGENCIAS_VALIDAS = ['BAIXA', 'MEDIA', 'ALTA']
+
+    if (!tipo || !TIPOS_VALIDOS.includes(tipo) || !latitude || !longitude) {
+      return NextResponse.json({ error: 'Campos obrigatórios faltando ou inválidos' }, { status: 400 })
     }
+
+    const lat = Number(latitude)
+    const lng = Number(longitude)
+    if (!isFinite(lat) || !isFinite(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+      return NextResponse.json({ error: 'Localização inválida' }, { status: 400 })
+    }
+
+    const descricaoSanitizada = sanitizeString(descricao, 1000)
+    const enderecoSanitizado = sanitizeString(endereco, 200)
+    const areaSanitizada = sanitizePositiveNumber(area)
+    const urgenciaSanitizada = URGENCIAS_VALIDAS.includes(urgencia) ? urgencia : 'MEDIA'
 
     // Create service
     const service = await prisma.service.create({
       data: {
         produtorId: dbUser.produtor.id,
         tipo,
-        area: area || null,
-        urgencia: urgencia || 'MEDIA',
-        descricao: descricao || null,
-        latitude,
-        longitude,
-        endereco: endereco || null,
+        area: areaSanitizada,
+        urgencia: urgenciaSanitizada,
+        descricao: descricaoSanitizada || null,
+        latitude: lat,
+        longitude: lng,
+        endereco: enderecoSanitizado || null,
         status: 'PROCURANDO',
       }
     })
