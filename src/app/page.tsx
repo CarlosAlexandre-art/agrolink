@@ -30,13 +30,32 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="bg-gradient-to-b from-green-700 to-green-600 text-white py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+      {/* Hero com vídeo */}
+      <section className="relative text-white py-24 px-4 overflow-hidden min-h-[520px] flex items-center">
+        {/* Vídeo de fundo */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          poster="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200&q=80&auto=format&fit=crop"
+        >
+          <source
+            src="https://videos.pexels.com/video-files/4271788/4271788-hd_1920_1080_25fps.mp4"
+            type="video/mp4"
+          />
+        </video>
+
+        {/* Overlay escuro */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" />
+
+        {/* Conteúdo */}
+        <div className="relative max-w-4xl mx-auto text-center w-full">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight drop-shadow-lg">
             Serviços rurais na palma da mão
           </h1>
-          <p className="text-xl text-green-100 mb-10 max-w-2xl mx-auto">
+          <p className="text-xl text-green-100 mb-10 max-w-2xl mx-auto drop-shadow">
             Conectamos produtores rurais a prestadores de serviços confiáveis em todo o Brasil.
             Rápido, seguro e com pagamento garantido.
           </p>
@@ -49,7 +68,7 @@ export default function Home() {
             </Link>
             <Link
               href="/cadastro?tipo=PRESTADOR"
-              className="px-8 py-4 bg-green-800 text-white font-bold text-lg rounded-xl shadow-lg border border-green-500 hover:scale-105 hover:brightness-110 active:scale-95 transition-all duration-200"
+              className="px-8 py-4 bg-green-600 text-white font-bold text-lg rounded-xl shadow-lg border border-green-400 hover:scale-105 hover:brightness-110 active:scale-95 transition-all duration-200"
             >
               Sou Prestador de Serviço
             </Link>
