@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
+import { notificarPrestador } from '@/lib/push'
 
 // GET /api/mensagens?serviceId=xxx&after=<isoDate>
 export async function GET(req: Request) {
@@ -15,7 +16,6 @@ export async function GET(req: Request) {
     const after = searchParams.get('after')
     if (!serviceId) return NextResponse.json({ error: 'serviceId obrigatório' }, { status: 400 })
 
-    // Verificar se o usuário faz parte deste serviço
     const dbUser = await prisma.user.findUnique({
       where: { supabaseId: user.id },
       include: { produtor: true, prestador: true }
@@ -92,23 +92,45 @@ export async function POST(req: Request) {
       include: { remetente: { select: { id: true, nome: true, tipo: true, avatarUrl: true } } }
     })
 
-    // Notificar o outro participante via WhatsApp (máx 1 por 60s para não spammar)
+    const textoResumido = texto.trim().length > 60 ? texto.trim().slice(0, 60) + '...' : texto.trim()
+
     if (isProd) {
-      // Produtor enviou → notificar prestador
+      // Produtor enviou → notificar prestador (push + WhatsApp)
       const prestador = service.matches[0]?.prestador
-      if (prestador?.user?.telefone) {
-        enviarWhatsApp(
-          prestador.user.telefone,
-          wpp.novaMensagemChat(prestador.user.nome, dbUser.nome, texto.trim(), serviceId)
+      if (prestador) {
+        // Push notification in-app
+        notificarPrestador(
+          prestador.userId,
+          `💬 ${dbUser.nome}`,
+          textoResumido,
+          `/servico/${serviceId}/chat`
         ).catch(() => {})
+
+        // WhatsApp
+        if (prestador.user?.telefone) {
+          enviarWhatsApp(
+            prestador.user.telefone,
+            wpp.novaMensagemChat(prestador.user.nome, dbUser.nome, textoResumido, serviceId)
+          ).catch(() => {})
+        }
       }
     } else {
-      // Prestador enviou → notificar produtor
+      // Prestador enviou → notificar produtor (push + WhatsApp)
       const produtorUser = service.produtor.user
+
+      // Push notification in-app
+      notificarPrestador(
+        service.produtor.userId,
+        `💬 ${dbUser.nome}`,
+        textoResumido,
+        `/servico/${serviceId}/chat`
+      ).catch(() => {})
+
+      // WhatsApp
       if (produtorUser.telefone) {
         enviarWhatsApp(
           produtorUser.telefone,
-          wpp.novaMensagemChat(produtorUser.nome, dbUser.nome, texto.trim(), serviceId)
+          wpp.novaMensagemChat(produtorUser.nome, dbUser.nome, textoResumido, serviceId)
         ).catch(() => {})
       }
     }

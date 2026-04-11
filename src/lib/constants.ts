@@ -43,7 +43,7 @@ export const SERVICOS = [
     label: 'Plantio',
     icon: '🌱',
     descricao: 'Plantio mecanizado com precisão',
-    imagem: 'https://images.unsplash.com/photo-1592982537447-6f2a6a0a7e9e?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=400&q=80&auto=format&fit=crop',
     categoria: 'MECANIZACAO' as CategoriaServico,
   },
   {

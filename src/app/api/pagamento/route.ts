@@ -3,6 +3,9 @@ import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { stripe } from '@/lib/stripe'
 
+const COMISSAO = 0.05
+const VALOR_MINIMO = 1.00 // R$ 1,00 mínimo Stripe BRL
+
 export async function POST(req: Request) {
   try {
     const supabase = await createClient()
@@ -27,12 +30,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Sem permissão' }, { status: 403 })
     }
 
-    // Estimate price if not set — R$ 50/ha minimum, R$ 200 base
-    const valorEstimado = service.precoEstimado || (service.area ? service.area * 5 : 200)
+    // Usar preço do match aceito, ou estimado, ou mínimo
+    const valorBruto = service.precoEstimado || (service.area ? service.area * 5 : 200)
+    const valorFinal = Math.max(valorBruto, VALOR_MINIMO)
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3002'
+    // Usar origin da request como base URL (funciona tanto em dev quanto em produção)
+    const origin = new URL(req.url).origin
+    const appUrl = (origin.includes('localhost') && process.env.NEXT_PUBLIC_APP_URL)
+      ? process.env.NEXT_PUBLIC_APP_URL
+      : origin
 
-    // Create Stripe Checkout Session
+    // Criar Checkout Session no Stripe
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -40,10 +48,10 @@ export async function POST(req: Request) {
           price_data: {
             currency: 'brl',
             product_data: {
-              name: `AgroCore — Serviço de ${service.tipo.replace(/_/g, ' ')}`,
-              description: service.descricao || `${service.area ? service.area + ' hectares' : 'Serviço rural'}`,
+              name: `AgroCore — ${service.tipo.replace(/_/g, ' ')}`,
+              description: service.descricao || (service.area ? `${service.area} hectares` : 'Serviço rural'),
             },
-            unit_amount: Math.round(valorEstimado * 100), // centavos
+            unit_amount: Math.round(valorFinal * 100), // centavos
           },
           quantity: 1,
         },
@@ -58,28 +66,30 @@ export async function POST(req: Request) {
       },
     })
 
-    const COMISSAO = 0.05
-
-    // Save payment record
+    // Salvar registro de pagamento
     await prisma.payment.upsert({
       where: { serviceId },
       create: {
         serviceId,
-        valor: valorEstimado,
-        comissao: valorEstimado * COMISSAO,
-        valorPrestador: valorEstimado * (1 - COMISSAO),
+        valor: valorFinal,
+        comissao: valorFinal * COMISSAO,
+        valorPrestador: valorFinal * (1 - COMISSAO),
         status: 'PENDENTE',
         stripePaymentId: session.id,
       },
       update: {
         stripePaymentId: session.id,
         status: 'PENDENTE',
+        valor: valorFinal,
+        comissao: valorFinal * COMISSAO,
+        valorPrestador: valorFinal * (1 - COMISSAO),
       }
     })
 
     return NextResponse.json({ url: session.url })
-  } catch (error) {
-    console.error(error)
-    return NextResponse.json({ error: 'Erro ao criar pagamento' }, { status: 500 })
+  } catch (error: any) {
+    console.error('Stripe payment error:', error?.message || error)
+    const msg = error?.raw?.message || error?.message || 'Erro ao criar pagamento'
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
 }

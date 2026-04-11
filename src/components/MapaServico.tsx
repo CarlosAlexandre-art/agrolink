@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -41,18 +41,10 @@ export default function MapaServico({
   prestadorLng,
   prestadorNome,
 }: Props) {
-  const [erro, setErro] = useState(false)
-  const [tentativa, setTentativa] = useState(0)
+  const [erroTile, setErroTile] = useState(false)
+  const temPrestador = prestadorLat && prestadorLng
 
-  useEffect(() => {
-    // Verifica conectividade com o tile server do OpenStreetMap
-    const img = new Image()
-    img.src = `https://a.tile.openstreetmap.org/10/0/0.png?t=${Date.now()}`
-    img.onerror = () => setErro(true)
-    img.onload = () => setErro(false)
-  }, [tentativa])
-
-  if (erro) {
+  if (erroTile) {
     return (
       <div
         className="rounded-2xl border border-gray-200 bg-gray-50 flex flex-col items-center justify-center gap-3 text-center px-4"
@@ -62,7 +54,7 @@ export default function MapaServico({
         <div className="text-gray-600 font-medium text-sm">Mapa indisponível no momento</div>
         <div className="text-gray-400 text-xs">Verifique sua conexão com a internet</div>
         <button
-          onClick={() => setTentativa(t => t + 1)}
+          onClick={() => setErroTile(false)}
           className="px-4 py-2 bg-green-700 text-white text-sm font-semibold rounded-xl hover:bg-green-800 transition"
         >
           Tentar novamente
@@ -70,8 +62,6 @@ export default function MapaServico({
       </div>
     )
   }
-
-  const temPrestador = prestadorLat && prestadorLng
 
   return (
     <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-sm" style={{ height: 260 }}>
@@ -84,7 +74,7 @@ export default function MapaServico({
         <TileLayer
           attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          eventHandlers={{ tileerror: () => setErro(true) }}
+          eventHandlers={{ tileerror: () => setErroTile(true) }}
         />
 
         <Marker position={[latitude, longitude]} icon={iconeFazenda}>
