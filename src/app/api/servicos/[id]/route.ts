@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { stripe } from '@/lib/stripe'
+import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
+import { SERVICOS } from '@/lib/constants'
 
 const STATUS_FLOW: Record<string, string> = {
   MATCH_ENCONTRADO: 'EM_ROTA',
@@ -58,7 +60,10 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
           some: { prestadorId: dbUser.prestador.id, status: 'ACEITO' }
         }
       },
-      include: { payment: true }
+      include: {
+        payment: true,
+        produtor: { include: { user: true } }
+      }
     })
 
     if (!service) {
@@ -106,6 +111,16 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
           data: { status: 'LIBERADO' }
         })
       }
+    }
+
+    // Notificar produtor via WhatsApp sobre mudança de status
+    const produtorUser = service.produtor.user
+    if (produtorUser.telefone) {
+      const servicoLabel = SERVICOS.find(s => s.value === service.tipo)?.label ?? service.tipo
+      enviarWhatsApp(
+        produtorUser.telefone,
+        wpp.statusAtualizado(produtorUser.nome, servicoLabel, novoStatus, id)
+      ).catch(() => {})
     }
 
     return NextResponse.json(updated)

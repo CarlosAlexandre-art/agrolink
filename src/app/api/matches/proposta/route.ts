@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
+import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
+import { SERVICOS } from '@/lib/constants'
 
 export async function PATCH(req: Request) {
   try {
@@ -25,7 +27,10 @@ export async function PATCH(req: Request) {
         status: 'ACEITO',
         service: { produtorId: dbUser.produtor.id, status: 'AGUARDANDO_PROPOSTA' }
       },
-      include: { service: true }
+      include: {
+        service: true,
+        prestador: { include: { user: true } }
+      }
     })
 
     if (!match) {
@@ -44,6 +49,16 @@ export async function PATCH(req: Request) {
           }
         }),
       ])
+
+      // Notificar prestador via WhatsApp
+      const prestadorUser = match.prestador.user
+      const servicoLabel = SERVICOS.find(s => s.value === match.service.tipo)?.label ?? match.service.tipo
+      if (prestadorUser.telefone && match.valorProposto) {
+        enviarWhatsApp(
+          prestadorUser.telefone,
+          wpp.propostaAceita(prestadorUser.nome, servicoLabel, match.valorProposto, match.serviceId)
+        ).catch(() => {})
+      }
     } else {
       // Produtor recusa → cancela esse match, volta a procurar
       await prisma.$transaction([

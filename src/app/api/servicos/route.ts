@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { notificarPrestador } from '@/lib/push'
+import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
+import { SERVICOS } from '@/lib/constants'
 
 // Haversine distance in km
 function calcDistancia(lat1: number, lng1: number, lat2: number, lng2: number): number {
@@ -83,14 +85,23 @@ export async function POST(req: Request) {
 
     await Promise.all(matchPromises)
 
-    // Send push notifications to matched prestadores
+    const servicoLabel = SERVICOS.find(s => s.value === tipo)?.label ?? tipo
+
+    // Notificar prestadores (push + WhatsApp)
     for (const prestador of prestadores) {
       notificarPrestador(
         prestador.userId,
         '🔔 Novo chamado disponível!',
-        `Serviço de ${tipo.replace(/_/g, ' ')} próximo a você`,
+        `Serviço de ${servicoLabel} próximo a você`,
         `/dashboard`
       ).catch(() => {})
+
+      if (prestador.user.telefone) {
+        enviarWhatsApp(
+          prestador.user.telefone,
+          wpp.novoChamado(prestador.user.nome, servicoLabel, service.id)
+        ).catch(() => {})
+      }
     }
 
     return NextResponse.json(service, { status: 201 })
