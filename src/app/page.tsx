@@ -149,8 +149,10 @@ export default function Home() {
       {/* Footer */}
       <footer className="py-8 px-4 bg-gray-800 text-gray-400 text-center">
         <p>© 2025 AgroCore · Serviços Rurais em todo o Brasil</p>
-        <div className="mt-3 flex justify-center gap-6 text-sm">
+        <div className="mt-3 flex justify-center gap-6 text-sm flex-wrap">
           <Link href="/ajuda" className="hover:text-white transition">Ajuda</Link>
+          <Link href="/termos" className="hover:text-white transition">Termos de Uso</Link>
+          <Link href="/privacidade" className="hover:text-white transition">Privacidade</Link>
           <Link href="/denunciar" className="hover:text-white transition">Denúncias</Link>
         </div>
       </footer>
