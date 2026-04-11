@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { SERVICOS, URGENCIAS } from '@/lib/constants'
+import { SERVICOS, URGENCIAS, CATEGORIAS, type CategoriaServico } from '@/lib/constants'
 
 export default function SolicitarPage() {
   const router = useRouter()
@@ -13,32 +13,18 @@ export default function SolicitarPage() {
   const [urgencia, setUrgencia] = useState('MEDIA')
   const [descricao, setDescricao] = useState('')
   const [loading, setLoading] = useState(false)
-  const [localizando, setLocalizando] = useState(false)
+  const [catFiltro, setCatFiltro] = useState<CategoriaServico | 'TODOS'>('TODOS')
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null)
   const [endereco, setEndereco] = useState('')
 
   async function getLocalizacao() {
-    if (!navigator.geolocation) {
-      setLocalizando(false)
-      return
-    }
-    setLocalizando(true)
-
-    const timeout = setTimeout(() => {
-      setLocalizando(false)
-    }, 6000)
-
+    if (!navigator.geolocation) return
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        clearTimeout(timeout)
         setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude })
         setEndereco('Localização obtida automaticamente')
-        setLocalizando(false)
       },
-      () => {
-        clearTimeout(timeout)
-        setLocalizando(false)
-      },
+      () => {},
       { enableHighAccuracy: false, timeout: 5000, maximumAge: 60000 }
     )
   }
@@ -90,9 +76,29 @@ export default function SolicitarPage() {
         {/* Step 1 — Escolher serviço */}
         {step === 1 && (
           <div>
-            <h2 className="text-xl font-bold text-gray-800 mb-4">Qual serviço você precisa?</h2>
+            <h2 className="text-xl font-bold text-gray-800 mb-3">Qual serviço você precisa?</h2>
+
+            {/* Filtro de categoria */}
+            <div className="flex gap-2 overflow-x-auto pb-3 mb-4">
+              <button
+                onClick={() => setCatFiltro('TODOS')}
+                className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${catFiltro === 'TODOS' ? 'bg-green-700 text-white' : 'bg-gray-100 text-gray-600'}`}
+              >
+                Todos
+              </button>
+              {CATEGORIAS.map(cat => (
+                <button
+                  key={cat.value}
+                  onClick={() => setCatFiltro(cat.value)}
+                  className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap ${catFiltro === cat.value ? 'bg-green-700 text-white' : 'bg-gray-100 text-gray-600'}`}
+                >
+                  {cat.icon} {cat.label}
+                </button>
+              ))}
+            </div>
+
             <div className="grid grid-cols-2 gap-3">
-              {SERVICOS.map(s => (
+              {SERVICOS.filter(s => catFiltro === 'TODOS' || s.categoria === catFiltro).map(s => (
                 <button
                   key={s.value}
                   onClick={() => { setTipo(s.value); setStep(2) }}
