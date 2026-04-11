@@ -44,6 +44,7 @@ export default function ServicoClient({
   const [notaProdutor, setNotaProdutor] = useState(0)
   const [comentarioProdutor, setComentarioProdutor] = useState('')
   const [loadingAvaliarProdutor, setLoadingAvaliarProdutor] = useState(false)
+  const [uploadandoFoto, setUploadandoFoto] = useState(false)
   const [agradecimento, setAgradecimento] = useState<string | null>(
     searchParams.get('obrigado') === '1' ? 'confianca' : null
   )
@@ -121,6 +122,21 @@ export default function ServicoClient({
       alert(data.error || 'Erro ao processar proposta.')
     }
     setLoadingProposta(null)
+  }
+
+  async function enviarFotoProva(file: File) {
+    setUploadandoFoto(true)
+    const form = new FormData()
+    form.append('file', file)
+    const res = await fetch(`/api/servicos/${serviceId}/foto-prova`, { method: 'POST', body: form })
+    if (res.ok) {
+      const { url } = await res.json()
+      setService((prev: any) => ({ ...prev, fotoProva: url }))
+    } else {
+      const data = await res.json()
+      alert(data.error || 'Erro ao enviar foto.')
+    }
+    setUploadandoFoto(false)
   }
 
   async function enviarAvaliacaoProdutor() {
@@ -479,6 +495,70 @@ export default function ServicoClient({
             {service.avaliacao.comentario && (
               <p className="text-sm text-gray-600 mt-1">"{service.avaliacao.comentario}"</p>
             )}
+          </div>
+        )}
+
+        {/* Foto de comprovação — envio pelo prestador */}
+        {isPrestador && ['EXECUTANDO', 'CONCLUIDO'].includes(service.status) && (
+          <div className="bg-white rounded-2xl p-5 shadow-sm">
+            <h2 className="font-bold text-gray-700 mb-1">📸 Foto de comprovação</h2>
+            <p className="text-sm text-gray-500 mb-3">
+              Envie uma foto do serviço realizado para comprovar a execução.
+            </p>
+            {service.fotoProva ? (
+              <div className="space-y-3">
+                <img
+                  src={service.fotoProva}
+                  alt="Foto de comprovação"
+                  className="w-full rounded-xl object-cover max-h-64"
+                />
+                <label className="block w-full py-2 text-center border border-gray-300 rounded-xl text-sm text-gray-600 cursor-pointer hover:bg-gray-50 transition">
+                  🔄 Trocar foto
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    className="hidden"
+                    onChange={e => { const f = e.target.files?.[0]; if (f) enviarFotoProva(f) }}
+                  />
+                </label>
+              </div>
+            ) : (
+              <label className={`flex flex-col items-center justify-center w-full py-8 border-2 border-dashed rounded-xl cursor-pointer transition ${uploadandoFoto ? 'border-green-300 bg-green-50' : 'border-gray-300 hover:border-green-400 hover:bg-green-50'}`}>
+                {uploadandoFoto ? (
+                  <span className="text-green-600 font-medium">Enviando...</span>
+                ) : (
+                  <>
+                    <span className="text-4xl mb-2">📷</span>
+                    <span className="text-sm font-medium text-gray-700">Tirar foto ou escolher da galeria</span>
+                    <span className="text-xs text-gray-400 mt-1">JPG, PNG — máx 10MB</span>
+                  </>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  className="hidden"
+                  disabled={uploadandoFoto}
+                  onChange={e => { const f = e.target.files?.[0]; if (f) enviarFotoProva(f) }}
+                />
+              </label>
+            )}
+          </div>
+        )}
+
+        {/* Foto de comprovação — visualização pelo produtor */}
+        {isProdutor && service.fotoProva && (
+          <div className="bg-white rounded-2xl p-5 shadow-sm">
+            <h2 className="font-bold text-gray-700 mb-3">📸 Foto de comprovação</h2>
+            <img
+              src={service.fotoProva}
+              alt="Foto de comprovação do serviço"
+              className="w-full rounded-xl object-cover max-h-72"
+            />
+            <p className="text-xs text-gray-400 mt-2 text-center">
+              Foto enviada pelo prestador como comprovação do serviço realizado.
+            </p>
           </div>
         )}
 
