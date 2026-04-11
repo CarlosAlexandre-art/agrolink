@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import AgroBot from '@/components/AgroBot'
 import ThemeProvider from '@/components/ThemeProvider'
+import { I18nProvider } from '@/lib/i18n'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -40,10 +41,12 @@ export default function RootLayout({
         }} />
       </head>
       <body className={`${inter.className} min-h-full bg-gray-50 dark:bg-slate-900`}>
-        <ThemeProvider>
-          {children}
-          <AgroBot />
-        </ThemeProvider>
+        <I18nProvider>
+          <ThemeProvider>
+            {children}
+            <AgroBot />
+          </ThemeProvider>
+        </I18nProvider>
         <script dangerouslySetInnerHTML={{
           __html: `
             if ('serviceWorker' in navigator) {

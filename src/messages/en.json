@@ -1,0 +1,59 @@
+{
+  "nav": {
+    "services": "Services",
+    "howItWorks": "How It Works",
+    "login": "Sign In",
+    "register": "Sign Up"
+  },
+  "hero": {
+    "badge": "🌿 Smart Rural Marketplace",
+    "title": "We connect farmers with rural service providers",
+    "subtitle": "Find the best professionals for your property. Fast, secure, and direct.",
+    "ctaProdutor": "I'm a Farmer",
+    "ctaPrestador": "I'm a Provider"
+  },
+  "stats": {
+    "producers": "Farmers",
+    "providers": "Providers",
+    "services": "Services completed",
+    "states": "States"
+  },
+  "howItWorks": {
+    "title": "How it works",
+    "step1Title": "Request the service",
+    "step1Desc": "Describe what you need with location and details.",
+    "step2Title": "Receive proposals",
+    "step2Desc": "Nearby providers send proposals with prices.",
+    "step3Title": "Hire safely",
+    "step3Desc": "Payment protected and released only after completion."
+  },
+  "footer": {
+    "rights": "Rural Services across Brazil",
+    "help": "Help",
+    "terms": "Terms of Use",
+    "privacy": "Privacy",
+    "report": "Reports"
+  },
+  "login": {
+    "title": "Sign in to your account",
+    "google": "Sign in with Google",
+    "orEmail": "or sign in with email",
+    "email": "Email",
+    "password": "Password",
+    "enter": "Sign In",
+    "entering": "Signing in...",
+    "forgot": "Forgot my password",
+    "noAccount": "Don't have an account?",
+    "register": "Sign up for free",
+    "error": "Incorrect email or password.",
+    "redirecting": "Redirecting..."
+  },
+  "common": {
+    "back": "← Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "error": "An error occurred. Please try again.",
+    "send": "Send"
+  }
+}

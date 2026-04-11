@@ -1,0 +1,59 @@
+{
+  "nav": {
+    "services": "Serviços",
+    "howItWorks": "Como Funciona",
+    "login": "Entrar",
+    "register": "Cadastre-se"
+  },
+  "hero": {
+    "badge": "🌿 Marketplace Rural Inteligente",
+    "title": "Conectamos produtores a prestadores de serviços rurais",
+    "subtitle": "Encontre os melhores profissionais para sua propriedade. Rápido, seguro e direto.",
+    "ctaProdutor": "Sou Produtor",
+    "ctaPrestador": "Sou Prestador"
+  },
+  "stats": {
+    "producers": "Produtores",
+    "providers": "Prestadores",
+    "services": "Serviços realizados",
+    "states": "Estados"
+  },
+  "howItWorks": {
+    "title": "Como funciona",
+    "step1Title": "Solicite o serviço",
+    "step1Desc": "Descreva o que você precisa com localização e detalhes.",
+    "step2Title": "Receba propostas",
+    "step2Desc": "Prestadores próximos enviam propostas com valores.",
+    "step3Title": "Contrate com segurança",
+    "step3Desc": "Pagamento protegido e liberado só após conclusão."
+  },
+  "footer": {
+    "rights": "Serviços Rurais em todo o Brasil",
+    "help": "Ajuda",
+    "terms": "Termos de Uso",
+    "privacy": "Privacidade",
+    "report": "Denúncias"
+  },
+  "login": {
+    "title": "Entre na sua conta",
+    "google": "Entrar com Google",
+    "orEmail": "ou entre com email",
+    "email": "Email",
+    "password": "Senha",
+    "enter": "Entrar",
+    "entering": "Entrando...",
+    "forgot": "Esqueci minha senha",
+    "noAccount": "Não tem conta?",
+    "register": "Cadastre-se grátis",
+    "error": "Email ou senha incorretos.",
+    "redirecting": "Redirecionando..."
+  },
+  "common": {
+    "back": "← Voltar",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "loading": "Carregando...",
+    "error": "Ocorreu um erro. Tente novamente.",
+    "send": "Enviar"
+  }
+}
