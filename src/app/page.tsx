@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { SERVICOS } from '@/lib/constants'
 
 export default function Home() {
@@ -42,15 +43,15 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/cadastro?tipo=PRODUTOR"
-              className="px-8 py-4 bg-white text-green-700 font-bold text-lg rounded-xl hover:bg-green-50 transition shadow-lg"
+              className="px-8 py-4 bg-white text-green-700 font-bold text-lg rounded-xl shadow-lg hover:scale-105 hover:brightness-105 active:scale-95 transition-all duration-200"
             >
-              🌾 Sou Produtor
+              Sou Produtor
             </Link>
             <Link
               href="/cadastro?tipo=PRESTADOR"
-              className="px-8 py-4 bg-green-800 text-white font-bold text-lg rounded-xl hover:bg-green-900 transition shadow-lg border border-green-500"
+              className="px-8 py-4 bg-green-800 text-white font-bold text-lg rounded-xl shadow-lg border border-green-500 hover:scale-105 hover:brightness-110 active:scale-95 transition-all duration-200"
             >
-              🔧 Sou Prestador de Serviço
+              Sou Prestador de Serviço
             </Link>
           </div>
         </div>
@@ -85,19 +86,27 @@ export default function Home() {
             {servicosDestaque.map((s) => (
               <div
                 key={s.value}
-                className="p-4 border border-gray-200 rounded-xl hover:border-green-400 hover:shadow-md transition cursor-pointer bg-white"
+                className="group bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg hover:border-green-300 transition-all duration-300 cursor-pointer"
               >
-                <div className="text-3xl mb-2">{s.icon}</div>
-                <div className="font-semibold text-gray-800">{s.label}</div>
-                <div className="text-sm text-gray-500 mt-1">{s.descricao}</div>
+                <div className="relative h-36 overflow-hidden">
+                  <Image
+                    src={s.imagem}
+                    alt={s.label}
+                    fill
+                    sizes="(max-width: 768px) 50vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                </div>
+                <div className="p-4">
+                  <div className="font-bold text-gray-800 text-sm leading-tight">{s.label}</div>
+                  <div className="text-xs text-gray-500 mt-1 leading-relaxed">{s.descricao}</div>
+                </div>
               </div>
             ))}
           </div>
           <div className="text-center mt-8">
-            <Link
-              href="/servicos"
-              className="text-green-700 font-semibold hover:underline"
-            >
+            <Link href="/servicos" className="text-green-700 font-semibold hover:underline">
               Ver todos os serviços →
             </Link>
           </div>
@@ -108,7 +117,7 @@ export default function Home() {
       <section className="py-16 px-4 bg-green-700 text-white text-center">
         <h2 className="text-3xl font-bold mb-4">Comece agora, é gratuito</h2>
         <p className="text-green-100 text-lg mb-8">
-          Produtores não pagam nada. Prestadores só pagam comissão quando fecham serviços.
+          Cadastre-se em menos de 1 minuto e conecte-se com prestadores de serviço rurais em todo o Brasil.
         </p>
         <Link
           href="/cadastro"
@@ -121,6 +130,10 @@ export default function Home() {
       {/* Footer */}
       <footer className="py-8 px-4 bg-gray-800 text-gray-400 text-center">
         <p>© 2025 AgroCore · Serviços Rurais em todo o Brasil</p>
+        <div className="mt-3 flex justify-center gap-6 text-sm">
+          <Link href="/ajuda" className="hover:text-white transition">Ajuda</Link>
+          <Link href="/denunciar" className="hover:text-white transition">Denúncias</Link>
+        </div>
       </footer>
     </div>
   )
