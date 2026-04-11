@@ -97,10 +97,10 @@ export default function DashboardPrestador({ user }: { user: any }) {
                       )}
                     </div>
                     <div className="flex gap-2 mt-4">
-                      <span className="flex-1 py-2 bg-green-700 text-white text-center rounded-lg font-bold text-sm">
+                      <span className="flex-1 py-2 bg-[#22C55E] text-white text-center rounded-lg font-bold text-sm">
                         ACEITAR
                       </span>
-                      <span className="flex-1 py-2 bg-gray-100 text-gray-600 text-center rounded-lg font-bold text-sm">
+                      <span className="flex-1 py-2 bg-[#EF4444] text-white text-center rounded-lg font-bold text-sm">
                         RECUSAR
                       </span>
                     </div>

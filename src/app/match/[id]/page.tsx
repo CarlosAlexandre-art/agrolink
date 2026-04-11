@@ -174,16 +174,16 @@ export default function MatchPage() {
             <button
               onClick={() => handleAcao('RECUSAR')}
               disabled={!!loading}
-              className="flex-1 py-4 bg-gray-100 text-gray-700 font-bold rounded-2xl hover:bg-gray-200 transition disabled:opacity-50"
+              className="flex-1 py-4 bg-[#EF4444] text-white font-bold rounded-2xl hover:bg-red-600 active:scale-95 transition disabled:opacity-50 shadow-md"
             >
               {loading === 'RECUSAR' ? '...' : 'RECUSAR'}
             </button>
             <button
               onClick={() => handleAcao('ACEITAR')}
               disabled={!!loading || !valorProposto || parseFloat(valorProposto) <= 0}
-              className="flex-[2] py-4 bg-green-700 text-white font-bold text-lg rounded-2xl hover:bg-green-800 active:scale-95 transition disabled:opacity-50 shadow-lg"
+              className="flex-[2] py-4 bg-[#22C55E] text-white font-bold text-lg rounded-2xl hover:bg-green-500 active:scale-95 transition disabled:opacity-50 shadow-lg"
             >
-              {loading === 'ACEITAR' ? 'Enviando proposta...' : '✅ ENVIAR PROPOSTA'}
+              {loading === 'ACEITAR' ? 'Enviando proposta...' : 'ENVIAR PROPOSTA'}
             </button>
           </div>
         ) : (

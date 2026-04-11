@@ -291,16 +291,16 @@ export default function ServicoClient({
                   <button
                     onClick={() => responderProposta('RECUSAR')}
                     disabled={!!loadingProposta}
-                    className="flex-1 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition disabled:opacity-50"
+                    className="flex-1 py-3 bg-[#EF4444] text-white font-bold rounded-xl hover:bg-red-600 active:scale-95 transition disabled:opacity-50 shadow-md"
                   >
                     {loadingProposta === 'RECUSAR' ? '...' : 'Recusar'}
                   </button>
                   <button
                     onClick={() => responderProposta('ACEITAR')}
                     disabled={!!loadingProposta}
-                    className="flex-[2] py-3 bg-green-700 text-white font-bold rounded-xl hover:bg-green-800 active:scale-95 transition disabled:opacity-50 shadow-md"
+                    className="flex-[2] py-3 bg-[#22C55E] text-white font-bold rounded-xl hover:bg-green-500 active:scale-95 transition disabled:opacity-50 shadow-md"
                   >
-                    {loadingProposta === 'ACEITAR' ? 'Aceitando...' : '✅ Aceitar proposta'}
+                    {loadingProposta === 'ACEITAR' ? 'Aceitando...' : 'Aceitar proposta'}
                   </button>
                 </div>
               </div>
