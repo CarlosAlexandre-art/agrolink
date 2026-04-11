@@ -1,4 +1,4 @@
-const CACHE_NAME = 'agrolink-v2'
+const CACHE_NAME = 'agrocore-v1'
 const STATIC_ASSETS = ['/', '/dashboard', '/manifest.json']
 
 self.addEventListener('install', (event) => {
