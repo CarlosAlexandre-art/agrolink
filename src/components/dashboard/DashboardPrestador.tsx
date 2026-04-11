@@ -149,6 +149,25 @@ export default function DashboardPrestador({ user }: { user: any }) {
           </div>
         </div>
 
+        {/* Link perfil público */}
+        {user.prestador?.id && (
+          <Link
+            href={`/prestador/${user.prestador.id}`}
+            className="flex items-center justify-between w-full bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:border-green-300 transition"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center font-bold text-green-700">
+                {user.nome[0]}
+              </div>
+              <div>
+                <div className="font-semibold text-gray-800 text-sm">Meu Perfil Público</div>
+                <div className="text-xs text-gray-500">Veja como produtores te enxergam</div>
+              </div>
+            </div>
+            <span className="text-gray-400 text-sm">→</span>
+          </Link>
+        )}
+
         {pendentes.length === 0 && aceitos.length === 0 && (
           <div className="text-center py-12 text-gray-400">
             <div className="text-5xl mb-4">🔧</div>

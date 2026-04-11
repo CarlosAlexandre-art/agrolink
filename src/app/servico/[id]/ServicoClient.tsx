@@ -427,11 +427,15 @@ export default function ServicoClient({
           <div className="bg-white rounded-2xl p-5 shadow-sm">
             <h2 className="font-bold text-gray-700 mb-3">Prestador</h2>
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-xl font-bold text-green-700">
-                {matchAceito.prestador.user.nome[0]}
-              </div>
-              <div>
-                <div className="font-semibold text-gray-800">{matchAceito.prestador.user.nome}</div>
+              <Link href={`/prestador/${matchAceito.prestadorId}`}>
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-xl font-bold text-green-700 hover:ring-2 hover:ring-green-400 transition">
+                  {matchAceito.prestador.user.nome[0]}
+                </div>
+              </Link>
+              <div className="flex-1">
+                <Link href={`/prestador/${matchAceito.prestadorId}`} className="font-semibold text-gray-800 hover:text-green-700 transition">
+                  {matchAceito.prestador.user.nome}
+                </Link>
                 {matchAceito.prestador.avaliacao > 0 && (
                   <div className="text-sm text-gray-500">
                     ⭐ {matchAceito.prestador.avaliacao.toFixed(1)} · {matchAceito.prestador.totalAvaliacoes} avaliações
@@ -441,6 +445,9 @@ export default function ServicoClient({
                   <div className="text-sm text-gray-500">📍 {matchAceito.distancia.toFixed(1)} km</div>
                 )}
               </div>
+              <Link href={`/prestador/${matchAceito.prestadorId}`} className="text-xs text-green-700 font-semibold hover:underline flex-shrink-0">
+                Ver perfil →
+              </Link>
             </div>
             {matchAceito.prestador.user.telefone && (
               <a
