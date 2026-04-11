@@ -379,6 +379,16 @@ export default function ServicoClient({
           </button>
         )}
 
+        {/* Botão Chat — aparece quando há prestador confirmado */}
+        {matchAceito && !['CANCELADO'].includes(service.status) && (
+          <Link
+            href={`/servico/${serviceId}/chat`}
+            className="flex items-center justify-center gap-2 w-full py-4 bg-white border-2 border-green-600 text-green-700 font-bold text-base rounded-2xl hover:bg-green-50 active:scale-95 transition shadow-sm"
+          >
+            💬 Abrir chat com {isProdutor ? 'o prestador' : 'o produtor'}
+          </Link>
+        )}
+
         {/* Prestador info */}
         {matchAceito && (
           <div className="bg-white rounded-2xl p-5 shadow-sm">

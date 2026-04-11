@@ -31,6 +31,10 @@ enum ServiceType {
   APLICACAO_FERTILIZANTES
   CONTROLE_PRAGAS
   CAPINA
+  FUMIGACAO
+  GEORREFERENCIAMENTO
+  INSEMINACAO
+  CONSTRUCAO_RURAL
   OUTROS
 }
 
@@ -78,6 +82,7 @@ model User {
   produtor          Produtor?
   prestador         Prestador?
   pushSubscriptions PushSubscription[]
+  mensagens         Mensagem[]
 }
 
 model Produtor {
@@ -130,6 +135,7 @@ model Service {
   payment           Payment?
   avaliacao         Avaliacao?
   avaliacaoProdutor AvaliacaoProdutor?
+  mensagens         Mensagem[]
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 }
@@ -194,6 +200,18 @@ model PushSubscription {
   p256dh    String
   auth      String
   createdAt DateTime @default(now())
+}
+
+model Mensagem {
+  id          String   @id @default(cuid())
+  serviceId   String
+  service     Service  @relation(fields: [serviceId], references: [id])
+  remetenteId String
+  remetente   User     @relation(fields: [remetenteId], references: [id])
+  texto       String
+  createdAt   DateTime @default(now())
+
+  @@index([serviceId, createdAt])
 }
 
 model Denuncia {
