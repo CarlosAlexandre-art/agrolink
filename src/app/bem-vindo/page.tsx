@@ -7,7 +7,7 @@ import { Suspense } from 'react'
 const SLIDES_PRODUTOR = [
   {
     icon: '🌾',
-    titulo: 'Bem-vindo ao AgroLink!',
+    titulo: 'Bem-vindo ao AgroCore!',
     texto: 'Aqui você encontra prestadores de serviço rurais confiáveis, perto de você, de forma rápida e segura.',
   },
   {
@@ -35,7 +35,7 @@ const SLIDES_PRODUTOR = [
 const SLIDES_PRESTADOR = [
   {
     icon: '🔧',
-    titulo: 'Bem-vindo ao AgroLink!',
+    titulo: 'Bem-vindo ao AgroCore!',
     texto: 'Aqui você recebe chamados de produtores rurais que precisam dos seus serviços, direto no seu celular.',
   },
   {
@@ -56,7 +56,7 @@ const SLIDES_PRESTADOR = [
   {
     icon: '💰',
     titulo: 'Receba seu pagamento',
-    texto: 'O pagamento é garantido. Após concluir o serviço, o valor é liberado para você automaticamente. AgroLink retém apenas 5% de comissão para manutenção e segurança da plataforma.',
+    texto: 'O pagamento é garantido. Após concluir o serviço, o valor é liberado para você automaticamente. AgroCore retém apenas 5% de comissão para manutenção e segurança da plataforma.',
   },
 ]
 
@@ -83,7 +83,7 @@ function BemVindoContent() {
 
       {/* Logo */}
       <div className="text-white text-center">
-        <div className="text-3xl font-bold">🌿 AgroLink</div>
+        <div className="text-3xl font-bold">🌿 AgroCore</div>
       </div>
 
       {/* Slide */}

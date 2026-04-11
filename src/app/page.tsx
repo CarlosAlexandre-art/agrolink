@@ -10,7 +10,7 @@ export default function Home() {
       <header className="bg-green-700 text-white">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold">🌿 AgroLink</span>
+            <span className="text-2xl font-bold">🌿 AgroCore</span>
           </div>
           <div className="flex gap-3">
             <Link
@@ -120,7 +120,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="py-8 px-4 bg-gray-800 text-gray-400 text-center">
-        <p>© 2025 AgroLink · Serviços Rurais em todo o Brasil</p>
+        <p>© 2025 AgroCore · Serviços Rurais em todo o Brasil</p>
       </footer>
     </div>
   )

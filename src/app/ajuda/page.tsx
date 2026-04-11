@@ -19,7 +19,7 @@ const FAQ = [
   },
   {
     pergunta: 'O prestador precisa criar conta no Stripe ou outro app?',
-    resposta: 'Não. Todo o processo de cadastro bancário é feito dentro do próprio AgroLink, em uma tela segura. O prestador não precisa baixar nenhum aplicativo extra.',
+    resposta: 'Não. Todo o processo de cadastro bancário é feito dentro do próprio AgroCore, em uma tela segura. O prestador não precisa baixar nenhum aplicativo extra.',
   },
   {
     pergunta: 'E se o prestador não aparecer para fazer o serviço?',
@@ -27,11 +27,11 @@ const FAQ = [
   },
   {
     pergunta: 'Posso combinar o pagamento diretamente com o prestador?',
-    resposta: 'Não recomendamos. Pagamentos fora da plataforma não têm nenhuma proteção. Se algo der errado, não podemos intervir. Sempre pague pelo AgroLink para ter garantia.',
+    resposta: 'Não recomendamos. Pagamentos fora da plataforma não têm nenhuma proteção. Se algo der errado, não podemos intervir. Sempre pague pelo AgroCore para ter garantia.',
   },
   {
     pergunta: 'Meus dados pessoais e bancários estão seguros?',
-    resposta: 'Sim. Seus dados bancários nunca ficam armazenados no AgroLink — são processados diretamente pelo sistema de pagamentos certificado. Seus dados pessoais são criptografados e nunca compartilhados com terceiros.',
+    resposta: 'Sim. Seus dados bancários nunca ficam armazenados no AgroCore — são processados diretamente pelo sistema de pagamentos certificado. Seus dados pessoais são criptografados e nunca compartilhados com terceiros.',
   },
   {
     pergunta: 'Como funciona a avaliação?',
@@ -42,7 +42,7 @@ const FAQ = [
 const SECOES = [
   {
     id: 'como-funciona',
-    titulo: '📖 Como funciona o AgroLink',
+    titulo: '📖 Como funciona o AgroCore',
     conteudo: [
       {
         subtitulo: 'Para Produtores Rurais',
@@ -78,7 +78,7 @@ const SECOES = [
           'O produtor paga pelo serviço antes do início',
           'O valor fica retido em custódia segura (escrow)',
           'O dinheiro é liberado ao prestador somente após a conclusão do serviço',
-          'O AgroLink retém apenas 5% de comissão sobre o valor total',
+          'O AgroCore retém apenas 5% de comissão sobre o valor total',
           'O prestador recebe 95% do valor acordado',
           'Pagamentos são processados em até 2 dias úteis',
         ]
@@ -87,7 +87,7 @@ const SECOES = [
         subtitulo: 'Disputas e reembolsos',
         itens: [
           'Em caso de serviço não realizado, o produtor pode solicitar reembolso',
-          'Disputas são analisadas pela equipe AgroLink em até 48h',
+          'Disputas são analisadas pela equipe AgroCore em até 48h',
           'Comprovantes e fotos do serviço são aceitos como evidência',
           'Nunca realize pagamentos fora da plataforma — sem garantia',
           'Combine o preço dentro do app para ter proteção',
@@ -277,7 +277,7 @@ export default function AjudaPage() {
           <p className="text-green-100 text-sm mb-4">Nossa equipe está disponível para te atender.</p>
           <div className="flex gap-3">
             <a
-              href="https://wa.me/5585986027333?text=Olá, preciso de ajuda com o AgroLink"
+              href="https://wa.me/5585986027333?text=Olá, preciso de ajuda com o AgroCore"
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 py-3 bg-white text-green-700 font-bold rounded-xl text-center text-sm hover:bg-green-50 transition"

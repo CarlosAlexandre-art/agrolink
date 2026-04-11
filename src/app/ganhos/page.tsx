@@ -71,7 +71,7 @@ export default async function GanhosPage() {
             R$ {totalLiquido.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </div>
           <div className="text-xs text-gray-400 mt-2">
-            Após comissão AgroLink de {(COMISSAO * 100).toFixed(0)}%
+            Após comissão AgroCore de {(COMISSAO * 100).toFixed(0)}%
           </div>
         </div>
 
@@ -100,7 +100,7 @@ export default async function GanhosPage() {
             <span className="font-medium">R$ {totalBruto.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
           </div>
           <div className="flex justify-between text-sm mb-1">
-            <span className="text-gray-600">Comissão AgroLink (5%)</span>
+            <span className="text-gray-600">Comissão AgroCore (5%)</span>
             <span className="font-medium text-red-500">- R$ {(totalBruto * COMISSAO).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
           </div>
           <div className="flex justify-between text-sm font-bold border-t border-green-200 pt-2 mt-2">

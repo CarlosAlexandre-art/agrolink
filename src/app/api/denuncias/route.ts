@@ -33,11 +33,11 @@ export async function POST(req: Request) {
     // Enviar email para o admin
     if (process.env.RESEND_API_KEY) {
       await resend.emails.send({
-        from: 'AgroLink <onboarding@resend.dev>',
+        from: 'AgroCore <onboarding@resend.dev>',
         to: 'alexandre@parceirosdeproposito.com',
         subject: `🚨 Nova denúncia: ${motivo}`,
         html: `
-          <h2>Nova denúncia recebida no AgroLink</h2>
+          <h2>Nova denúncia recebida no AgroCore</h2>
           <table style="border-collapse:collapse;width:100%;max-width:600px">
             <tr><td style="padding:8px;background:#f3f4f6;font-weight:bold">Motivo</td><td style="padding:8px">${motivo}</td></tr>
             <tr><td style="padding:8px;background:#f3f4f6;font-weight:bold">Denunciante</td><td style="padding:8px">${dbUser?.nome || '—'} (${dbUser?.email || '—'})</td></tr>

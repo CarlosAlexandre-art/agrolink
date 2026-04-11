@@ -53,7 +53,7 @@ export default function ConnectStripeButton({ conectado }: { conectado: boolean 
               </div>
               <div className="flex items-start gap-3">
                 <span className="w-6 h-6 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">2</span>
-                <p className="text-sm text-gray-600">Seus dados ficam protegidos — nunca passam pelo AgroLink, são armazenados diretamente pelo sistema de pagamentos</p>
+                <p className="text-sm text-gray-600">Seus dados ficam protegidos — nunca passam pelo AgroCore, são armazenados diretamente pelo sistema de pagamentos</p>
               </div>
               <div className="flex items-start gap-3">
                 <span className="w-6 h-6 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">3</span>

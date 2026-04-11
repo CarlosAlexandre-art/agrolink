@@ -98,7 +98,7 @@ export default function NovaSenhaPage() {
     <div className="min-h-screen bg-green-50 flex items-center justify-center px-4">
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/" className="text-3xl font-bold text-green-700">🌿 AgroLink</Link>
+          <Link href="/" className="text-3xl font-bold text-green-700">🌿 AgroCore</Link>
           <p className="text-gray-500 mt-2">Criar nova senha</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">

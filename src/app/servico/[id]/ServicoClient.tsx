@@ -175,9 +175,9 @@ export default function ServicoClient({
             agradecimento === 'avaliacao' ? 'bg-yellow-500' :
             'bg-green-700'
           }`}>
-            {agradecimento === 'confianca' && '🌿 AgroLink agradece a sua confiança! Estamos encontrando o melhor prestador para você.'}
-            {agradecimento === 'servico' && '🤝 AgroLink agradece seus serviços! O pagamento será transferido em breve.'}
-            {agradecimento === 'avaliacao' && '⭐ AgroLink agradece sua contribuição! Sua avaliação ajuda toda a comunidade.'}
+            {agradecimento === 'confianca' && '🌿 AgroCore agradece a sua confiança! Estamos encontrando o melhor prestador para você.'}
+            {agradecimento === 'servico' && '🤝 AgroCore agradece seus serviços! O pagamento será transferido em breve.'}
+            {agradecimento === 'avaliacao' && '⭐ AgroCore agradece sua contribuição! Sua avaliação ajuda toda a comunidade.'}
           </div>
         </div>
       )}

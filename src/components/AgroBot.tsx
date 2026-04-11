@@ -105,7 +105,7 @@ export default function AgroBot() {
               <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-lg">🌿</div>
               <div>
                 <div className="text-white font-bold text-sm">AgroBot</div>
-                <div className="text-green-200 text-xs">Assistente AgroLink</div>
+                <div className="text-green-200 text-xs">Assistente AgroCore</div>
               </div>
             </div>
             <button onClick={() => setOpen(false)} className="text-white hover:text-green-200 text-xl leading-none">×</button>

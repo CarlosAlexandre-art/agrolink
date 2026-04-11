@@ -40,7 +40,7 @@ export async function POST(req: Request) {
           price_data: {
             currency: 'brl',
             product_data: {
-              name: `AgroLink — Serviço de ${service.tipo.replace(/_/g, ' ')}`,
+              name: `AgroCore — Serviço de ${service.tipo.replace(/_/g, ' ')}`,
               description: service.descricao || `${service.area ? service.area + ' hectares' : 'Serviço rural'}`,
             },
             unit_amount: Math.round(valorEstimado * 100), // centavos

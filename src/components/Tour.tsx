@@ -12,7 +12,7 @@ type TourStep = {
 const TOUR_PRODUTOR: TourStep[] = [
   {
     icone: '🌿',
-    titulo: 'Bem-vindo ao AgroLink!',
+    titulo: 'Bem-vindo ao AgroCore!',
     texto: 'O jeito mais rápido e seguro de contratar serviços rurais no Brasil. Vamos te mostrar como funciona em menos de 1 minuto.',
   },
   {
@@ -30,21 +30,21 @@ const TOUR_PRODUTOR: TourStep[] = [
   {
     icone: '💳',
     titulo: 'Pagamento garantido',
-    texto: 'O AgroLink retém apenas 5% de taxa para manutenção e segurança. O restante vai direto para o prestador após você confirmar a conclusão do serviço.',
+    texto: 'O AgroCore retém apenas 5% de taxa para manutenção e segurança. O restante vai direto para o prestador após você confirmar a conclusão do serviço.',
     dica: '⭐ Ao final, avalie o prestador — isso ajuda a comunidade.',
   },
   {
     icone: '📋',
     titulo: 'Histórico e perfil',
     texto: 'Em "Histórico" você vê todos os serviços realizados. Em "Perfil" você mantém seus dados atualizados. Em "Central de Ajuda" você tira qualquer dúvida.',
-    dica: '📱 Adicione o AgroLink na tela inicial do seu celular para acesso rápido.',
+    dica: '📱 Adicione o AgroCore na tela inicial do seu celular para acesso rápido.',
   },
 ]
 
 const TOUR_PRESTADOR: TourStep[] = [
   {
     icone: '🌿',
-    titulo: 'Bem-vindo ao AgroLink!',
+    titulo: 'Bem-vindo ao AgroCore!',
     texto: 'Aqui você recebe chamados de produtores próximos, gerencia seus serviços e recebe pagamentos automáticos. Veja como funciona:',
   },
   {

@@ -6,13 +6,13 @@ import AgroBot from '@/components/AgroBot'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'AgroLink — Serviços Rurais',
+  title: 'AgroCore — Serviços Rurais',
   description: 'O jeito mais rápido e seguro de contratar serviços rurais no Brasil',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'AgroLink',
+    title: 'AgroCore',
   },
 }
 

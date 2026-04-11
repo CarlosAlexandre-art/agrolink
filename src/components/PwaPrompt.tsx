@@ -75,7 +75,7 @@ export default function PwaPrompt() {
           onClick={instalarApp}
           className="w-full py-3 px-4 bg-white border-2 border-green-700 text-green-700 rounded-xl font-semibold shadow-lg flex items-center gap-2 justify-center"
         >
-          📲 Instalar AgroLink no celular
+          📲 Instalar AgroCore no celular
         </button>
       )}
     </div>

@@ -1,6 +1,6 @@
 {
-  "name": "AgroLink",
-  "short_name": "AgroLink",
+  "name": "AgroCore",
+  "short_name": "AgroCore",
   "description": "Serviços rurais na palma da mão",
   "start_url": "/",
   "display": "standalone",
