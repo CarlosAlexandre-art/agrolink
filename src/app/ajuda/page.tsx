@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useTheme } from '@/components/ThemeProvider'
 
 const FAQ = [
   {
@@ -215,8 +216,15 @@ function ToggleSwitch({
   )
 }
 
+const TEMAS = [
+  { value: 'auto', label: '🌗 Automático', desc: 'Segue o sistema' },
+  { value: 'claro', label: '☀️ Claro', desc: 'Fundo branco' },
+  { value: 'escuro', label: '🌙 Escuro', desc: 'Fundo escuro' },
+] as const
+
 export default function AjudaPage() {
   const router = useRouter()
+  const { tema, setTema } = useTheme()
   const [agrobotSumido, setAgrobotSumido] = useState(false)
   const [prefs, setPrefs] = useState<Prefs>({
     textoGrande: false,
@@ -326,6 +334,30 @@ export default function AjudaPage() {
             </div>
           </div>
         )}
+
+        {/* Tema */}
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+          <div className="p-5 border-b border-gray-100">
+            <h2 className="font-bold text-gray-800 text-lg">🎨 Tema</h2>
+            <p className="text-sm text-gray-500 mt-1">Escolha a aparência do app</p>
+          </div>
+          <div className="p-5 grid grid-cols-3 gap-3">
+            {TEMAS.map(t => (
+              <button
+                key={t.value}
+                onClick={() => setTema(t.value)}
+                className={`py-3 px-2 rounded-xl border-2 text-center transition ${
+                  tema === t.value
+                    ? 'border-green-600 bg-green-50 text-green-700'
+                    : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                }`}
+              >
+                <div className="font-bold text-sm">{t.label}</div>
+                <div className="text-xs text-gray-400 mt-0.5">{t.desc}</div>
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Acessibilidade */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
