@@ -29,6 +29,7 @@ export const SERVICOS = [
     imagem: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400&q=80&auto=format&fit=crop',
     categoria: 'MECANIZACAO' as CategoriaServico,
   },
+
   {
     value: 'COLHEITA',
     label: 'Colheita',
@@ -42,7 +43,7 @@ export const SERVICOS = [
     label: 'Plantio',
     icon: '🌱',
     descricao: 'Plantio mecanizado com precisão',
-    imagem: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1592982537447-6f2a6a0a7e9e?w=400&q=80&auto=format&fit=crop',
     categoria: 'MECANIZACAO' as CategoriaServico,
   },
   {
@@ -58,7 +59,7 @@ export const SERVICOS = [
     label: 'Aplicação de Fertilizantes',
     icon: '🌍',
     descricao: 'Aplicação mecanizada de fertilizantes',
-    imagem: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80&auto=format&fit=crop',
     categoria: 'MECANIZACAO' as CategoriaServico,
   },
 
@@ -68,7 +69,7 @@ export const SERVICOS = [
     label: 'Análise de Solo',
     icon: '🧪',
     descricao: 'Coleta e análise laboratorial de solo',
-    imagem: 'https://images.unsplash.com/photo-1628352081506-83c43123a1a6?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=400&q=80&auto=format&fit=crop',
     categoria: 'LAVOURA' as CategoriaServico,
   },
   {
@@ -76,7 +77,7 @@ export const SERVICOS = [
     label: 'Consultoria Agronômica',
     icon: '👨‍🌾',
     descricao: 'Visita técnica com agrônomo especializado',
-    imagem: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1455849318743-b2233052fcff?w=400&q=80&auto=format&fit=crop',
     categoria: 'LAVOURA' as CategoriaServico,
   },
   {
@@ -84,7 +85,7 @@ export const SERVICOS = [
     label: 'Controle de Pragas',
     icon: '🐛',
     descricao: 'Controle integrado de pragas e doenças',
-    imagem: 'https://images.unsplash.com/photo-1566159237810-7a2b04d42e35?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=400&q=80&auto=format&fit=crop',
     categoria: 'LAVOURA' as CategoriaServico,
   },
   {
@@ -92,7 +93,7 @@ export const SERVICOS = [
     label: 'Capina / Roçagem',
     icon: '🌿',
     descricao: 'Limpeza e roçagem de áreas',
-    imagem: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&q=80&auto=format&fit=crop',
     categoria: 'LAVOURA' as CategoriaServico,
   },
   {
@@ -100,7 +101,7 @@ export const SERVICOS = [
     label: 'Irrigação',
     icon: '💧',
     descricao: 'Instalação e manutenção de sistemas de irrigação',
-    imagem: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&q=80&auto=format&fit=crop',
     categoria: 'LAVOURA' as CategoriaServico,
   },
   {
@@ -126,7 +127,7 @@ export const SERVICOS = [
     label: 'Georreferenciamento',
     icon: '📡',
     descricao: 'Demarcação e registro GPS da propriedade',
-    imagem: 'https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&q=80&auto=format&fit=crop',
     categoria: 'TECNOLOGIA' as CategoriaServico,
   },
 
@@ -136,7 +137,7 @@ export const SERVICOS = [
     label: 'Assistência Veterinária',
     icon: '🐄',
     descricao: 'Atendimento veterinário para rebanho',
-    imagem: 'https://images.unsplash.com/photo-1596733430284-f7437764b1a9?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400&q=80&auto=format&fit=crop',
     categoria: 'PECUARIA' as CategoriaServico,
   },
   {
@@ -144,7 +145,7 @@ export const SERVICOS = [
     label: 'Inseminação Artificial',
     icon: '🧬',
     descricao: 'Inseminação artificial bovina e suína',
-    imagem: 'https://images.unsplash.com/photo-1596733430284-f7437764b1a9?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?w=400&q=80&auto=format&fit=crop',
     categoria: 'PECUARIA' as CategoriaServico,
   },
 
@@ -162,7 +163,7 @@ export const SERVICOS = [
     label: 'Terraplanagem',
     icon: '⛏️',
     descricao: 'Nivelamento e movimentação de terra',
-    imagem: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400&q=80&auto=format&fit=crop',
     categoria: 'INFRAESTRUTURA' as CategoriaServico,
   },
   {
@@ -178,7 +179,7 @@ export const SERVICOS = [
     label: 'Construção Rural',
     icon: '🏠',
     descricao: 'Galpões, currais, silos e benfeitorias',
-    imagem: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1590725121839-892b458a74fe?w=400&q=80&auto=format&fit=crop',
     categoria: 'INFRAESTRUTURA' as CategoriaServico,
   },
 
@@ -188,7 +189,7 @@ export const SERVICOS = [
     label: 'Manutenção de Máquinas',
     icon: '🔧',
     descricao: 'Manutenção de tratores e colheitadeiras',
-    imagem: 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&q=80&auto=format&fit=crop',
     categoria: 'MANUTENCAO' as CategoriaServico,
   },
 

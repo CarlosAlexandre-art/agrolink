@@ -2,23 +2,30 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SERVICOS } from '@/lib/constants'
 import { useI18n } from '@/lib/i18n'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 export default function Home() {
   const { t } = useI18n()
-  const videoRef = useRef<HTMLVideoElement>(null)
   const [popupAgros, setPopupAgros] = useState(false)
   const servicosDestaque = SERVICOS.slice(0, 6)
 
-  // Forçar autoplay após hidratação
+  const heroImages = [
+    'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1400&q=85&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=1400&q=85&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1400&q=85&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=1400&q=85&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1400&q=85&auto=format&fit=crop',
+  ]
+  const [heroIdx, setHeroIdx] = useState(0)
+
   useEffect(() => {
-    const v = videoRef.current
-    if (!v) return
-    v.muted = true
-    v.play().catch(() => {})
+    const interval = setInterval(() => {
+      setHeroIdx(i => (i + 1) % heroImages.length)
+    }, 5000)
+    return () => clearInterval(interval)
   }, [])
 
   // Popup AgroOS — mostra 1x por sessão
@@ -61,18 +68,22 @@ export default function Home() {
 
       {/* Hero com vídeo */}
       <section className="relative text-white py-24 px-4 overflow-hidden min-h-[520px] flex items-center">
-        <video
-          ref={videoRef}
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          poster="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200&q=80&auto=format&fit=crop"
-        >
-          <source src="https://videos.pexels.com/video-files/4271788/4271788-hd_1920_1080_25fps.mp4" type="video/mp4" />
-          <source src="https://videos.pexels.com/video-files/4271788/4271788-sd_960_540_25fps.mp4" type="video/mp4" />
-        </video>
+        {heroImages.map((src, i) => (
+          <div
+            key={src}
+            className="absolute inset-0 w-full h-full transition-opacity duration-1000"
+            style={{ opacity: i === heroIdx ? 1 : 0 }}
+          >
+            <Image
+              src={src}
+              alt="AgroCore"
+              fill
+              sizes="100vw"
+              className="object-cover"
+              priority={i === 0}
+            />
+          </div>
+        ))}
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" />
         <div className="relative max-w-4xl mx-auto text-center w-full">
           <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight drop-shadow-lg">
