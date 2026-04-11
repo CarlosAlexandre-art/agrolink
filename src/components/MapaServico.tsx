@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -41,9 +41,35 @@ export default function MapaServico({
   prestadorLng,
   prestadorNome,
 }: Props) {
+  const [erro, setErro] = useState(false)
+  const [tentativa, setTentativa] = useState(0)
+
   useEffect(() => {
-    // Garante que o CSS do Leaflet não conflite
-  }, [])
+    // Verifica conectividade com o tile server do OpenStreetMap
+    const img = new Image()
+    img.src = `https://a.tile.openstreetmap.org/10/0/0.png?t=${Date.now()}`
+    img.onerror = () => setErro(true)
+    img.onload = () => setErro(false)
+  }, [tentativa])
+
+  if (erro) {
+    return (
+      <div
+        className="rounded-2xl border border-gray-200 bg-gray-50 flex flex-col items-center justify-center gap-3 text-center px-4"
+        style={{ height: 260 }}
+      >
+        <div className="text-4xl">🗺️</div>
+        <div className="text-gray-600 font-medium text-sm">Mapa indisponível no momento</div>
+        <div className="text-gray-400 text-xs">Verifique sua conexão com a internet</div>
+        <button
+          onClick={() => setTentativa(t => t + 1)}
+          className="px-4 py-2 bg-green-700 text-white text-sm font-semibold rounded-xl hover:bg-green-800 transition"
+        >
+          Tentar novamente
+        </button>
+      </div>
+    )
+  }
 
   const temPrestador = prestadorLat && prestadorLng
 
@@ -58,9 +84,9 @@ export default function MapaServico({
         <TileLayer
           attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          eventHandlers={{ tileerror: () => setErro(true) }}
         />
 
-        {/* Marcador do serviço */}
         <Marker position={[latitude, longitude]} icon={iconeFazenda}>
           <Popup>
             <div className="text-sm font-semibold">📍 Local do Serviço</div>
@@ -69,14 +95,12 @@ export default function MapaServico({
           </Popup>
         </Marker>
 
-        {/* Raio de 1km */}
         <Circle
           center={[latitude, longitude]}
           radius={1000}
           pathOptions={{ color: '#15803d', fillColor: '#15803d', fillOpacity: 0.08, weight: 1.5 }}
         />
 
-        {/* Marcador do prestador (se disponível) */}
         {temPrestador && (
           <Marker position={[prestadorLat!, prestadorLng!]}>
             <Popup>

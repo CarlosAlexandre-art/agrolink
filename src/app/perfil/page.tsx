@@ -146,7 +146,7 @@ export default async function PerfilPage() {
         {/* Edit profile link */}
         <Link
           href="/perfil/editar"
-          className="block w-full py-4 border-2 border-green-700 text-green-700 text-center font-bold rounded-2xl hover:bg-green-50 transition"
+          className="block w-full py-4 border-2 border-green-700 text-green-700 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700 text-center font-bold rounded-2xl hover:bg-green-50 transition"
         >
           ✏️ Editar perfil
         </Link>
@@ -154,7 +154,7 @@ export default async function PerfilPage() {
         {/* Help center */}
         <Link
           href="/ajuda"
-          className="block w-full py-4 border-2 border-blue-600 text-blue-600 text-center font-bold rounded-2xl hover:bg-blue-50 transition"
+          className="block w-full py-4 border-2 border-blue-600 text-blue-600 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700 text-center font-bold rounded-2xl hover:bg-blue-50 transition"
         >
           ❓ Central de Ajuda
         </Link>

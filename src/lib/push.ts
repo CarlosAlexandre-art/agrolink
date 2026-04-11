@@ -2,7 +2,7 @@ import webpush from 'web-push'
 import { prisma } from '@/lib/prisma'
 
 webpush.setVapidDetails(
-  'mailto:suporte@agrolink.com.br',
+  'mailto:suporte@agrocore.com.br',
   process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
   process.env.VAPID_PRIVATE_KEY!
 )

@@ -177,7 +177,7 @@ interface Prefs {
   reduzirAnimacoes: boolean
 }
 
-const PREFS_KEY = 'agrolink_acessibilidade'
+const PREFS_KEY = 'agrocore_acessibilidade'
 const AGROBOT_KEY = 'agrobot_visivel'
 
 function aplicarPrefs(prefs: Prefs) {
@@ -288,13 +288,13 @@ export default function AjudaPage() {
               href="https://wa.me/5585986027333?text=Olá, preciso de ajuda com o AgroCore"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 py-3 bg-white text-green-700 font-bold rounded-xl text-center text-sm hover:bg-green-50 transition"
+              className="flex-1 py-3 bg-white/20 text-white font-bold rounded-xl text-center text-sm hover:bg-white/30 transition border border-white/30"
             >
               📱 WhatsApp
             </a>
             <a
-              href="mailto:alexandre@parceirosdeproposito.com"
-              className="flex-1 py-3 bg-green-600 text-white font-bold rounded-xl text-center text-sm hover:bg-green-500 transition border border-green-500"
+              href="mailto:suporte@agrocore.com.br"
+              className="flex-1 py-3 bg-white/20 text-white font-bold rounded-xl text-center text-sm hover:bg-white/30 transition border border-white/30"
             >
               ✉️ Email
             </a>

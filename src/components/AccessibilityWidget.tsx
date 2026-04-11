@@ -8,7 +8,7 @@ interface Prefs {
   reduzirAnimacoes: boolean
 }
 
-const PREFS_KEY = 'agrolink_acessibilidade'
+const PREFS_KEY = 'agrocore_acessibilidade'
 
 function aplicarPrefs(prefs: Prefs) {
   const html = document.documentElement

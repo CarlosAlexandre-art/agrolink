@@ -16,19 +16,19 @@ export default function Home() {
       <header className="bg-green-700 text-white">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold">🌿 AgroCore</span>
+            <span className="text-xl font-bold">🌿 AgroCore</span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <LanguageSwitcher />
             <Link
               href="/login"
-              className="px-4 py-2 text-white border border-white rounded-lg hover:bg-green-600 transition"
+              className="px-3 py-1.5 text-sm text-white border border-white/60 rounded-lg hover:bg-green-600 transition"
             >
               {t('nav.login')}
             </Link>
             <Link
               href="/cadastro"
-              className="px-4 py-2 bg-white text-green-700 font-semibold rounded-lg hover:bg-green-50 transition"
+              className="px-3 py-1.5 text-sm bg-white text-green-700 font-semibold rounded-lg hover:bg-green-50 transition"
             >
               {t('nav.register')}
             </Link>
