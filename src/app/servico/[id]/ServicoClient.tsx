@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { SERVICOS } from '@/lib/constants'
+import MapaServico from '@/components/MapaServicoLazy'
 
 const STATUS_STEPS = [
   { key: 'PROCURANDO', label: 'Procurando prestador', icon: '🔍' },
@@ -207,6 +208,22 @@ export default function ServicoClient({
             )}
           </div>
         </div>
+
+        {/* Mapa do serviço */}
+        {service.latitude && service.longitude && (
+          <div>
+            <h2 className="font-bold text-gray-700 mb-2">📍 Localização do serviço</h2>
+            <MapaServico
+              latitude={service.latitude}
+              longitude={service.longitude}
+              endereco={service.endereco}
+              nomeFazenda={service.produtor?.nomeFazenda}
+              prestadorLat={matchAceito?.prestador?.user?.latitude}
+              prestadorLng={matchAceito?.prestador?.user?.longitude}
+              prestadorNome={matchAceito?.prestador?.user?.nome}
+            />
+          </div>
+        )}
 
         {/* Progress tracker */}
         {service.status !== 'CANCELADO' && (
