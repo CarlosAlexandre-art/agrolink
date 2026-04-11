@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { SERVICOS } from '@/lib/constants'
 import MapaServico from '@/components/MapaServicoLazy'
+import PopupInteligente, { type PopupTipo } from '@/components/PopupInteligente'
 
 const STATUS_STEPS = [
   { key: 'PROCURANDO', label: 'Procurando prestador', icon: '🔍' },
@@ -46,6 +47,7 @@ export default function ServicoClient({
   const [loadingAvaliarProdutor, setLoadingAvaliarProdutor] = useState(false)
   const [uploadandoFoto, setUploadandoFoto] = useState(false)
   const [recuperando, setRecuperando] = useState<string | null>(null)
+  const [popup, setPopup] = useState<PopupTipo>(null)
   const [agradecimento, setAgradecimento] = useState<string | null>(
     searchParams.get('obrigado') === '1' ? 'confianca' : null
   )
@@ -104,6 +106,7 @@ export default function ServicoClient({
       setService((prev: any) => ({ ...prev, status: data.status }))
       if (data.status === 'CONCLUIDO') {
         setAgradecimento('servico')
+        setTimeout(() => setPopup('agroOS'), 2500)
       }
     }
     setLoadingAvancar(false)
@@ -191,6 +194,7 @@ export default function ServicoClient({
     await fetchStatus()
     setAgradecimento('avaliacao')
     setLoadingAvaliar(false)
+    setTimeout(() => setPopup('compartilhar'), 2000)
   }
 
   return (
@@ -653,6 +657,8 @@ export default function ServicoClient({
         )}
 
       </div>
+
+      <PopupInteligente tipo={popup} onFechar={() => setPopup(null)} />
     </div>
   )
 }
