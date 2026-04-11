@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
 import { prisma } from '@/lib/prisma'
+import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
+import { SERVICOS } from '@/lib/constants'
 
 export async function POST(req: Request) {
   const body = await req.text()
@@ -31,6 +33,27 @@ export async function POST(req: Request) {
       where: { id: serviceId },
       data: { status: 'EM_ROTA' }
     })
+
+    // Notificar prestador via WhatsApp que pagamento foi confirmado
+    const service = await prisma.service.findUnique({
+      where: { id: serviceId },
+      include: {
+        payment: true,
+        matches: {
+          where: { status: 'ACEITO' },
+          include: { prestador: { include: { user: true } } }
+        }
+      }
+    })
+    const prestador = service?.matches?.[0]?.prestador
+    if (prestador?.user?.telefone && service) {
+      const servicoLabel = SERVICOS.find(s => s.value === service.tipo)?.label ?? service.tipo
+      const valor = service.payment?.valor ?? session.amount_total / 100
+      enviarWhatsApp(
+        prestador.user.telefone,
+        wpp.pagamentoConfirmado(prestador.user.nome, servicoLabel, valor, serviceId)
+      ).catch(() => {})
+    }
   }
 
   if (event.type === 'checkout.session.expired') {

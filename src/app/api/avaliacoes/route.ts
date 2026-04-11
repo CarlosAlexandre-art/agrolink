@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
+import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
+import { SERVICOS } from '@/lib/constants'
 
 export async function POST(req: Request) {
   try {
@@ -64,13 +66,23 @@ export async function POST(req: Request) {
     })
     const media = todasAvaliacoes.reduce((acc: number, a: { nota: number }) => acc + a.nota, 0) / todasAvaliacoes.length
 
-    await prisma.prestador.update({
+    const prestadorAtualizado = await prisma.prestador.update({
       where: { id: prestadorId },
       data: {
         avaliacao: media,
         totalAvaliacoes: todasAvaliacoes.length,
-      }
+      },
+      include: { user: true }
     })
+
+    // Notificar prestador via WhatsApp
+    if (prestadorAtualizado.user.telefone) {
+      const servicoLabel = SERVICOS.find(s => s.value === service.tipo)?.label ?? service.tipo
+      enviarWhatsApp(
+        prestadorAtualizado.user.telefone,
+        wpp.avaliacaoRecebida(prestadorAtualizado.user.nome, nota, comentario || null, servicoLabel)
+      ).catch(() => {})
+    }
 
     // If form submission, redirect back
     if (!contentType.includes('application/json')) {

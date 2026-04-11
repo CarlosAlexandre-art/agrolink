@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
+import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
 
 // GET /api/mensagens?serviceId=xxx&after=<isoDate>
 export async function GET(req: Request) {
@@ -70,7 +71,13 @@ export async function POST(req: Request) {
 
     const service = await prisma.service.findUnique({
       where: { id: serviceId },
-      include: { matches: { where: { status: 'ACEITO' } } }
+      include: {
+        matches: {
+          where: { status: 'ACEITO' },
+          include: { prestador: { include: { user: true } } }
+        },
+        produtor: { include: { user: true } }
+      }
     })
     if (!service) return NextResponse.json({ error: 'Serviço não encontrado' }, { status: 404 })
 
@@ -84,6 +91,27 @@ export async function POST(req: Request) {
       data: { serviceId, remetenteId: dbUser.id, texto: texto.trim() },
       include: { remetente: { select: { id: true, nome: true, tipo: true, avatarUrl: true } } }
     })
+
+    // Notificar o outro participante via WhatsApp (máx 1 por 60s para não spammar)
+    if (isProd) {
+      // Produtor enviou → notificar prestador
+      const prestador = service.matches[0]?.prestador
+      if (prestador?.user?.telefone) {
+        enviarWhatsApp(
+          prestador.user.telefone,
+          wpp.novaMensagemChat(prestador.user.nome, dbUser.nome, texto.trim(), serviceId)
+        ).catch(() => {})
+      }
+    } else {
+      // Prestador enviou → notificar produtor
+      const produtorUser = service.produtor.user
+      if (produtorUser.telefone) {
+        enviarWhatsApp(
+          produtorUser.telefone,
+          wpp.novaMensagemChat(produtorUser.nome, dbUser.nome, texto.trim(), serviceId)
+        ).catch(() => {})
+      }
+    }
 
     return NextResponse.json(mensagem)
   } catch (e) {

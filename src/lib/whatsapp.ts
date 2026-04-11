@@ -69,4 +69,23 @@ export const wpp = {
     const label = statusLabel[novoStatus] || `Status: ${novoStatus}`
     return `🌿 *AgroCore* — Atualização do serviço\n\nOlá, ${produtorNome.split(' ')[0]}!\n${label}\n\n📋 *${servicoLabel}*\n\nAcompanhe em tempo real:\n${APP_URL}/servico/${serviceId}`
   },
+
+  propostaRecusada(prestadorNome: string, servicoLabel: string) {
+    return `🌿 *AgroCore* — Proposta recusada\n\nOlá, ${prestadorNome.split(' ')[0]}. O produtor recusou sua proposta para o serviço:\n\n📋 *${servicoLabel}*\n\nFique disponível para receber novos chamados!\n${APP_URL}/dashboard`
+  },
+
+  pagamentoConfirmado(prestadorNome: string, servicoLabel: string, valor: number, serviceId: string) {
+    return `🌿 *AgroCore* — Pagamento confirmado! 💰\n\nOlá, ${prestadorNome.split(' ')[0]}! O produtor pagou *R$ ${valor.toFixed(2)}* pelo serviço:\n\n📋 *${servicoLabel}*\n\nO valor ficará em custódia e será liberado após a conclusão. Acesse o app para iniciar:\n${APP_URL}/servico/${serviceId}`
+  },
+
+  avaliacaoRecebida(prestadorNome: string, nota: number, comentario: string | null, servicoLabel: string) {
+    const estrelas = '⭐'.repeat(nota)
+    const msg = comentario ? `\n\n💬 "${comentario}"` : ''
+    return `🌿 *AgroCore* — Nova avaliação!\n\nParabéns, ${prestadorNome.split(' ')[0]}! Você recebeu uma avaliação por *${servicoLabel}*:\n\n${estrelas} (${nota}/5)${msg}\n\nVeja seu perfil:\n${APP_URL}/dashboard`
+  },
+
+  novaMensagemChat(destinatarioNome: string, remetenteNome: string, trecho: string, serviceId: string) {
+    const preview = trecho.length > 80 ? trecho.slice(0, 80) + '...' : trecho
+    return `🌿 *AgroCore* — Nova mensagem 💬\n\nOlá, ${destinatarioNome.split(' ')[0]}! ${remetenteNome.split(' ')[0]} enviou uma mensagem:\n\n"${preview}"\n\nResponda pelo chat do serviço:\n${APP_URL}/servico/${serviceId}/chat`
+  },
 }

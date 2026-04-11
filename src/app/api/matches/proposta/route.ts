@@ -71,6 +71,16 @@ export async function PATCH(req: Request) {
           data: { status: 'PROCURANDO' }
         })
       ])
+
+      // Notificar prestador que proposta foi recusada
+      const prestadorUser = match.prestador.user
+      const servicoLabel = SERVICOS.find(s => s.value === match.service.tipo)?.label ?? match.service.tipo
+      if (prestadorUser.telefone) {
+        enviarWhatsApp(
+          prestadorUser.telefone,
+          wpp.propostaRecusada(prestadorUser.nome, servicoLabel)
+        ).catch(() => {})
+      }
     }
 
     return NextResponse.json({ ok: true })
