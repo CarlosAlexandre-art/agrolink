@@ -20,7 +20,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       include: {
         produtor: { include: { user: true } },
         matches: {
-          where: { status: 'ACEITO' },
+          where: { status: { in: ['ACEITO', 'RECUSADO'] } },
           include: { prestador: { include: { user: true } } }
         },
         avaliacao: true,

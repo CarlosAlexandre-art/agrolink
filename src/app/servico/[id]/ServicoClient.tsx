@@ -45,6 +45,7 @@ export default function ServicoClient({
   const [comentarioProdutor, setComentarioProdutor] = useState('')
   const [loadingAvaliarProdutor, setLoadingAvaliarProdutor] = useState(false)
   const [uploadandoFoto, setUploadandoFoto] = useState(false)
+  const [recuperando, setRecuperando] = useState<string | null>(null)
   const [agradecimento, setAgradecimento] = useState<string | null>(
     searchParams.get('obrigado') === '1' ? 'confianca' : null
   )
@@ -58,7 +59,8 @@ export default function ServicoClient({
 
   const servico = SERVICOS.find(s => s.value === service.tipo) || { label: service.tipo, icon: '📋' }
   const currentStepIndex = STATUS_ORDER.indexOf(service.status)
-  const matchAceito = service.matches?.[0]
+  const matchAceito = service.matches?.find((m: any) => m.status === 'ACEITO')
+  const matchesRecusados = service.matches?.filter((m: any) => m.status === 'RECUSADO') ?? []
 
   const fetchStatus = useCallback(async () => {
     if (['CONCLUIDO', 'CANCELADO'].includes(service.status)) return
@@ -122,6 +124,22 @@ export default function ServicoClient({
       alert(data.error || 'Erro ao processar proposta.')
     }
     setLoadingProposta(null)
+  }
+
+  async function recuperarServico(matchId: string) {
+    setRecuperando(matchId)
+    const res = await fetch('/api/matches/recuperar', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ matchId })
+    })
+    if (res.ok) {
+      await fetchStatus()
+    } else {
+      const data = await res.json()
+      alert(data.error || 'Erro ao recuperar serviço.')
+    }
+    setRecuperando(null)
   }
 
   async function enviarFotoProva(file: File) {
@@ -285,6 +303,31 @@ export default function ServicoClient({
           <div className="bg-red-50 rounded-2xl p-5 text-center">
             <div className="text-4xl mb-2">❌</div>
             <div className="font-bold text-red-700">Serviço Cancelado</div>
+          </div>
+        )}
+
+        {/* Recuperar serviço — matches recusados pelo prestador */}
+        {isProdutor && matchesRecusados.length > 0 && (
+          <div className="bg-orange-50 rounded-2xl p-5 border border-orange-200">
+            <h2 className="font-bold text-gray-800 mb-1">🔄 Proposta recusada</h2>
+            <p className="text-sm text-gray-500 mb-4">
+              O prestador recusou sua solicitação. Você pode reabrir para que ele possa aceitar novamente.
+            </p>
+            {matchesRecusados.map((m: any) => (
+              <div key={m.id} className="flex items-center gap-3 mb-3">
+                <div className="w-9 h-9 bg-gray-100 rounded-full flex items-center justify-center font-bold text-gray-600">
+                  {m.prestador.user.nome[0]}
+                </div>
+                <div className="flex-1 text-sm text-gray-700 font-medium">{m.prestador.user.nome}</div>
+                <button
+                  onClick={() => recuperarServico(m.id)}
+                  disabled={recuperando === m.id}
+                  className="px-4 py-2 bg-orange-500 text-white text-sm font-bold rounded-xl hover:bg-orange-600 active:scale-95 transition disabled:opacity-50"
+                >
+                  {recuperando === m.id ? '...' : 'Recuperar'}
+                </button>
+              </div>
+            ))}
           </div>
         )}
 
