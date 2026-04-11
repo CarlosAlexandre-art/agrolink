@@ -13,7 +13,7 @@ const securityHeaders = [
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co https://lh3.googleusercontent.com",
-      "media-src 'self' https://videos.pexels.com",
+      "media-src 'self' https://videos.pexels.com https://*.pexels.com https://player.vimeo.com https://*.vimeocdn.com https://vod-progressive.akamaized.net",
       "frame-src https://js.stripe.com https://hooks.stripe.com",
       "connect-src 'self' https://*.supabase.co https://api.stripe.com https://api.z-api.io wss://*.supabase.co",
       "font-src 'self'",
