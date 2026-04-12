@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { stripe } from '@/lib/stripe'
 
-const COMISSAO = 0.05
+const COMISSAO = process.env.COMISSAO_PERCENT ? Number(process.env.COMISSAO_PERCENT) / 100 : 0.05
 const VALOR_MINIMO = 1.00 // R$ 1,00 mínimo Stripe BRL
 
 export async function POST(req: Request) {

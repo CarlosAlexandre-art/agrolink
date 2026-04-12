@@ -49,10 +49,9 @@ export async function middleware(request: NextRequest) {
 
   cleanExpired()
 
-  // Rate limit mais restrito para rotas de autenticação e pagamento
+  // Rate limit mais restrito para rotas de autenticação
   const isAuthRoute = pathname.startsWith('/api/auth') ||
-    pathname.startsWith('/api/usuarios') ||
-    pathname.startsWith('/api/pagamento')
+    pathname.startsWith('/api/usuarios')
 
   const max = isAuthRoute ? RATE_LIMIT_AUTH_MAX : RATE_LIMIT_MAX
 

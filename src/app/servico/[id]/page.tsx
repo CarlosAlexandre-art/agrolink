@@ -17,6 +17,7 @@ export default async function ServicoPage({ params }: { params: Promise<{ id: st
       matches: {
         include: { prestador: { include: { user: true } } }
       },
+      payment: true,
       avaliacao: true,
       avaliacaoProdutor: true,
     }

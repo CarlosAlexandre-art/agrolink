@@ -23,6 +23,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
           where: { status: { in: ['ACEITO', 'RECUSADO'] } },
           include: { prestador: { include: { user: true } } }
         },
+        payment: true,
         avaliacao: true,
         avaliacaoProdutor: true,
       }
@@ -37,7 +38,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   }
 }
 
-export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function PATCH(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
     const supabase = await createClient()

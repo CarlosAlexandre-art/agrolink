@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
-import { notificarPrestador } from '@/lib/push'
+import { notificarUsuario } from '@/lib/push'
 import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
 import { SERVICOS } from '@/lib/constants'
 import { sanitizeString, sanitizePositiveNumber } from '@/lib/sanitize'
@@ -104,7 +104,7 @@ export async function POST(req: Request) {
 
     // Notificar prestadores (push + WhatsApp)
     for (const prestador of prestadores) {
-      notificarPrestador(
+      notificarUsuario(
         prestador.userId,
         '🔔 Novo chamado disponível!',
         `Serviço de ${servicoLabel} próximo a você`,

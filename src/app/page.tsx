@@ -10,6 +10,7 @@ import LanguageSwitcher from '@/components/LanguageSwitcher'
 export default function Home() {
   const { t } = useI18n()
   const [popupAgros, setPopupAgros] = useState(false)
+  const [videoError, setVideoError] = useState(false)
   const servicosDestaque = SERVICOS.slice(0, 6)
 
   const heroImages = [
@@ -22,11 +23,12 @@ export default function Home() {
   const [heroIdx, setHeroIdx] = useState(0)
 
   useEffect(() => {
+    if (!videoError) return
     const interval = setInterval(() => {
       setHeroIdx(i => (i + 1) % heroImages.length)
     }, 5000)
     return () => clearInterval(interval)
-  }, [])
+  }, [videoError])
 
   // Popup AgroOS — mostra 1x por sessão
   useEffect(() => {
@@ -43,7 +45,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-green-700 text-white">
+      <header className="bg-green-700 text-white relative z-[60]">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <span className="text-xl font-bold">🌿 AgroCore</span>
@@ -68,7 +70,22 @@ export default function Home() {
 
       {/* Hero com vídeo */}
       <section className="relative text-white py-24 px-4 overflow-hidden min-h-[520px] flex items-center">
-        {heroImages.map((src, i) => (
+        {/* Vídeo de fundo — coloque hero.mp4 na pasta /public */}
+        {!videoError && (
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            onError={() => setVideoError(true)}
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src="/hero.mp4" type="video/mp4" />
+          </video>
+        )}
+
+        {/* Fallback: carrossel de imagens (quando vídeo não carrega) */}
+        {videoError && heroImages.map((src, i) => (
           <div
             key={src}
             className="absolute inset-0 w-full h-full transition-opacity duration-1000"

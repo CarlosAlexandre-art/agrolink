@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
-import { notificarPrestador } from '@/lib/push'
+import { notificarUsuario } from '@/lib/push'
 
 // GET /api/mensagens?serviceId=xxx&after=<isoDate>
 export async function GET(req: Request) {
@@ -99,7 +99,7 @@ export async function POST(req: Request) {
       const prestador = service.matches[0]?.prestador
       if (prestador) {
         // Push notification in-app
-        notificarPrestador(
+        notificarUsuario(
           prestador.userId,
           `💬 ${dbUser.nome}`,
           textoResumido,
@@ -119,7 +119,7 @@ export async function POST(req: Request) {
       const produtorUser = service.produtor.user
 
       // Push notification in-app
-      notificarPrestador(
+      notificarUsuario(
         service.produtor.userId,
         `💬 ${dbUser.nome}`,
         textoResumido,

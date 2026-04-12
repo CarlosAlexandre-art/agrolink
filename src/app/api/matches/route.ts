@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
-import { notificarPrestador } from '@/lib/push'
+import { notificarUsuario } from '@/lib/push'
 import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
 
 export async function PATCH(req: Request) {
@@ -63,7 +63,7 @@ export async function PATCH(req: Request) {
       const produtorUserId = match.service.produtor.userId
       const produtorUser = match.service.produtor.user
 
-      await notificarPrestador(
+      await notificarUsuario(
         produtorUserId,
         '💰 Nova proposta recebida!',
         `${dbUser.nome} enviou uma proposta de R$ ${valorProposto.toFixed(2)} para seu serviço.`,
