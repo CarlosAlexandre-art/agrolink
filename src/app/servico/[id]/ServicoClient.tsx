@@ -440,11 +440,46 @@ export default function ServicoClient({
           </div>
         )}
 
-        {/* Pagamento já realizado */}
+        {/* Pagamento já realizado — produtor */}
         {isProdutor && service.payment?.status === 'RESERVADO' && (
           <div className="bg-green-50 rounded-xl p-4 border border-green-200 text-center">
-            <div className="text-green-700 font-semibold">✅ Pagamento confirmado — em custódia</div>
-            <div className="text-xs text-gray-500 mt-1">Será liberado ao prestador após conclusão</div>
+            <div className="text-2xl mb-1">✅</div>
+            <div className="text-green-700 font-bold">Pagamento confirmado!</div>
+            <div className="text-sm text-gray-600 mt-1">
+              R$ {service.payment.valor?.toFixed(2)} em custódia segura
+            </div>
+            <div className="text-xs text-gray-400 mt-1">Será liberado ao prestador após conclusão do serviço</div>
+          </div>
+        )}
+
+        {/* Pagamento confirmado — prestador */}
+        {isPrestador && service.payment?.status === 'RESERVADO' && (
+          <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
+            <div className="flex items-center gap-3">
+              <div className="text-3xl">💰</div>
+              <div>
+                <div className="font-bold text-blue-700">Pagamento recebido!</div>
+                <div className="text-sm text-gray-600">
+                  O produtor pagou <strong>R$ {service.payment.valor?.toFixed(2)}</strong> pelo serviço.
+                </div>
+                <div className="text-xs text-gray-400 mt-0.5">
+                  Você receberá R$ {service.payment.valorPrestador?.toFixed(2)} após a conclusão.
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Pagamento pendente — prestador */}
+        {isPrestador && service.payment?.status === 'PENDENTE' && (
+          <div className="bg-yellow-50 rounded-xl p-4 border border-yellow-200">
+            <div className="flex items-center gap-3">
+              <div className="text-2xl">⏳</div>
+              <div>
+                <div className="font-semibold text-yellow-700">Aguardando pagamento</div>
+                <div className="text-xs text-gray-500 mt-0.5">O produtor iniciou o pagamento. Aguardando confirmação do banco.</div>
+              </div>
+            </div>
           </div>
         )}
 
