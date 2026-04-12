@@ -16,7 +16,7 @@ export async function GET(req: Request) {
   const usuarios = await prisma.user.findMany({
     where: {
       updatedAt: { lt: sete_dias_atras },
-      email: { not: null },
+      email: { not: undefined },
     },
     take: 100, // máximo 100 por rodada
   })
