@@ -398,8 +398,8 @@ export default function ServicoClient({
           </>
         )}
 
-        {/* Botão de pagamento — só para produtor quando prestador foi encontrado */}
-        {isProdutor && service.status === 'MATCH_ENCONTRADO' && !service.payment && (
+        {/* Botão de pagamento — só para produtor quando prestador foi encontrado e pagamento não confirmado */}
+        {isProdutor && service.status === 'MATCH_ENCONTRADO' && service.payment?.status !== 'RESERVADO' && (
           <div className="bg-blue-50 rounded-2xl p-5 border border-blue-200">
             <h2 className="font-bold text-gray-700 mb-2">💳 Confirmar pagamento</h2>
             <p className="text-sm text-gray-600 mb-4">
