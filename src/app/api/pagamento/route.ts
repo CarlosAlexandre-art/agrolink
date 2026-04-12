@@ -42,7 +42,11 @@ export async function POST(req: Request) {
 
     // Criar Checkout Session no Stripe
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
+      payment_method_types: ['card', 'boleto', 'pix'],
+      payment_method_options: {
+        boleto: { expires_after_days: 3 },
+        pix: { expires_after_seconds: 3600 }, // PIX expira em 1 hora
+      },
       line_items: [
         {
           price_data: {
