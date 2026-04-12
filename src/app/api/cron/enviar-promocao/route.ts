@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   const { tipo, assunto, mensagem, ctaTexto, ctaUrl } = await req.json()
 
   const usuarios = await prisma.user.findMany({
-    where: { email: { not: null } },
+    where: { email: { not: undefined } },
     select: { email: true, nome: true },
   })
 
