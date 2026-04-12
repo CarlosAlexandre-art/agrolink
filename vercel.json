@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/usuarios-inativos",
+      "schedule": "0 10 * * *"
+    },
+    {
+      "path": "/api/cron/servicos-sem-proposta",
+      "schedule": "0 9 * * *"
+    }
+  ]
+}
