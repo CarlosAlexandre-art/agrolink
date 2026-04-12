@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { emails } from '@/lib/email'
+import { notificarUsuario } from '@/lib/push'
 import { SERVICOS } from '@/lib/constants'
 
 // Roda 1x por dia — notifica produtores com serviço sem proposta há 48h
@@ -30,6 +31,12 @@ export async function GET(req: Request) {
     const servicoLabel = SERVICOS.find(sv => sv.value === s.tipo)?.label ?? s.tipo
     try {
       await emails.servicoSemProposta(user.email, user.nome, servicoLabel, s.id)
+      await notificarUsuario(
+        user.id,
+        '🔍 Seu serviço ainda aguarda',
+        `Seu pedido de ${servicoLabel} ainda não recebeu propostas.`,
+        `/servico/${s.id}`
+      )
       enviados++
     } catch {}
   }
