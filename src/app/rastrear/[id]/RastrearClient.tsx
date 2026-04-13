@@ -260,6 +260,25 @@ export default function RastrearClient({ serviceId, initialService, servicoLabel
           </div>
         )}
 
+        {/* CTA de pagamento — aparece quando prestador foi confirmado mas ainda não pagou */}
+        {isProdutor && service.status === 'MATCH_ENCONTRADO' && !service.payment && (
+          <div className="bg-white rounded-2xl p-5 shadow-sm border-2 border-green-200 space-y-3">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">💳</span>
+              <div>
+                <div className="font-bold text-gray-800">Hora de pagar!</div>
+                <div className="text-sm text-gray-500">Confirme o pagamento para o prestador começar.</div>
+              </div>
+            </div>
+            <Link
+              href={`/servico/${serviceId}`}
+              className="block text-center py-3 bg-green-700 text-white font-bold rounded-xl hover:bg-green-800 transition"
+            >
+              💳 Pagar agora no AgroCore
+            </Link>
+          </div>
+        )}
+
         {/* Pagamento */}
         {service.payment && (
           <div className="bg-white rounded-2xl p-5 shadow-sm">
@@ -285,7 +304,7 @@ export default function RastrearClient({ serviceId, initialService, servicoLabel
                 href={`/servico/${serviceId}`}
                 className="mt-4 block text-center py-3 bg-green-700 text-white font-semibold rounded-xl hover:bg-green-800 transition text-sm"
               >
-                💳 Ir para pagamento no AgroCore
+                💳 Concluir pagamento no AgroCore
               </Link>
             )}
           </div>
