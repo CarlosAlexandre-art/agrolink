@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { SERVICOS } from '@/lib/constants'
+import { createClient } from '@/lib/supabase/server'
 import RastrearClient from './RastrearClient'
 
 export default async function RastrearPage({ params }: { params: Promise<{ id: string }> }) {
@@ -29,6 +30,34 @@ export default async function RastrearPage({ params }: { params: Promise<{ id: s
     )
   }
 
+  // Verificar se o usuário logado é o produtor deste serviço
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  const isProdutor = !!user && service.produtor.user.supabaseId === user.id
+
+  // Se for o produtor e houver proposta pendente de aprovação, busca os detalhes
+  let proposta: {
+    id: string
+    valorProposto: number | null
+    mensagemProposta: string | null
+    prestadorNome: string
+  } | null = null
+
+  if (isProdutor && service.status === 'AGUARDANDO_PROPOSTA') {
+    const match = await prisma.match.findFirst({
+      where: { serviceId: id, status: 'ACEITO' },
+      include: { prestador: { include: { user: true } } }
+    })
+    if (match) {
+      proposta = {
+        id: match.id,
+        valorProposto: match.valorProposto,
+        mensagemProposta: match.mensagemProposta,
+        prestadorNome: match.prestador.user.nome,
+      }
+    }
+  }
+
   const servicoLabel = SERVICOS.find(s => s.value === service.tipo)?.label ?? service.tipo
 
   return (
@@ -36,6 +65,8 @@ export default async function RastrearPage({ params }: { params: Promise<{ id: s
       serviceId={id}
       initialService={JSON.parse(JSON.stringify(service))}
       servicoLabel={servicoLabel}
+      isProdutor={isProdutor}
+      proposta={proposta}
     />
   )
 }

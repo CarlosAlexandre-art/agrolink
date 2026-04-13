@@ -15,18 +15,29 @@ const STATUS_LABELS: Record<string, { label: string; cor: string; icon: string }
 
 const ETAPAS = ['PROCURANDO', 'AGUARDANDO_PROPOSTA', 'MATCH_ENCONTRADO', 'EM_ROTA', 'EXECUTANDO', 'CONCLUIDO']
 
+interface Proposta {
+  id: string
+  valorProposto: number | null
+  mensagemProposta: string | null
+  prestadorNome: string
+}
+
 interface Props {
   serviceId: string
   initialService: any
   servicoLabel: string
+  isProdutor: boolean
+  proposta: Proposta | null
 }
 
-export default function RastrearClient({ serviceId, initialService, servicoLabel }: Props) {
+export default function RastrearClient({ serviceId, initialService, servicoLabel, isProdutor, proposta: propostaInicial }: Props) {
   const [service, setService] = useState(initialService)
   const [ultimaAtualizacao, setUltimaAtualizacao] = useState(new Date())
+  const [proposta, setProposta] = useState(propostaInicial)
+  const [respondendo, setRespondendo] = useState(false)
+  const [msgProposta, setMsgProposta] = useState('')
 
   useEffect(() => {
-    // Não faz polling se já concluído ou cancelado
     if (service.status === 'CONCLUIDO' || service.status === 'CANCELADO') return
 
     const interval = setInterval(async () => {
@@ -36,12 +47,43 @@ export default function RastrearClient({ serviceId, initialService, servicoLabel
           const data = await res.json()
           setService(data)
           setUltimaAtualizacao(new Date())
+          // Quando status muda de AGUARDANDO_PROPOSTA limpa o card de proposta
+          if (data.status !== 'AGUARDANDO_PROPOSTA') setProposta(null)
         }
       } catch {}
-    }, 10000) // a cada 10 segundos
+    }, 10000)
 
     return () => clearInterval(interval)
   }, [serviceId, service.status])
+
+  async function responderProposta(acao: 'ACEITAR' | 'RECUSAR') {
+    if (!proposta) return
+    setRespondendo(true)
+    setMsgProposta('')
+    try {
+      const res = await fetch('/api/matches/proposta', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ matchId: proposta.id, acao }),
+      })
+      if (res.ok) {
+        if (acao === 'ACEITAR') {
+          setMsgProposta('✅ Proposta aceita! Aguardando pagamento...')
+          setService((s: any) => ({ ...s, status: 'MATCH_ENCONTRADO' }))
+        } else {
+          setMsgProposta('❌ Proposta recusada. Buscando outro prestador...')
+          setService((s: any) => ({ ...s, status: 'PROCURANDO' }))
+        }
+        setProposta(null)
+      } else {
+        const d = await res.json()
+        setMsgProposta(d.error || 'Erro ao responder proposta')
+      }
+    } catch {
+      setMsgProposta('Erro de conexão. Tente novamente.')
+    }
+    setRespondendo(false)
+  }
 
   const statusInfo = STATUS_LABELS[service.status] ?? { label: service.status, cor: 'bg-gray-100 text-gray-700 border-gray-200', icon: '❓' }
   const prestador = service.matches?.find((m: any) => m.status === 'ACEITO')?.prestador
@@ -78,6 +120,60 @@ export default function RastrearClient({ serviceId, initialService, servicoLabel
             <div className="text-lg font-bold">{statusInfo.label}</div>
           </div>
         </div>
+
+        {/* Card de proposta — só para o produtor quando há proposta pendente */}
+        {isProdutor && proposta && (
+          <div className="bg-white rounded-2xl p-5 shadow-sm border-2 border-purple-200 space-y-4">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">💰</span>
+              <div>
+                <div className="font-bold text-gray-800">Nova proposta recebida</div>
+                <div className="text-sm text-gray-500">de {proposta.prestadorNome}</div>
+              </div>
+            </div>
+
+            <div className="bg-purple-50 rounded-xl px-4 py-3">
+              <div className="text-xs text-purple-600 font-medium">Valor proposto</div>
+              <div className="text-3xl font-bold text-purple-700">
+                R$ {proposta.valorProposto?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) ?? '—'}
+              </div>
+            </div>
+
+            {proposta.mensagemProposta && (
+              <div>
+                <div className="text-xs text-gray-400 font-medium mb-1">Mensagem do prestador</div>
+                <p className="text-sm text-gray-700 bg-gray-50 rounded-xl px-4 py-3">{proposta.mensagemProposta}</p>
+              </div>
+            )}
+
+            {msgProposta && (
+              <p className={`text-sm text-center font-medium p-3 rounded-xl ${
+                msgProposta.startsWith('✅') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'
+              }`}>{msgProposta}</p>
+            )}
+
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => responderProposta('RECUSAR')}
+                disabled={respondendo}
+                className="py-3 border-2 border-red-200 text-red-600 font-semibold rounded-xl hover:bg-red-50 transition disabled:opacity-50"
+              >
+                {respondendo ? '...' : '❌ Recusar'}
+              </button>
+              <button
+                onClick={() => responderProposta('ACEITAR')}
+                disabled={respondendo}
+                className="py-3 bg-green-700 text-white font-semibold rounded-xl hover:bg-green-800 transition disabled:opacity-50"
+              >
+                {respondendo ? '...' : '✅ Aceitar'}
+              </button>
+            </div>
+
+            <p className="text-xs text-center text-gray-400">
+              Ao aceitar, você será redirecionado para o pagamento no AgroCore.
+            </p>
+          </div>
+        )}
 
         {/* Linha do tempo */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
@@ -184,6 +280,14 @@ export default function RastrearClient({ serviceId, initialService, servicoLabel
                  service.payment.status === 'RESERVADO' ? '🔒 Reservado' : '⏳ Pendente'}
               </div>
             </div>
+            {service.payment.status === 'PENDENTE' && isProdutor && (
+              <Link
+                href={`/servico/${serviceId}`}
+                className="mt-4 block text-center py-3 bg-green-700 text-white font-semibold rounded-xl hover:bg-green-800 transition text-sm"
+              >
+                💳 Ir para pagamento no AgroCore
+              </Link>
+            )}
           </div>
         )}
 
@@ -195,12 +299,11 @@ export default function RastrearClient({ serviceId, initialService, servicoLabel
           )}
         </div>
 
-        <Link
-          href="/"
-          className="block text-center py-3 bg-green-700 text-white rounded-2xl font-semibold hover:bg-green-800 transition"
-        >
-          Conhecer o AgroCore
-        </Link>
+        {!isProdutor && (
+          <Link href="/" className="block text-center py-3 bg-green-700 text-white rounded-2xl font-semibold hover:bg-green-800 transition">
+            Conhecer o AgroCore
+          </Link>
+        )}
 
       </div>
     </div>
