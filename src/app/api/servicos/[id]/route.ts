@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { stripe } from '@/lib/stripe'
 import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
 import { SERVICOS } from '@/lib/constants'
+import { notificarAgroOS } from '@/lib/agros-webhook'
 
 const STATUS_FLOW: Record<string, string> = {
   MATCH_ENCONTRADO: 'EM_ROTA',
@@ -123,6 +124,9 @@ export async function PATCH(_req: Request, { params }: { params: Promise<{ id: s
         wpp.statusAtualizado(produtorUser.nome, servicoLabel, novoStatus, id)
       ).catch(() => {})
     }
+
+    // Notificar AgroOS sobre mudança de status
+    notificarAgroOS(id, novoStatus).catch(() => {})
 
     return NextResponse.json(updated)
   } catch (error) {

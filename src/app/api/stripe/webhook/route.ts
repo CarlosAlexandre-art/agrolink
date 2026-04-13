@@ -3,6 +3,7 @@ import { stripe } from '@/lib/stripe'
 import { prisma } from '@/lib/prisma'
 import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
 import { SERVICOS } from '@/lib/constants'
+import { notificarAgroOS } from '@/lib/agros-webhook'
 
 export async function POST(req: Request) {
   const body = await req.text()
@@ -33,6 +34,9 @@ export async function POST(req: Request) {
       where: { id: serviceId },
       data: { status: 'EM_ROTA' }
     })
+
+    // Notificar AgroOS que pagamento foi confirmado
+    notificarAgroOS(serviceId, 'EM_ROTA', { pagamento: 'RESERVADO' }).catch(() => {})
 
     // Notificar prestador via WhatsApp que pagamento foi confirmado
     const service = await prisma.service.findUnique({
