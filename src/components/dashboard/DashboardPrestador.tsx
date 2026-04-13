@@ -1,13 +1,45 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { SERVICOS } from '@/lib/constants'
 import PwaPrompt from '@/components/PwaPrompt'
 import Tour from '@/components/Tour'
 
+function urlBase64ToUint8Array(base64String: string) {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+  const rawData = window.atob(base64)
+  return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)))
+}
+
+async function garantirSubscription() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return
+  if (Notification.permission !== 'granted') return
+  try {
+    const reg = await navigator.serviceWorker.ready
+    const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+    if (!vapidKey) return
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(vapidKey),
+    })
+    const json = sub.toJSON()
+    await fetch('/api/push', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ endpoint: sub.endpoint, p256dh: json.keys?.p256dh, auth: json.keys?.auth }),
+    })
+  } catch {}
+}
+
 export default function DashboardPrestador({ user }: { user: any }) {
   const [disponivel, setDisponivel] = useState(user.prestador?.disponivel ?? true)
+
+  useEffect(() => {
+    // Garante que a subscription de push está salva para esta conta
+    garantirSubscription()
+  }, [])
   const matches = user.prestador?.matches || []
   const pendentes = matches.filter((m: any) => m.status === 'PENDENTE')
   const aceitos = matches.filter((m: any) => m.status === 'ACEITO')

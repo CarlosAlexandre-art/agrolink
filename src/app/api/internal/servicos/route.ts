@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { createClient } from '@supabase/supabase-js'
+import { notificarUsuario } from '@/lib/push'
+import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
+import { SERVICOS } from '@/lib/constants'
 
 /**
  * Endpoint interno — chamado pelo AgroOS para criar serviços no AgroCore
@@ -54,6 +57,15 @@ export async function POST(req: Request) {
         },
         include: { produtor: true }
       })
+
+      // Enviar link para o usuário definir sua senha no AgroCore
+      await supabaseAdmin.auth.admin.generateLink({
+        type: 'recovery',
+        email: userEmail,
+        options: {
+          redirectTo: `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://agrolink-opal.vercel.app'}/nova-senha`,
+        },
+      }).catch(() => {}) // não bloquear o fluxo se falhar
     }
 
     // Criar serviço
@@ -70,9 +82,31 @@ export async function POST(req: Request) {
       }
     })
 
+    // Buscar prestadores disponíveis para este tipo de serviço e notificá-los
+    const prestadores = await prisma.prestador.findMany({
+      where: { disponivel: true, servicosOferecidos: { has: serviceType } },
+      include: { user: true }
+    })
+
+    const servicoLabel = SERVICOS.find(s => s.value === serviceType)?.label ?? serviceType
+
+    await Promise.all(
+      prestadores.map(p =>
+        prisma.match.create({
+          data: { serviceId: service.id, prestadorId: p.id, status: 'PENDENTE' }
+        }).then(() => {
+          notificarUsuario(p.userId, '🔔 Novo chamado disponível!', `Serviço de ${servicoLabel} aguarda proposta`, '/dashboard').catch(() => {})
+          if (p.user.telefone) {
+            enviarWhatsApp(p.user.telefone, wpp.novoChamado(p.user.nome, servicoLabel, service.id)).catch(() => {})
+          }
+        }).catch(() => {})
+      )
+    )
+
     return NextResponse.json({
       serviceId: service.id,
-      url: '/servico/' + service.id
+      url: '/rastrear/' + service.id,
+      urlPublico: '/rastrear/' + service.id,
     }, { status: 201 })
 
   } catch (error: any) {
