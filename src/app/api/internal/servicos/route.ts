@@ -38,9 +38,8 @@ export async function POST(req: Request) {
         endereco: location || null,
         status: 'PROCURANDO',
         urgencia: 'MEDIA',
-        // Latitude/longitude opcionais — AgroOS pode não ter
-        latitude: null,
-        longitude: null,
+        latitude: 0,
+        longitude: 0,
       }
     })
 
