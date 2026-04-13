@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
 import { SERVICOS } from '@/lib/constants'
+import { notificarAgroOS } from '@/lib/agros-webhook'
 
 export async function PATCH(req: Request) {
   try {
@@ -49,6 +50,9 @@ export async function PATCH(req: Request) {
           }
         }),
       ])
+
+      // Notificar AgroOS que proposta foi aceita
+      notificarAgroOS(match.serviceId, 'MATCH_ENCONTRADO', { prestadorNome: match.prestador.user.nome }).catch(() => {})
 
       // Notificar prestador via WhatsApp
       const prestadorUser = match.prestador.user

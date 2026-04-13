@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { notificarUsuario } from '@/lib/push'
 import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
+import { notificarAgroOS } from '@/lib/agros-webhook'
 
 export async function PATCH(req: Request) {
   try {
@@ -58,6 +59,9 @@ export async function PATCH(req: Request) {
           data: { status: 'AGUARDANDO_PROPOSTA' }
         })
       ])
+
+      // Notificar AgroOS que serviço entrou em aguardando proposta
+      notificarAgroOS(match.serviceId, 'AGUARDANDO_PROPOSTA', { prestadorNome: dbUser.nome }).catch(() => {})
 
       // Notify produtor that they have a proposal
       const produtorUserId = match.service.produtor.userId

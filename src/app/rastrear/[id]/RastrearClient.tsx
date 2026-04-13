@@ -4,15 +4,16 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 const STATUS_LABELS: Record<string, { label: string; cor: string; icon: string }> = {
-  PROCURANDO:       { label: 'Procurando prestador',    cor: 'bg-yellow-100 text-yellow-800 border-yellow-200',  icon: '🔍' },
-  MATCH_ENCONTRADO: { label: 'Prestador encontrado',    cor: 'bg-blue-100 text-blue-800 border-blue-200',        icon: '✅' },
-  EM_ROTA:          { label: 'Em rota / Aguardando',    cor: 'bg-indigo-100 text-indigo-800 border-indigo-200',  icon: '🚜' },
-  EXECUTANDO:       { label: 'Serviço em execução',     cor: 'bg-orange-100 text-orange-800 border-orange-200',  icon: '⚙️' },
-  CONCLUIDO:        { label: 'Concluído',                cor: 'bg-green-100 text-green-800 border-green-200',     icon: '🎉' },
-  CANCELADO:        { label: 'Cancelado',                cor: 'bg-red-100 text-red-800 border-red-200',           icon: '❌' },
+  PROCURANDO:          { label: 'Procurando prestador',    cor: 'bg-yellow-100 text-yellow-800 border-yellow-200',  icon: '🔍' },
+  AGUARDANDO_PROPOSTA: { label: 'Proposta recebida!',      cor: 'bg-purple-100 text-purple-800 border-purple-200',  icon: '💰' },
+  MATCH_ENCONTRADO:    { label: 'Prestador confirmado',    cor: 'bg-blue-100 text-blue-800 border-blue-200',        icon: '✅' },
+  EM_ROTA:             { label: 'Em rota / Aguardando',    cor: 'bg-indigo-100 text-indigo-800 border-indigo-200',  icon: '🚜' },
+  EXECUTANDO:          { label: 'Serviço em execução',     cor: 'bg-orange-100 text-orange-800 border-orange-200',  icon: '⚙️' },
+  CONCLUIDO:           { label: 'Concluído',                cor: 'bg-green-100 text-green-800 border-green-200',     icon: '🎉' },
+  CANCELADO:           { label: 'Cancelado',                cor: 'bg-red-100 text-red-800 border-red-200',           icon: '❌' },
 }
 
-const ETAPAS = ['PROCURANDO', 'MATCH_ENCONTRADO', 'EM_ROTA', 'EXECUTANDO', 'CONCLUIDO']
+const ETAPAS = ['PROCURANDO', 'AGUARDANDO_PROPOSTA', 'MATCH_ENCONTRADO', 'EM_ROTA', 'EXECUTANDO', 'CONCLUIDO']
 
 interface Props {
   serviceId: string
