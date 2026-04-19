@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
         produtor: {
           include: {
             _count: { select: { services: { where: { status: 'CONCLUIDO' } } } },
-            services: { where: { status: { in: ['PROCURANDO', 'MATCH_ENCONTRADO', 'EM_ANDAMENTO'] } }, select: { id: true } }
+            services: { where: { status: { in: ['PROCURANDO', 'AGUARDANDO_PROPOSTA', 'MATCH_ENCONTRADO', 'EM_ROTA', 'EXECUTANDO'] } }, select: { id: true } }
           }
         },
         prestador: {
