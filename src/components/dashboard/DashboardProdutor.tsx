@@ -121,14 +121,20 @@ export default function DashboardProdutor({ user }: { user: any }) {
         )}
 
         {/* Resumo */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-3">
           <div className="bg-white rounded-xl p-4 shadow-sm text-center">
-            <div className="text-3xl font-bold text-green-700">{concluidos.length}</div>
-            <div className="text-sm text-gray-500 mt-1">Concluídos</div>
+            <div className="text-2xl font-bold text-green-700">{concluidos.length}</div>
+            <div className="text-xs text-gray-500 mt-1">Concluídos</div>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm text-center">
-            <div className="text-3xl font-bold text-green-700">{emAndamento.length}</div>
-            <div className="text-sm text-gray-500 mt-1">Em andamento</div>
+            <div className="text-2xl font-bold text-green-700">{emAndamento.length}</div>
+            <div className="text-xs text-gray-500 mt-1">Em andamento</div>
+          </div>
+          <div className="bg-white rounded-xl p-4 shadow-sm text-center">
+            <div className="text-2xl font-bold text-green-700">
+              {user.produtor?.avaliacao > 0 ? user.produtor.avaliacao.toFixed(1) : '—'}
+            </div>
+            <div className="text-xs text-gray-500 mt-1">⭐ Sua nota</div>
           </div>
         </div>
 

@@ -168,7 +168,7 @@ export default function ServicoClient({
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         serviceId,
-        produtorId: service.produtor?.prestador?.id || service.produtorId,
+        produtorId: service.produtorId,
         nota: notaProdutor,
         comentario: comentarioProdutor,
       })
@@ -648,6 +648,32 @@ export default function ServicoClient({
             <p className="text-xs text-gray-400 mt-2 text-center">
               Foto enviada pelo prestador como comprovação do serviço realizado.
             </p>
+          </div>
+        )}
+
+        {/* Info do produtor — visível para o prestador */}
+        {isPrestador && service.produtor && (
+          <div className="bg-white rounded-2xl p-5 shadow-sm">
+            <h2 className="font-bold text-gray-700 mb-3">Produtor</h2>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-xl font-bold text-green-700">
+                {service.produtor.user.nome[0]}
+              </div>
+              <div className="flex-1">
+                <div className="font-semibold text-gray-800">{service.produtor.user.nome}</div>
+                {service.produtor.nomeFazenda && (
+                  <div className="text-sm text-gray-500">🌾 {service.produtor.nomeFazenda}</div>
+                )}
+                {service.produtor.avaliacao > 0 && (
+                  <div className="text-sm text-gray-500">
+                    ⭐ {service.produtor.avaliacao.toFixed(1)} · {service.produtor.totalAvaliacoes} avaliações
+                  </div>
+                )}
+              </div>
+              <Link href={`/produtor/${service.produtorId}`} className="text-xs text-green-700 font-semibold hover:underline flex-shrink-0">
+                Ver perfil →
+              </Link>
+            </div>
           </div>
         )}
 

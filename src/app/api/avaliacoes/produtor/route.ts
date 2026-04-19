@@ -45,6 +45,15 @@ export async function POST(req: Request) {
       }
     })
 
+    // Recalcular média do produtor
+    const todas = await prisma.avaliacaoProdutor.findMany({ where: { produtorId } })
+    const media = todas.reduce((acc, a) => acc + a.nota, 0) / todas.length
+
+    await prisma.produtor.update({
+      where: { id: produtorId },
+      data: { avaliacao: media, totalAvaliacoes: todas.length }
+    })
+
     return NextResponse.json(avaliacao, { status: 201 })
   } catch (error) {
     console.error(error)

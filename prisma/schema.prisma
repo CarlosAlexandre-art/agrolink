@@ -92,6 +92,8 @@ model Produtor {
   user        User      @relation(fields: [userId], references: [id])
   nomeFazenda        String?
   areaTotal          Float?
+  avaliacao          Float     @default(0)
+  totalAvaliacoes    Int       @default(0)
   services           Service[]
   avaliacoesRecebidas AvaliacaoProdutor[]
   createdAt          DateTime  @default(now())
