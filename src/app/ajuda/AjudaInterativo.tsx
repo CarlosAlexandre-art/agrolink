@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTheme } from '@/components/ThemeProvider'
+import AgrobotChat from '@/components/AgrobotChat'
 
 const FAQ = [
   {
@@ -196,6 +197,9 @@ export default function AjudaInterativo() {
           <FaqItem key={i} pergunta={item.pergunta} resposta={item.resposta} />
         ))}
       </div>
+
+      {/* AgroBot IA */}
+      <AgrobotChat />
 
       {/* Tour */}
       <button onClick={refazerTour} className="w-full py-4 border-2 border-green-700 text-green-700 text-center font-bold rounded-2xl hover:bg-green-50 transition">

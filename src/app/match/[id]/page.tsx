@@ -13,12 +13,34 @@ export default function MatchPage() {
   const [loading, setLoading] = useState<'ACEITAR' | 'RECUSAR' | null>(null)
   const [valorProposto, setValorProposto] = useState('')
   const [mensagem, setMensagem] = useState('')
+  const [sugestaoPreco, setSugestaoPreco] = useState<{ minimo: number; sugerido: number; maximo: number; justificativa: string } | null>(null)
+  const [buscandoPreco, setBuscandoPreco] = useState(false)
 
   useEffect(() => {
     fetch(`/api/matches/${matchId}`)
       .then(r => r.json())
       .then(setMatch)
   }, [matchId])
+
+  async function buscarSugestaoPreco() {
+    if (!match) return
+    setBuscandoPreco(true)
+    try {
+      const res = await fetch('/api/ai/sugerir-preco', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tipo: match.service?.tipo,
+          area: match.service?.area,
+          urgencia: match.service?.urgencia,
+          endereco: match.service?.endereco,
+        }),
+      })
+      if (res.ok) setSugestaoPreco(await res.json())
+    } finally {
+      setBuscandoPreco(false)
+    }
+  }
 
   async function handleAcao(acao: 'ACEITAR' | 'RECUSAR') {
     if (acao === 'ACEITAR' && (!valorProposto || parseFloat(valorProposto) <= 0)) {
@@ -129,6 +151,44 @@ export default function MatchPage() {
             <p className="text-sm text-gray-500 mb-4">
               Informe quanto você cobra por este serviço. O produtor verá sua proposta e poderá aceitar ou buscar outro prestador.
             </p>
+
+            {/* Sugestão de preço por IA */}
+            <button
+              type="button"
+              onClick={buscarSugestaoPreco}
+              disabled={buscandoPreco}
+              className="w-full mb-4 py-2 text-sm font-medium text-green-700 border border-green-300 bg-green-50 rounded-xl hover:bg-green-100 transition disabled:opacity-50"
+            >
+              {buscandoPreco ? '🤖 Consultando IA...' : '🤖 Sugerir preço com IA'}
+            </button>
+
+            {sugestaoPreco && (
+              <div className="mb-4 p-3 bg-white border border-green-200 rounded-xl text-sm">
+                <div className="font-semibold text-green-700 mb-2">💡 Sugestão da IA</div>
+                <div className="grid grid-cols-3 gap-2 text-center mb-2">
+                  <div className="bg-gray-50 rounded-lg p-2">
+                    <div className="text-xs text-gray-400">Mínimo</div>
+                    <div className="font-bold text-gray-700">R$ {sugestaoPreco.minimo.toLocaleString('pt-BR')}</div>
+                  </div>
+                  <div className="bg-green-100 rounded-lg p-2">
+                    <div className="text-xs text-green-600">Sugerido</div>
+                    <div className="font-bold text-green-700">R$ {sugestaoPreco.sugerido.toLocaleString('pt-BR')}</div>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-2">
+                    <div className="text-xs text-gray-400">Máximo</div>
+                    <div className="font-bold text-gray-700">R$ {sugestaoPreco.maximo.toLocaleString('pt-BR')}</div>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-500">{sugestaoPreco.justificativa}</p>
+                <button
+                  type="button"
+                  onClick={() => setValorProposto(String(sugestaoPreco.sugerido))}
+                  className="mt-2 text-xs text-green-700 font-semibold hover:underline"
+                >
+                  Usar valor sugerido →
+                </button>
+              </div>
+            )}
 
             <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700 mb-1">Valor total (R$) *</label>

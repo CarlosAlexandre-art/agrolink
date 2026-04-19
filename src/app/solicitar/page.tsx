@@ -12,9 +12,27 @@ export default function SolicitarPage() {
   const [urgencia, setUrgencia] = useState('MEDIA')
   const [descricao, setDescricao] = useState('')
   const [loading, setLoading] = useState(false)
+  const [gerandoDesc, setGerandoDesc] = useState(false)
   const [catFiltro, setCatFiltro] = useState<CategoriaServico | 'TODOS'>('TODOS')
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null)
   const [endereco, setEndereco] = useState('')
+
+  async function gerarDescricao() {
+    setGerandoDesc(true)
+    try {
+      const res = await fetch('/api/ai/descrever-servico', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tipo, area, urgencia, rascunho: descricao }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setDescricao(data.descricao)
+      }
+    } finally {
+      setGerandoDesc(false)
+    }
+  }
 
   async function getLocalizacao() {
     if (!navigator.geolocation) return
@@ -180,9 +198,19 @@ export default function SolicitarPage() {
 
             {/* Observação */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                📝 Observações (opcional)
-              </label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  📝 Observações (opcional)
+                </label>
+                <button
+                  type="button"
+                  onClick={gerarDescricao}
+                  disabled={gerandoDesc}
+                  className="text-xs text-green-700 font-semibold border border-green-300 bg-green-50 px-3 py-1 rounded-full hover:bg-green-100 transition disabled:opacity-50"
+                >
+                  {gerandoDesc ? '🤖 Gerando...' : '🤖 Gerar com IA'}
+                </button>
+              </div>
               <textarea
                 value={descricao}
                 onChange={e => setDescricao(e.target.value)}

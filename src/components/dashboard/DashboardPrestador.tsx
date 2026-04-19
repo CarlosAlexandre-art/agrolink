@@ -236,6 +236,19 @@ export default function DashboardPrestador({ user }: { user: any }) {
             <p className="text-sm">Fique disponível para receber novos pedidos.</p>
           </div>
         )}
+
+        {/* Relatório IA */}
+        <Link
+          href="/relatorio"
+          className="flex items-center gap-3 bg-white rounded-2xl px-5 py-4 shadow-sm border border-gray-100 hover:border-green-300 transition"
+        >
+          <span className="text-2xl">📊</span>
+          <div className="flex-1">
+            <div className="font-semibold text-gray-800">Relatório Mensal IA</div>
+            <div className="text-xs text-gray-400">Análise inteligente dos seus últimos 30 dias</div>
+          </div>
+          <span className="text-gray-300">→</span>
+        </Link>
       </div>
 
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex">

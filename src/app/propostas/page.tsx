@@ -11,6 +11,8 @@ export default function PropostasPage() {
   const [loading, setLoading] = useState(true)
   const [respondendo, setRespondendo] = useState<string | null>(null)
   const [msg, setMsg] = useState<{ tipo: 'ok' | 'erro'; texto: string } | null>(null)
+  const [analiseIA, setAnaliseIA] = useState<Record<string, { melhorId: string; resumo: string; dica: string } | null>>({})
+  const [analisando, setAnalisando] = useState<string | null>(null)
 
   useEffect(() => {
     fetch('/api/propostas').then(r => r.json()).then(d => {
@@ -35,6 +37,34 @@ export default function PropostasPage() {
       setMsg({ tipo: 'erro', texto: d.error || 'Erro ao responder' })
     }
     setRespondendo(null)
+  }
+
+  async function analisarComIA(serviceId: string, matches: any[], tipoServico: string) {
+    setAnalisando(serviceId)
+    try {
+      const res = await fetch('/api/ai/analisar-propostas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tipoServico,
+          propostas: matches.map(m => ({
+            id: m.id,
+            nomePrestador: m.prestador.user.nome,
+            valor: m.valorProposto,
+            avaliacao: m.prestador.avaliacao ?? 0,
+            totalAvaliacoes: m.prestador.totalAvaliacoes ?? 0,
+            badges: getBadgesPrestador({ avaliacao: m.prestador.avaliacao ?? 0, totalAvaliacoes: m.prestador.totalAvaliacoes ?? 0, verificado: m.prestador.verificado ?? false }).map(b => b.label),
+            mensagem: m.mensagemProposta,
+          })),
+        }),
+      })
+      if (res.ok) {
+        const analise = await res.json()
+        setAnaliseIA(prev => ({ ...prev, [serviceId]: analise }))
+      }
+    } finally {
+      setAnalisando(null)
+    }
   }
 
   // Agrupar por serviço e ordenar por menor valor
@@ -88,6 +118,27 @@ export default function PropostasPage() {
                 <div className="text-xs text-gray-400 mt-1">{ordenados.length} proposta{ordenados.length > 1 ? 's' : ''} recebida{ordenados.length > 1 ? 's' : ''}</div>
               </div>
 
+              {/* Análise IA */}
+              {ordenados.length > 1 && (
+                <div className="px-5 py-3 border-b border-green-100 bg-green-50/50">
+                  {!analiseIA[serviceId] ? (
+                    <button
+                      onClick={() => analisarComIA(serviceId, ordenados, servicoLabel)}
+                      disabled={analisando === serviceId}
+                      className="w-full py-2 text-sm font-semibold text-green-700 border border-green-300 bg-white rounded-xl hover:bg-green-50 transition disabled:opacity-50"
+                    >
+                      {analisando === serviceId ? '🤖 Analisando propostas...' : '🤖 Analisar com IA — qual é a melhor?'}
+                    </button>
+                  ) : (
+                    <div className="text-sm">
+                      <div className="font-semibold text-green-700 mb-1">🤖 Recomendação da IA</div>
+                      <p className="text-gray-700">{analiseIA[serviceId]!.resumo}</p>
+                      <p className="text-gray-500 text-xs mt-1 italic">💡 {analiseIA[serviceId]!.dica}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div className="divide-y divide-gray-50">
                 {ordenados.map((m) => {
                   const isMenorPreco = m.id === menorPrecoId && ordenados.length > 1
@@ -99,7 +150,7 @@ export default function PropostasPage() {
                   })
 
                   return (
-                    <div key={m.id} className={`p-5 space-y-3 ${isMenorPreco ? 'bg-emerald-50/40' : ''}`}>
+                    <div key={m.id} className={`p-5 space-y-3 ${analiseIA[serviceId]?.melhorId === m.id ? 'bg-blue-50/50' : isMenorPreco ? 'bg-emerald-50/40' : ''}`}>
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3 min-w-0">
                           <Link href={`/prestador/${m.prestadorId}`}>
