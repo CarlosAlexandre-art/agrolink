@@ -5,6 +5,9 @@ interface Props {
   longitude: number
   endereco?: string | null
   nomeFazenda?: string | null
+  prestadorLat?: number | null
+  prestadorLng?: number | null
+  prestadorNome?: string | null
 }
 
 function latLngToTile(lat: number, lng: number, zoom: number) {
@@ -24,7 +27,7 @@ function latLngToPixelOffset(lat: number, lng: number, zoom: number, tileX: numb
   return { px, py }
 }
 
-export default function MapaServico({ latitude, longitude, endereco, nomeFazenda }: Props) {
+export default function MapaServico({ latitude, longitude, endereco, nomeFazenda, prestadorLat: _prestadorLat, prestadorLng: _prestadorLng, prestadorNome: _prestadorNome }: Props) {
   const zoom = 14
   const { x, y } = latLngToTile(latitude, longitude, zoom)
 
