@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { SERVICOS } from '@/lib/constants'
+import { getBadgesPrestador } from '@/lib/badges'
+import BadgeChip from '@/components/BadgeChip'
 
 export default function PropostasPage() {
   const [propostas, setPropostas] = useState<any[]>([])
@@ -35,7 +37,7 @@ export default function PropostasPage() {
     setRespondendo(null)
   }
 
-  // Agrupar por serviço
+  // Agrupar por serviço e ordenar por menor valor
   const porServico: Record<string, any[]> = {}
   for (const m of propostas) {
     if (!porServico[m.serviceId]) porServico[m.serviceId] = []
@@ -75,8 +77,8 @@ export default function PropostasPage() {
           const service = matches[0].service
           const servicoLabel = SERVICOS.find(s => s.value === service.tipo)?.label ?? service.tipo
           const servicoIcon = SERVICOS.find(s => s.value === service.tipo)?.icon ?? '📋'
-          // Ordenar por menor valor primeiro
           const ordenados = [...matches].sort((a, b) => (a.valorProposto ?? 0) - (b.valorProposto ?? 0))
+          const menorPrecoId = ordenados[0]?.id
 
           return (
             <div key={serviceId} className="bg-white rounded-2xl shadow-sm overflow-hidden">
@@ -87,57 +89,79 @@ export default function PropostasPage() {
               </div>
 
               <div className="divide-y divide-gray-50">
-                {ordenados.map((m, idx) => (
-                  <div key={m.id} className="p-5 space-y-3">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center font-bold text-green-700">
-                          {m.prestador.user.nome[0]}
+                {ordenados.map((m) => {
+                  const isMenorPreco = m.id === menorPrecoId && ordenados.length > 1
+                  const badges = getBadgesPrestador({
+                    avaliacao: m.prestador.avaliacao ?? 0,
+                    totalAvaliacoes: m.prestador.totalAvaliacoes ?? 0,
+                    verificado: m.prestador.verificado ?? false,
+                    isMenorPreco,
+                  })
+
+                  return (
+                    <div key={m.id} className={`p-5 space-y-3 ${isMenorPreco ? 'bg-emerald-50/40' : ''}`}>
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <Link href={`/prestador/${m.prestadorId}`}>
+                            <div className="w-11 h-11 bg-green-100 rounded-full flex items-center justify-center font-bold text-green-700 text-lg flex-shrink-0 hover:ring-2 hover:ring-green-400 transition">
+                              {m.prestador.user.nome[0]}
+                            </div>
+                          </Link>
+                          <div className="min-w-0">
+                            <Link href={`/prestador/${m.prestadorId}`} className="font-semibold text-gray-800 hover:text-green-700 transition block truncate">
+                              {m.prestador.user.nome}
+                            </Link>
+                            {m.prestador.user.cidade && (
+                              <div className="text-xs text-gray-400">{m.prestador.user.cidade}, {m.prestador.user.estado}</div>
+                            )}
+                            {m.prestador.avaliacao > 0 && (
+                              <div className="text-xs text-yellow-600 flex items-center gap-1">
+                                <span>{'★'.repeat(Math.round(m.prestador.avaliacao))}</span>
+                                <span className="font-medium text-gray-600">{m.prestador.avaliacao.toFixed(1)}</span>
+                                <span className="text-gray-400">· {m.prestador.totalAvaliacoes} avaliações</span>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                        <div>
-                          <div className="font-semibold text-gray-800">{m.prestador.user.nome}</div>
-                          {m.prestador.user.cidade && (
-                            <div className="text-xs text-gray-400">{m.prestador.user.cidade}, {m.prestador.user.estado}</div>
-                          )}
-                          {m.prestador.avaliacao > 0 && (
-                            <div className="text-xs text-yellow-600">⭐ {m.prestador.avaliacao.toFixed(1)}</div>
-                          )}
+                        <div className="text-right flex-shrink-0">
+                          <div className="text-2xl font-bold text-green-700">
+                            R$ {m.valorProposto?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </div>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="text-2xl font-bold text-green-700">
-                          R$ {m.valorProposto?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+
+                      {/* Badges */}
+                      {badges.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5">
+                          {badges.map(b => <BadgeChip key={b.key} badge={b} size="xs" />)}
                         </div>
-                        {idx === 0 && ordenados.length > 1 && (
-                          <div className="text-xs text-green-600 font-medium">Menor preço ✓</div>
-                        )}
+                      )}
+
+                      {m.mensagemProposta && (
+                        <p className="text-sm text-gray-600 bg-gray-50 rounded-xl px-4 py-3 italic">
+                          "{m.mensagemProposta}"
+                        </p>
+                      )}
+
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          onClick={() => responder(m.id, 'RECUSAR')}
+                          disabled={respondendo === m.id}
+                          className="py-2.5 border-2 border-red-200 text-red-600 font-semibold rounded-xl hover:bg-red-50 transition disabled:opacity-50 text-sm"
+                        >
+                          {respondendo === m.id ? '...' : '❌ Recusar'}
+                        </button>
+                        <button
+                          onClick={() => responder(m.id, 'ACEITAR')}
+                          disabled={respondendo === m.id}
+                          className="py-2.5 bg-green-700 text-white font-semibold rounded-xl hover:bg-green-800 transition disabled:opacity-50 text-sm"
+                        >
+                          {respondendo === m.id ? '...' : '✅ Aceitar'}
+                        </button>
                       </div>
                     </div>
-
-                    {m.mensagemProposta && (
-                      <p className="text-sm text-gray-600 bg-gray-50 rounded-xl px-4 py-3 italic">
-                        "{m.mensagemProposta}"
-                      </p>
-                    )}
-
-                    <div className="grid grid-cols-2 gap-2">
-                      <button
-                        onClick={() => responder(m.id, 'RECUSAR')}
-                        disabled={respondendo === m.id}
-                        className="py-2.5 border-2 border-red-200 text-red-600 font-semibold rounded-xl hover:bg-red-50 transition disabled:opacity-50 text-sm"
-                      >
-                        {respondendo === m.id ? '...' : '❌ Recusar'}
-                      </button>
-                      <button
-                        onClick={() => responder(m.id, 'ACEITAR')}
-                        disabled={respondendo === m.id}
-                        className="py-2.5 bg-green-700 text-white font-semibold rounded-xl hover:bg-green-800 transition disabled:opacity-50 text-sm"
-                      >
-                        {respondendo === m.id ? '...' : '✅ Aceitar'}
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
           )

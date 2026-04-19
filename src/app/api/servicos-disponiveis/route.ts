@@ -28,7 +28,8 @@ export async function GET() {
               include: {
                 user: { select: { nome: true, cidade: true, estado: true, avatarUrl: true } },
                 _count: { select: { services: { where: { status: 'CONCLUIDO' } } } }
-              }
+              },
+              // avaliacao e totalAvaliacoes já são campos do modelo
             },
             _count: { select: { matches: { where: { status: 'ACEITO' } } } }
           }

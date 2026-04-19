@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { SERVICOS } from '@/lib/constants'
+import { getBadgesPrestador } from '@/lib/badges'
+import BadgeChip from '@/components/BadgeChip'
 
 function Estrelas({ nota, total }: { nota: number; total: number }) {
   return (
@@ -50,6 +52,11 @@ export default async function PerfilPrestadorPage({ params }: { params: Promise<
   const servicosFeitos = prestador.matches.length
   const tiposFeitos = [...new Set(prestador.matches.map(m => m.service.tipo))]
   const membroDesde = new Date(prestador.user.createdAt).getFullYear()
+  const badges = getBadgesPrestador({
+    avaliacao: prestador.avaliacao,
+    totalAvaliacoes: prestador.totalAvaliacoes,
+    verificado: prestador.verificado,
+  })
 
   function getServicoInfo(tipo: string) {
     return SERVICOS.find(s => s.value === tipo) || { label: tipo, icon: '📋' }
@@ -84,14 +91,7 @@ export default async function PerfilPrestadorPage({ params }: { params: Promise<
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="font-bold text-gray-800 text-xl">{prestador.user.nome}</h1>
-                {prestador.verificado && (
-                  <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-semibold">
-                    ✓ Verificado
-                  </span>
-                )}
-              </div>
+              <h1 className="font-bold text-gray-800 text-xl">{prestador.user.nome}</h1>
               {(prestador.user.cidade || prestador.user.estado) && (
                 <p className="text-sm text-gray-500 mt-0.5">
                   📍 {[prestador.user.cidade, prestador.user.estado].filter(Boolean).join(', ')}
@@ -117,6 +117,13 @@ export default async function PerfilPrestadorPage({ params }: { params: Promise<
           {prestador.totalAvaliacoes > 0 && (
             <div className="mt-4 pt-4 border-t border-gray-100">
               <Estrelas nota={prestador.avaliacao} total={prestador.totalAvaliacoes} />
+            </div>
+          )}
+
+          {/* Badges */}
+          {badges.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {badges.map(b => <BadgeChip key={b.key} badge={b} />)}
             </div>
           )}
         </div>
