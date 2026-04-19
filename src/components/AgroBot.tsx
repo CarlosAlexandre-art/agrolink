@@ -23,19 +23,12 @@ export default function AgroBot() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [unread, setUnread] = useState(false)
-  const [userType, setUserType] = useState<string | undefined>()
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const salvo = localStorage.getItem(STORAGE_KEY)
     if (salvo === 'false') setVisivel(false)
-  }, [])
-
-  useEffect(() => {
-    fetch('/api/perfil/me').then(r => r.ok ? r.json() : null).then(data => {
-      if (data?.tipo) setUserType(data.tipo)
-    }).catch(() => {})
   }, [])
 
   useEffect(() => {
@@ -71,16 +64,15 @@ export default function AgroBot() {
     setLoading(true)
 
     try {
-      const res = await fetch('/api/ai/chat', {
+      const res = await fetch('/api/agrobot', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: newMessages.map(m => ({ role: m.role, content: m.content })),
-          userType,
         })
       })
       const data = await res.json()
-      const reply = data.reply || 'Desculpe, não consegui processar sua mensagem.'
+      const reply = data.resposta || 'Desculpe, não consegui processar sua mensagem.'
       setMessages(prev => [...prev, { role: 'assistant', content: reply }])
       if (!open) setUnread(true)
     } catch {
