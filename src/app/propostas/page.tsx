@@ -1,0 +1,166 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { SERVICOS } from '@/lib/constants'
+
+export default function PropostasPage() {
+  const [propostas, setPropostas] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [respondendo, setRespondendo] = useState<string | null>(null)
+  const [msg, setMsg] = useState<{ tipo: 'ok' | 'erro'; texto: string } | null>(null)
+
+  useEffect(() => {
+    fetch('/api/propostas').then(r => r.json()).then(d => {
+      setPropostas(Array.isArray(d) ? d : [])
+      setLoading(false)
+    }).catch(() => setLoading(false))
+  }, [])
+
+  async function responder(matchId: string, acao: 'ACEITAR' | 'RECUSAR') {
+    setRespondendo(matchId)
+    setMsg(null)
+    const res = await fetch('/api/matches/proposta', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ matchId, acao }),
+    })
+    if (res.ok) {
+      setMsg({ tipo: 'ok', texto: acao === 'ACEITAR' ? '✅ Proposta aceita! Faça o pagamento para continuar.' : '❌ Proposta recusada.' })
+      setPropostas(p => p.filter(m => m.id !== matchId))
+    } else {
+      const d = await res.json()
+      setMsg({ tipo: 'erro', texto: d.error || 'Erro ao responder' })
+    }
+    setRespondendo(null)
+  }
+
+  // Agrupar por serviço
+  const porServico: Record<string, any[]> = {}
+  for (const m of propostas) {
+    if (!porServico[m.serviceId]) porServico[m.serviceId] = []
+    porServico[m.serviceId].push(m)
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 pb-24">
+      <header className="bg-green-700 text-white px-4 py-4">
+        <div className="max-w-2xl mx-auto flex items-center gap-3">
+          <Link href="/dashboard" className="text-green-200 hover:text-white">←</Link>
+          <div>
+            <div className="font-bold text-lg">💰 Propostas recebidas</div>
+            <div className="text-xs text-green-200">Escolha a melhor proposta para cada serviço</div>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+        {msg && (
+          <div className={`p-4 rounded-2xl text-sm font-medium ${msg.tipo === 'ok' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>
+            {msg.texto}
+          </div>
+        )}
+
+        {loading && <div className="text-center py-12 text-gray-400 animate-pulse">Carregando...</div>}
+
+        {!loading && Object.keys(porServico).length === 0 && (
+          <div className="text-center py-16 text-gray-400">
+            <div className="text-5xl mb-4">📭</div>
+            <p className="text-lg font-medium">Nenhuma proposta no momento.</p>
+            <p className="text-sm mt-1">Assim que prestadores enviarem propostas elas aparecem aqui.</p>
+          </div>
+        )}
+
+        {Object.entries(porServico).map(([serviceId, matches]) => {
+          const service = matches[0].service
+          const servicoLabel = SERVICOS.find(s => s.value === service.tipo)?.label ?? service.tipo
+          const servicoIcon = SERVICOS.find(s => s.value === service.tipo)?.icon ?? '📋'
+          // Ordenar por menor valor primeiro
+          const ordenados = [...matches].sort((a, b) => (a.valorProposto ?? 0) - (b.valorProposto ?? 0))
+
+          return (
+            <div key={serviceId} className="bg-white rounded-2xl shadow-sm overflow-hidden">
+              <div className="bg-green-50 px-5 py-4 border-b border-green-100">
+                <div className="font-bold text-gray-800 text-lg">{servicoIcon} {servicoLabel}</div>
+                {service.endereco && <div className="text-sm text-gray-500 mt-0.5">📍 {service.endereco}</div>}
+                <div className="text-xs text-gray-400 mt-1">{ordenados.length} proposta{ordenados.length > 1 ? 's' : ''} recebida{ordenados.length > 1 ? 's' : ''}</div>
+              </div>
+
+              <div className="divide-y divide-gray-50">
+                {ordenados.map((m, idx) => (
+                  <div key={m.id} className="p-5 space-y-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center font-bold text-green-700">
+                          {m.prestador.user.nome[0]}
+                        </div>
+                        <div>
+                          <div className="font-semibold text-gray-800">{m.prestador.user.nome}</div>
+                          {m.prestador.user.cidade && (
+                            <div className="text-xs text-gray-400">{m.prestador.user.cidade}, {m.prestador.user.estado}</div>
+                          )}
+                          {m.prestador.avaliacao > 0 && (
+                            <div className="text-xs text-yellow-600">⭐ {m.prestador.avaliacao.toFixed(1)}</div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-green-700">
+                          R$ {m.valorProposto?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        </div>
+                        {idx === 0 && ordenados.length > 1 && (
+                          <div className="text-xs text-green-600 font-medium">Menor preço ✓</div>
+                        )}
+                      </div>
+                    </div>
+
+                    {m.mensagemProposta && (
+                      <p className="text-sm text-gray-600 bg-gray-50 rounded-xl px-4 py-3 italic">
+                        "{m.mensagemProposta}"
+                      </p>
+                    )}
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => responder(m.id, 'RECUSAR')}
+                        disabled={respondendo === m.id}
+                        className="py-2.5 border-2 border-red-200 text-red-600 font-semibold rounded-xl hover:bg-red-50 transition disabled:opacity-50 text-sm"
+                      >
+                        {respondendo === m.id ? '...' : '❌ Recusar'}
+                      </button>
+                      <button
+                        onClick={() => responder(m.id, 'ACEITAR')}
+                        disabled={respondendo === m.id}
+                        className="py-2.5 bg-green-700 text-white font-semibold rounded-xl hover:bg-green-800 transition disabled:opacity-50 text-sm"
+                      >
+                        {respondendo === m.id ? '...' : '✅ Aceitar'}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex">
+        <Link href="/dashboard" className="flex-1 py-3 text-center text-gray-500 text-xs">
+          <div className="text-xl">🏠</div>Home
+        </Link>
+        <Link href="/propostas" className="flex-1 py-3 text-center text-green-700 font-semibold text-xs">
+          <div className="text-xl">💰</div>Propostas
+        </Link>
+        <Link href="/solicitar" className="flex-1 py-3 text-center text-gray-500 text-xs">
+          <div className="text-xl">➕</div>Solicitar
+        </Link>
+        <Link href="/historico" className="flex-1 py-3 text-center text-gray-500 text-xs">
+          <div className="text-xl">📋</div>Histórico
+        </Link>
+        <Link href="/perfil" className="flex-1 py-3 text-center text-gray-500 text-xs">
+          <div className="text-xl">👤</div>Perfil
+        </Link>
+      </nav>
+    </div>
+  )
+}

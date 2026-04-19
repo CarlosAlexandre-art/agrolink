@@ -137,7 +137,7 @@ export const SERVICOS = [
     label: 'Assistência Veterinária',
     icon: '🐄',
     descricao: 'Atendimento veterinário para rebanho',
-    imagem: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=400&q=80&auto=format&fit=crop',
     categoria: 'PECUARIA' as CategoriaServico,
   },
   {

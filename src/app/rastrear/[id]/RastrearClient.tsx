@@ -51,7 +51,7 @@ export default function RastrearClient({ serviceId, initialService, servicoLabel
           if (data.status !== 'AGUARDANDO_PROPOSTA') setProposta(null)
         }
       } catch {}
-    }, 10000)
+    }, 5000)
 
     return () => clearInterval(interval)
   }, [serviceId, service.status])

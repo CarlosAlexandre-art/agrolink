@@ -35,14 +35,28 @@ async function garantirSubscription() {
 
 export default function DashboardPrestador({ user }: { user: any }) {
   const [disponivel, setDisponivel] = useState(user.prestador?.disponivel ?? true)
+  const [qtdServicos, setQtdServicos] = useState(0)
 
   useEffect(() => {
-    // Garante que a subscription de push está salva para esta conta
     garantirSubscription()
+    // Contar serviços disponíveis
+    fetch('/api/servicos-disponiveis')
+      .then(r => r.json())
+      .then(d => setQtdServicos(Array.isArray(d) ? d.length : 0))
+      .catch(() => {})
   }, [])
+
   const matches = user.prestador?.matches || []
+  // Propostas enviadas aguardando produtor aceitar
+  const propostasEnviadas = matches.filter((m: any) =>
+    m.status === 'ACEITO' && ['PROCURANDO', 'AGUARDANDO_PROPOSTA'].includes(m.service?.status)
+  )
+  // Serviços em andamento (produtor aceitou a proposta)
+  const emAndamento = matches.filter((m: any) =>
+    m.status === 'ACEITO' && ['MATCH_ENCONTRADO', 'EM_ROTA', 'EXECUTANDO'].includes(m.service?.status)
+  )
+  // Pendentes sem proposta enviada
   const pendentes = matches.filter((m: any) => m.status === 'PENDENTE')
-  const aceitos = matches.filter((m: any) => m.status === 'ACEITO')
 
   function getServicoLabel(tipo: string) {
     return SERVICOS.find(s => s.value === tipo) || { label: tipo, icon: '📋' }
@@ -60,20 +74,36 @@ export default function DashboardPrestador({ user }: { user: any }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-green-700 text-white px-4 py-4">
         <div className="max-w-2xl mx-auto flex justify-between items-center">
           <div>
             <div className="font-bold text-lg">🌿 AgroCore</div>
             <div className="text-green-200 text-sm">Olá, {user.nome.split(' ')[0]}!</div>
           </div>
-          <Link href="/perfil" className="text-green-200 hover:text-white text-sm">
-            Perfil →
-          </Link>
+          <Link href="/perfil" className="text-green-200 hover:text-white text-sm">Perfil →</Link>
         </div>
       </header>
 
-      <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+      <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
+
+        {/* Banner serviços disponíveis */}
+        {qtdServicos > 0 && (
+          <Link
+            href="/servicos-disponiveis"
+            className="flex items-center justify-between bg-green-700 text-white rounded-2xl px-5 py-4 shadow-lg hover:bg-green-800 transition active:scale-95"
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-3xl">🔔</span>
+              <div>
+                <div className="font-bold text-lg">
+                  {qtdServicos} serviço{qtdServicos > 1 ? 's' : ''} disponível{qtdServicos > 1 ? 'is' : ''}!
+                </div>
+                <div className="text-green-200 text-sm">Clique para ver e enviar proposta</div>
+              </div>
+            </div>
+            <span className="text-2xl">→</span>
+          </Link>
+        )}
 
         {/* Toggle disponibilidade */}
         <div data-tour="disponivel" className="bg-white rounded-2xl p-5 shadow-sm flex items-center justify-between">
@@ -91,14 +121,44 @@ export default function DashboardPrestador({ user }: { user: any }) {
           </button>
         </div>
 
-        {/* Chamados pendentes */}
+        {/* Propostas enviadas aguardando produtor */}
+        {propostasEnviadas.length > 0 && (
+          <div>
+            <h2 className="font-bold text-gray-700 mb-3">⏳ Propostas enviadas ({propostasEnviadas.length})</h2>
+            <div className="space-y-3">
+              {propostasEnviadas.map((m: any) => {
+                const servico = getServicoLabel(m.service.tipo)
+                return (
+                  <div key={m.id} className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="font-semibold text-gray-800">{servico.icon} {servico.label}</div>
+                        <div className="text-sm text-gray-500">Cliente: {m.service.produtor.user.nome}</div>
+                        <div className="text-xs text-yellow-700 mt-1">Aguardando o produtor escolher a proposta</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-bold text-green-700">R$ {m.valorProposto?.toFixed(2)}</div>
+                        <div className="text-xs text-gray-400">sua proposta</div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Chamados pendentes (sem proposta enviada) */}
         {pendentes.length > 0 && (
           <div data-tour="chamados">
-            <h2 className="font-bold text-gray-700 mb-3">
-              🔔 Chamados disponíveis ({pendentes.length})
-            </h2>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="font-bold text-gray-700">🔔 Chamados ({pendentes.length})</h2>
+              <Link href="/servicos-disponiveis" className="text-xs text-green-700 font-medium hover:underline">
+                Ver todos →
+              </Link>
+            </div>
             <div className="space-y-3">
-              {pendentes.map((m: any) => {
+              {pendentes.slice(0, 3).map((m: any) => {
                 const servico = getServicoLabel(m.service.tipo)
                 return (
                   <Link
@@ -108,47 +168,34 @@ export default function DashboardPrestador({ user }: { user: any }) {
                   >
                     <div className="flex justify-between items-start">
                       <div>
-                        <div className="font-bold text-gray-800 text-lg">
-                          {servico.icon} {servico.label}
-                        </div>
-                        <div className="text-sm text-gray-500 mt-1">
-                          {m.service.area && `${m.service.area} hectares · `}
-                          {m.distancia && `${m.distancia.toFixed(1)} km de distância`}
-                        </div>
+                        <div className="font-bold text-gray-800">{servico.icon} {servico.label}</div>
                         <div className="text-sm text-gray-500">
-                          Urgência: {m.service.urgencia}
+                          {m.service.area && `${m.service.area} ha · `}
+                          {m.distancia ? `${m.distancia.toFixed(1)} km` : m.service.urgencia}
                         </div>
                       </div>
-                      {m.service.precoEstimado && (
-                        <div className="text-right">
-                          <div className="font-bold text-green-700 text-xl">
-                            R$ {m.service.precoEstimado.toFixed(0)}
-                          </div>
-                          <div className="text-xs text-gray-400">estimado</div>
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex gap-2 mt-4">
-                      <span className="flex-1 py-2 bg-[#22C55E] text-white text-center rounded-lg font-bold text-sm">
-                        ACEITAR
-                      </span>
-                      <span className="flex-1 py-2 bg-[#EF4444] text-white text-center rounded-lg font-bold text-sm">
-                        RECUSAR
+                      <span className="px-3 py-1.5 bg-green-700 text-white text-xs font-bold rounded-xl">
+                        Enviar proposta →
                       </span>
                     </div>
                   </Link>
                 )
               })}
+              {pendentes.length > 3 && (
+                <Link href="/servicos-disponiveis" className="block text-center text-sm text-green-700 font-medium py-2">
+                  + {pendentes.length - 3} mais disponíveis →
+                </Link>
+              )}
             </div>
           </div>
         )}
 
         {/* Em andamento */}
-        {aceitos.length > 0 && (
+        {emAndamento.length > 0 && (
           <div>
-            <h2 className="font-bold text-gray-700 mb-3">Serviços em andamento</h2>
+            <h2 className="font-bold text-gray-700 mb-3">✅ Em andamento ({emAndamento.length})</h2>
             <div className="space-y-3">
-              {aceitos.map((m: any) => {
+              {emAndamento.map((m: any) => {
                 const servico = getServicoLabel(m.service.tipo)
                 return (
                   <Link
@@ -156,11 +203,12 @@ export default function DashboardPrestador({ user }: { user: any }) {
                     href={`/servico/${m.service.id}`}
                     className="block bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:border-green-300 transition"
                   >
-                    <div className="font-semibold text-gray-800">
-                      {servico.icon} {servico.label}
-                    </div>
-                    <div className="text-sm text-gray-500 mt-1">
-                      Cliente: {m.service.produtor.user.nome}
+                    <div className="flex justify-between">
+                      <div>
+                        <div className="font-semibold text-gray-800">{servico.icon} {servico.label}</div>
+                        <div className="text-sm text-gray-500">Cliente: {m.service.produtor.user.nome}</div>
+                      </div>
+                      <div className="font-bold text-green-700 text-sm">R$ {m.valorProposto?.toFixed(2)}</div>
                     </div>
                   </Link>
                 )
@@ -169,7 +217,7 @@ export default function DashboardPrestador({ user }: { user: any }) {
           </div>
         )}
 
-        {/* Resumo ganhos */}
+        {/* Resumo */}
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-white rounded-xl p-4 shadow-sm text-center">
             <div className="text-2xl font-bold text-green-700">{user.prestador?.avaliacao?.toFixed(1) || '—'}</div>
@@ -181,38 +229,26 @@ export default function DashboardPrestador({ user }: { user: any }) {
           </div>
         </div>
 
-        {/* Link perfil público */}
-        {user.prestador?.id && (
-          <Link
-            href={`/prestador/${user.prestador.id}`}
-            className="flex items-center justify-between w-full bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:border-green-300 transition"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center font-bold text-green-700">
-                {user.nome[0]}
-              </div>
-              <div>
-                <div className="font-semibold text-gray-800 text-sm">Meu Perfil Público</div>
-                <div className="text-xs text-gray-500">Veja como produtores te enxergam</div>
-              </div>
-            </div>
-            <span className="text-gray-400 text-sm">→</span>
-          </Link>
-        )}
-
-        {pendentes.length === 0 && aceitos.length === 0 && (
+        {qtdServicos === 0 && pendentes.length === 0 && emAndamento.length === 0 && propostasEnviadas.length === 0 && (
           <div className="text-center py-12 text-gray-400">
             <div className="text-5xl mb-4">🔧</div>
             <p className="text-lg">Nenhum chamado no momento.</p>
-            <p className="text-sm">Fique disponível para receber serviços.</p>
+            <p className="text-sm">Fique disponível para receber novos pedidos.</p>
           </div>
         )}
       </div>
 
-      {/* Bottom nav */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex">
         <Link href="/dashboard" className="flex-1 py-3 text-center text-green-700 font-semibold text-xs">
           <div className="text-xl">🏠</div>Home
+        </Link>
+        <Link href="/servicos-disponiveis" className="flex-1 py-3 text-center text-gray-500 text-xs relative">
+          <div className="text-xl">🔔</div>Pedidos
+          {qtdServicos > 0 && (
+            <span className="absolute top-2 right-4 w-4 h-4 bg-red-500 rounded-full text-white text-[10px] flex items-center justify-center font-bold">
+              {qtdServicos > 9 ? '9+' : qtdServicos}
+            </span>
+          )}
         </Link>
         <Link href="/historico" className="flex-1 py-3 text-center text-gray-500 text-xs">
           <div className="text-xl">📋</div>Histórico

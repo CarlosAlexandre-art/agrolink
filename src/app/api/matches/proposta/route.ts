@@ -26,7 +26,7 @@ export async function PATCH(req: Request) {
       where: {
         id: matchId,
         status: 'ACEITO',
-        service: { produtorId: dbUser.produtor.id, status: 'AGUARDANDO_PROPOSTA' }
+        service: { produtorId: dbUser.produtor.id, status: { in: ['PROCURANDO', 'AGUARDANDO_PROPOSTA'] } }
       },
       include: {
         service: true,
@@ -39,8 +39,12 @@ export async function PATCH(req: Request) {
     }
 
     if (acao === 'ACEITAR') {
-      // Produtor aceita proposta → serviço vai para MATCH_ENCONTRADO com o valor proposto
+      // Produtor escolhe esta proposta: cancela todas as outras, avança o serviço
       await prisma.$transaction([
+        prisma.match.updateMany({
+          where: { serviceId: match.serviceId, id: { not: matchId }, status: { in: ['ACEITO', 'PENDENTE'] } },
+          data: { status: 'CANCELADO' }
+        }),
         prisma.service.update({
           where: { id: match.serviceId },
           data: {

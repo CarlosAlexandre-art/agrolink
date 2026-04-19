@@ -3,15 +3,26 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { SERVICOS } from '@/lib/constants'
 import { useI18n } from '@/lib/i18n'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
+import { createClient } from '@/lib/supabase/client'
 
 export default function Home() {
   const { t } = useI18n()
+  const router = useRouter()
   const [popupAgros, setPopupAgros] = useState(false)
   const [videoError, setVideoError] = useState(false)
   const servicosDestaque = SERVICOS.slice(0, 6)
+
+  // Se já está logado, vai direto pro dashboard
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) router.replace('/dashboard')
+    })
+  }, [])
 
   const heroImages = [
     'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1400&q=85&auto=format&fit=crop',

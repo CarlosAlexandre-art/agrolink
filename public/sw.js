@@ -1,5 +1,5 @@
-const CACHE_NAME = 'agrocore-v1'
-const STATIC_ASSETS = ['/', '/dashboard', '/manifest.json']
+const CACHE_NAME = 'agrocore-v2'
+const STATIC_ASSETS = ['/', '/manifest.json']
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

@@ -76,6 +76,7 @@ model User {
   cidade     String?
   latitude   Float?
   longitude  Float?
+  plan       String   @default("free")
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 

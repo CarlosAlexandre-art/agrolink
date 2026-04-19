@@ -40,27 +40,17 @@ export async function PATCH(req: Request) {
     }
 
     if (acao === 'ACEITAR') {
-      // Prestador aceita E envia proposta de valor
-      await prisma.$transaction([
-        prisma.match.update({
-          where: { id: matchId },
-          data: {
-            status: 'ACEITO',
-            valorProposto,
-            mensagemProposta: mensagemProposta || null,
-          }
-        }),
-        prisma.match.updateMany({
-          where: { serviceId: match.serviceId, id: { not: matchId }, status: 'PENDENTE' },
-          data: { status: 'CANCELADO' }
-        }),
-        prisma.service.update({
-          where: { id: match.serviceId },
-          data: { status: 'AGUARDANDO_PROPOSTA' }
-        })
-      ])
+      // Prestador envia proposta — outros podem enviar também, produtor escolhe
+      await prisma.match.update({
+        where: { id: matchId },
+        data: {
+          status: 'ACEITO',
+          valorProposto,
+          mensagemProposta: mensagemProposta || null,
+        }
+      })
 
-      // Notificar AgroOS que serviço entrou em aguardando proposta
+      // Notificar AgroOS que nova proposta foi recebida
       notificarAgroOS(match.serviceId, 'AGUARDANDO_PROPOSTA', { prestadorNome: dbUser.nome }).catch(() => {})
 
       // Notify produtor that they have a proposal
@@ -71,7 +61,7 @@ export async function PATCH(req: Request) {
         produtorUserId,
         '💰 Nova proposta recebida!',
         `${dbUser.nome} enviou uma proposta de R$ ${valorProposto.toFixed(2)} para seu serviço.`,
-        `/servico/${match.serviceId}`
+        `/propostas`
       )
 
       if (produtorUser.telefone) {
