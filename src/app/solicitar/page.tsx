@@ -13,37 +13,28 @@ export default function SolicitarPage() {
   const [descricao, setDescricao] = useState('')
   const [loading, setLoading] = useState(false)
   const [gerandoDesc, setGerandoDesc] = useState(false)
+  const [erroDesc, setErroDesc] = useState('')
   const [catFiltro, setCatFiltro] = useState<CategoriaServico | 'TODOS'>('TODOS')
-  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null)
+  const [coords] = useState<{ lat: number; lng: number } | null>(null)
   const [endereco, setEndereco] = useState('')
 
   async function gerarDescricao() {
     setGerandoDesc(true)
+    setErroDesc('')
     try {
       const res = await fetch('/api/ai/descrever-servico', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tipo, area, urgencia, rascunho: descricao }),
       })
-      if (res.ok) {
-        const data = await res.json()
-        setDescricao(data.descricao)
-      }
+      const data = await res.json()
+      if (res.ok) setDescricao(data.descricao)
+      else setErroDesc(data.error || 'Erro ao gerar descrição')
+    } catch {
+      setErroDesc('Sem conexão. Tente novamente.')
     } finally {
       setGerandoDesc(false)
     }
-  }
-
-  async function getLocalizacao() {
-    if (!navigator.geolocation) return
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude })
-        setEndereco('Localização obtida automaticamente')
-      },
-      () => {},
-      { enableHighAccuracy: false, timeout: 5000, maximumAge: 60000 }
-    )
   }
 
   async function handleSubmit() {
@@ -218,6 +209,7 @@ export default function SolicitarPage() {
                 placeholder="Detalhes adicionais sobre o serviço..."
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
               />
+              {erroDesc && <p className="text-xs text-red-500 mt-1">{erroDesc}</p>}
             </div>
 
             <button
