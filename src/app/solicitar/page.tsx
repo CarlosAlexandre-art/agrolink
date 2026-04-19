@@ -4,8 +4,6 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { SERVICOS, URGENCIAS, CATEGORIAS, type CategoriaServico } from '@/lib/constants'
-import PlanoUpgradeModal from '@/components/PlanoUpgradeModal'
-
 export default function SolicitarPage() {
   const router = useRouter()
   const [step, setStep] = useState(1)
@@ -17,7 +15,6 @@ export default function SolicitarPage() {
   const [catFiltro, setCatFiltro] = useState<CategoriaServico | 'TODOS'>('TODOS')
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null)
   const [endereco, setEndereco] = useState('')
-  const [planLimit, setPlanLimit] = useState<{ plano: string; limite: number } | null>(null)
 
   async function getLocalizacao() {
     if (!navigator.geolocation) return
@@ -59,19 +56,13 @@ export default function SolicitarPage() {
       return
     }
 
-    const err = await res.json().catch(() => ({}))
-    if (res.status === 403 && err.error === 'PLAN_LIMIT') {
-      setPlanLimit({ plano: err.plano, limite: err.limite })
-    } else {
-      alert('Erro ao solicitar serviço. Tente novamente.')
-    }
+    alert('Erro ao solicitar serviço. Tente novamente.')
     setLoading(false)
   }
 
   const servicoSelecionado = SERVICOS.find(s => s.value === tipo)
 
   return (
-    <>
     <div className="min-h-screen bg-gray-50">
       <header className="bg-green-700 text-white px-4 py-4">
         <div className="max-w-2xl mx-auto flex items-center gap-3">
@@ -212,14 +203,5 @@ export default function SolicitarPage() {
         )}
       </div>
     </div>
-
-    {planLimit && (
-      <PlanoUpgradeModal
-        planoAtual={planLimit.plano}
-        limite={planLimit.limite}
-        onClose={() => setPlanLimit(null)}
-      />
-    )}
-    </>
   )
 }
