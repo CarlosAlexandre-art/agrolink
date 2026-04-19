@@ -54,7 +54,7 @@ export default async function PerfilProdutorPage({ params }: { params: Promise<{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const p = produtor as any
   const servicosConcluidos = p.services.length
-  const tiposContratados = [...new Set(p.services.map((s: any) => s.tipo as string))]
+  const tiposContratados: string[] = [...new Set<string>(p.services.map((s: any) => s.tipo as string))]
   const membroDesde = new Date(p.user.createdAt).getFullYear()
   const badges = getBadgesProdutor({
     avaliacao: p.avaliacao ?? 0,
