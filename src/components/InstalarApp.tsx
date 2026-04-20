@@ -8,24 +8,27 @@ export default function InstalarApp() {
   const [instalado, setInstalado] = useState(false)
 
   useEffect(() => {
-    // Já está rodando como app instalado
     if (window.matchMedia('(display-mode: standalone)').matches) return
-    // Usuário já dispensou permanentemente
     if (localStorage.getItem('app_instalado')) return
+
+    // Evento pode ter sido capturado antes da hidratação (ver layout.tsx)
+    if ((window as any).__bip) {
+      setPrompt((window as any).__bip)
+      setTimeout(() => setMostrar(true), 3000)
+    }
 
     const handler = (e: Event) => {
       e.preventDefault()
+      ;(window as any).__bip = e
       setPrompt(e)
-      // Mostrar após 3s na primeira visita
       setTimeout(() => setMostrar(true), 3000)
     }
 
     window.addEventListener('beforeinstallprompt', handler)
 
-    // iOS Safari — não tem beforeinstallprompt, mostrar guia manual
+    // iOS Safari — não tem beforeinstallprompt
     const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !(window as any).MSStream
-    const isInStandalone = window.matchMedia('(display-mode: standalone)').matches
-    if (isIOS && !isInStandalone && !sessionStorage.getItem('ios_guide_visto')) {
+    if (isIOS && !sessionStorage.getItem('ios_guide_visto')) {
       setTimeout(() => setMostrar(true), 4000)
     }
 

@@ -48,6 +48,10 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{
           __html: `(function(){var t=localStorage.getItem('agrocore_tema')||'auto';var d=t==='escuro'||(t==='auto'&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');})()`
         }} />
+        {/* Captura beforeinstallprompt ANTES do React hidratar para evitar race condition */}
+        <script dangerouslySetInnerHTML={{
+          __html: `window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.__bip=e;});`
+        }} />
       </head>
       <body className="font-sans min-h-full bg-gray-50 dark:bg-slate-900">
         <I18nProvider>
