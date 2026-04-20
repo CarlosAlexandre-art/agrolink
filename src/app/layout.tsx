@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Montserrat } from 'next/font/google'
 import './globals.css'
 import AgroBot from '@/components/AgroBot'
+import InstalarApp from '@/components/InstalarApp'
 import ThemeProvider from '@/components/ThemeProvider'
 import { I18nProvider } from '@/lib/i18n'
 
@@ -53,6 +54,7 @@ export default function RootLayout({
           <ThemeProvider>
             {children}
             <AgroBot />
+            <InstalarApp />
           </ThemeProvider>
         </I18nProvider>
         <script dangerouslySetInnerHTML={{
