@@ -8,7 +8,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   const service = await prisma.service.findUnique({
     where: { id },
     include: {
-      produtor: { include: { user: { select: { nome: true } } } },
+      produtor: { include: { user: { select: { nome: true, supabaseId: true } } } },
       matches: {
         where: { status: 'ACEITO' },
         include: {

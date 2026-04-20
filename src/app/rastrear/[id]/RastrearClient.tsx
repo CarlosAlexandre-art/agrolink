@@ -47,14 +47,27 @@ export default function RastrearClient({ serviceId, initialService, servicoLabel
           const data = await res.json()
           setService(data)
           setUltimaAtualizacao(new Date())
-          // Quando status muda de AGUARDANDO_PROPOSTA limpa o card de proposta
-          if (data.status !== 'AGUARDANDO_PROPOSTA') setProposta(null)
+
+          if (data.status === 'AGUARDANDO_PROPOSTA') {
+            // Busca proposta pendente para exibir card de aceite
+            const match = data.matches?.find((m: any) => m.status === 'ACEITO')
+            if (match && isProdutor) {
+              setProposta({
+                id: match.id,
+                valorProposto: match.valorProposto,
+                mensagemProposta: match.mensagemProposta,
+                prestadorNome: match.prestador?.user?.nome ?? 'Prestador',
+              })
+            }
+          } else {
+            setProposta(null)
+          }
         }
       } catch {}
     }, 5000)
 
     return () => clearInterval(interval)
-  }, [serviceId, service.status])
+  }, [serviceId, service.status, isProdutor])
 
   async function responderProposta(acao: 'ACEITAR' | 'RECUSAR') {
     if (!proposta) return
