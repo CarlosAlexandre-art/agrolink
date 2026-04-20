@@ -50,6 +50,12 @@ export async function PATCH(req: Request) {
         }
       })
 
+      // Atualiza status do serviço para que o rastreamento reflita a proposta
+      await prisma.service.update({
+        where: { id: match.serviceId },
+        data: { status: 'AGUARDANDO_PROPOSTA' }
+      })
+
       // Notificar AgroOS que nova proposta foi recebida
       notificarAgroOS(match.serviceId, 'AGUARDANDO_PROPOSTA', { prestadorNome: dbUser.nome }).catch(() => {})
 
