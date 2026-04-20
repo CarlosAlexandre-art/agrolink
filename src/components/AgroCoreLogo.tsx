@@ -11,7 +11,7 @@ export default function AgroCoreLogo({ size = 32, className = '', showText = tru
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       <Image
-        src="/icons/icon.svg"
+        src="/icons/logo-mark.svg"
         alt="AgroCore"
         width={size}
         height={size}

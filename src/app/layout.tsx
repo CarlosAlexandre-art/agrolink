@@ -16,7 +16,7 @@ export const metadata: Metadata = {
       { url: '/icons/icon.svg', type: 'image/svg+xml' },
       { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
     ],
-    apple: '/icons/icon-192.png',
+    apple: '/icon-192',
     shortcut: '/icons/icon.svg',
   },
   appleWebApp: {
@@ -42,7 +42,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={`h-full ${montserrat.variable}`}>
       <head>
-        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        <link rel="apple-touch-icon" href="/icon-192" />
         {/* Anti-FOUC: aplica tema antes do React hidratar */}
         <script dangerouslySetInnerHTML={{
           __html: `(function(){var t=localStorage.getItem('agrocore_tema')||'auto';var d=t==='escuro'||(t==='auto'&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');})()`

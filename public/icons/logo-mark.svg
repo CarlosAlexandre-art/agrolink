@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#104e27"/>
+      <stop offset="100%" stop-color="#679d3f"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#679d3f"/>
+      <stop offset="100%" stop-color="#8dc63f"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Círculo contorno -->
+  <circle cx="24" cy="24" r="21" stroke="url(#g1)" stroke-width="2.5"/>
+
+  <!-- Folha -->
+  <path d="M10 32 C10 16 18 8 24 8 C21 14 17 21 17 28 C17 32 14 36 10 36 Z" fill="url(#g1)"/>
+
+  <!-- Barras crescendo -->
+  <rect x="24" y="27" width="4" height="9" rx="1.5" fill="url(#g1)"/>
+  <rect x="30" y="22" width="4" height="14" rx="1.5" fill="url(#g1)"/>
+  <rect x="36" y="16" width="4" height="20" rx="1.5" fill="url(#g2)"/>
+
+  <!-- Seta para cima -->
+  <path d="M38 14 L38 10 M36 12 L38 9 L40 12" stroke="#679d3f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

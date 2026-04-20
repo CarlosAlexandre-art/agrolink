@@ -1,4 +1,4 @@
-const CACHE_NAME = 'agrocore-v2'
+const CACHE_NAME = 'agrocore-v3'
 const STATIC_ASSETS = ['/', '/manifest.json']
 
 self.addEventListener('install', (event) => {
@@ -43,8 +43,8 @@ self.addEventListener('push', (event) => {
   event.waitUntil(
     self.registration.showNotification(titulo, {
       body: corpo,
-      icon: '/icons/icon-192.png',
-      badge: '/icons/icon-192.png',
+      icon: '/icon-192',
+      badge: '/icon-192',
       data: { url },
       vibrate: [200, 100, 200],
     })
