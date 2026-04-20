@@ -11,6 +11,14 @@ export const metadata: Metadata = {
   title: 'AgroCore — Soluções Sustentáveis do Campo',
   description: 'O jeito mais rápido e seguro de contratar serviços rurais no Brasil.',
   manifest: '/manifest.json',
+  icons: {
+    icon: [
+      { url: '/icons/icon.svg', type: 'image/svg+xml' },
+      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: '/icons/icon-192.png',
+    shortcut: '/icons/icon.svg',
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
