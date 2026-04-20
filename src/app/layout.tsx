@@ -11,13 +11,12 @@ const montserrat = Montserrat({ subsets: ['latin'], variable: '--font-montserrat
 export const metadata: Metadata = {
   title: 'AgroCore — Soluções Sustentáveis do Campo',
   description: 'O jeito mais rápido e seguro de contratar serviços rurais no Brasil.',
-  manifest: '/manifest.json',
   icons: {
     icon: [
       { url: '/icons/icon.svg', type: 'image/svg+xml' },
       { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
     ],
-    apple: '/icon-192',
+    apple: '/icons/icon-192.png',
     shortcut: '/icons/icon.svg',
   },
   appleWebApp: {
@@ -65,7 +64,7 @@ export default function RootLayout({
           __html: `
             if ('serviceWorker' in navigator) {
               window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js');
+                navigator.serviceWorker.register('/sw.js', { scope: '/', updateViaCache: 'none' });
               });
             }
           `
