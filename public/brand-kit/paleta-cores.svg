@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 280" font-family="Arial, sans-serif">
+
+  <!-- Fundo -->
+  <rect width="900" height="280" fill="#0f172a" rx="20"/>
+
+  <!-- Título -->
+  <text x="40" y="44" font-size="13" font-weight="700" fill="rgba(255,255,255,0.35)" letter-spacing="3">PALETA DE CORES — AGROCORE</text>
+
+  <!-- Chip 1: Verde Floresta #104e27 -->
+  <rect x="40" y="64" width="148" height="148" rx="16" fill="#104e27"/>
+  <text x="40" y="232" font-size="13" font-weight="700" fill="white">Verde Floresta</text>
+  <text x="40" y="250" font-size="11" fill="rgba(255,255,255,0.4)" font-family="monospace">#104e27 · Primário</text>
+
+  <!-- Chip 2: Verde Campo #679d3f -->
+  <rect x="208" y="64" width="148" height="148" rx="16" fill="#679d3f"/>
+  <text x="208" y="232" font-size="13" font-weight="700" fill="white">Verde Campo</text>
+  <text x="208" y="250" font-size="11" fill="rgba(255,255,255,0.4)" font-family="monospace">#679d3f · Secundário</text>
+
+  <!-- Chip 3: Creme Terra #dad6ca -->
+  <rect x="376" y="64" width="148" height="148" rx="16" fill="#dad6ca"/>
+  <text x="376" y="232" font-size="13" font-weight="700" fill="white">Creme Terra</text>
+  <text x="376" y="250" font-size="11" fill="rgba(255,255,255,0.4)" font-family="monospace">#dad6ca · Neutro claro</text>
+
+  <!-- Chip 4: Cinza Neve #d8d8d8 -->
+  <rect x="544" y="64" width="148" height="148" rx="16" fill="#d8d8d8"/>
+  <text x="544" y="232" font-size="13" font-weight="700" fill="white">Cinza Neve</text>
+  <text x="544" y="250" font-size="11" fill="rgba(255,255,255,0.4)" font-family="monospace">#d8d8d8 · Neutro</text>
+
+  <!-- Chip 5: Marrom Solo #7b492d -->
+  <rect x="712" y="64" width="148" height="148" rx="16" fill="#7b492d"/>
+  <text x="712" y="232" font-size="13" font-weight="700" fill="white">Marrom Solo</text>
+  <text x="712" y="250" font-size="11" fill="rgba(255,255,255,0.4)" font-family="monospace">#7b492d · Acento</text>
+
+</svg>

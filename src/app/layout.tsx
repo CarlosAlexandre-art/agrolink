@@ -1,15 +1,15 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
+import { Montserrat } from 'next/font/google'
 import './globals.css'
 import AgroBot from '@/components/AgroBot'
 import ThemeProvider from '@/components/ThemeProvider'
 import { I18nProvider } from '@/lib/i18n'
 
-const inter = Inter({ subsets: ['latin'] })
+const montserrat = Montserrat({ subsets: ['latin'], variable: '--font-montserrat' })
 
 export const metadata: Metadata = {
-  title: 'AgroCore — Serviços Rurais',
-  description: 'O jeito mais rápido e seguro de contratar serviços rurais no Brasil',
+  title: 'AgroCore — Soluções Sustentáveis do Campo',
+  description: 'O jeito mais rápido e seguro de contratar serviços rurais no Brasil.',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#15803d',
+  themeColor: '#104e27',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
@@ -32,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="pt-BR" className="h-full">
+    <html lang="pt-BR" className={`h-full ${montserrat.variable}`}>
       <head>
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
         {/* Anti-FOUC: aplica tema antes do React hidratar */}
@@ -40,7 +40,7 @@ export default function RootLayout({
           __html: `(function(){var t=localStorage.getItem('agrocore_tema')||'auto';var d=t==='escuro'||(t==='auto'&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');})()`
         }} />
       </head>
-      <body className={`${inter.className} min-h-full bg-gray-50 dark:bg-slate-900`}>
+      <body className="font-sans min-h-full bg-gray-50 dark:bg-slate-900">
         <I18nProvider>
           <ThemeProvider>
             {children}

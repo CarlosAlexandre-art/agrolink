@@ -1,11 +1,11 @@
 {
-  "name": "AgroCore",
+  "name": "AgroCore — Soluções Sustentáveis do Campo",
   "short_name": "AgroCore",
-  "description": "Serviços rurais na palma da mão",
+  "description": "O jeito mais rápido e seguro de contratar serviços rurais no Brasil",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#15803d",
+  "background_color": "#dad6ca",
+  "theme_color": "#104e27",
   "orientation": "portrait",
   "icons": [
     {
@@ -19,8 +19,26 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ],
   "categories": ["productivity", "utilities"],
-  "lang": "pt-BR"
+  "lang": "pt-BR",
+  "shortcuts": [
+    {
+      "name": "Solicitar Serviço",
+      "url": "/solicitar",
+      "description": "Solicitar um novo serviço rural"
+    },
+    {
+      "name": "Meus Serviços",
+      "url": "/dashboard",
+      "description": "Ver meus serviços"
+    }
+  ]
 }

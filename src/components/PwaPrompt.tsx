@@ -91,7 +91,7 @@ export default function PwaPrompt() {
         >✕</button>
 
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-12 h-12 bg-green-700 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">🌿</div>
+          <img src="/icons/icon.svg" alt="AgroCore" className="w-12 h-12 rounded-xl flex-shrink-0" />
           <div>
             <div className="font-bold text-gray-800 text-sm">Instalar AgroCore</div>
             <div className="text-xs text-gray-500">Acesse mais rápido e receba notificações</div>

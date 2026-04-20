@@ -56,7 +56,7 @@ export default function PopupInteligente({ tipo, onFechar }: Props) {
                 onClick={onFechar}
                 className="flex items-center justify-center gap-2 w-full py-3 bg-green-700 text-white font-bold rounded-xl hover:bg-green-800 active:scale-95 transition"
               >
-                🌿 Conhecer o AgroOS
+                Conhecer o AgroOS
               </a>
               <button
                 onClick={onFechar}

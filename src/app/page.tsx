@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import { SERVICOS } from '@/lib/constants'
 import { useI18n } from '@/lib/i18n'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
+import AgroCoreLogo from '@/components/AgroCoreLogo'
 import { createClient } from '@/lib/supabase/client'
 
 export default function Home() {
@@ -58,9 +59,7 @@ export default function Home() {
       {/* Header */}
       <header className="bg-green-700 text-white relative z-[60]">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold">🌿 AgroCore</span>
-          </div>
+          <AgroCoreLogo size={36} />
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
             <Link
@@ -196,7 +195,8 @@ export default function Home() {
       {/* CTA */}
       <section className="py-16 px-4 bg-green-700 text-white text-center">
         <h2 className="text-3xl font-bold mb-4">Comece agora, é gratuito</h2>
-        <p className="text-green-100 text-lg mb-8">
+        <p className="mb-2 text-sm font-semibold tracking-widest uppercase opacity-70">Soluções Sustentáveis do Campo</p>
+        <p className="text-green-200 text-lg mb-8">
           Cadastre-se em menos de 1 minuto e conecte-se com prestadores de serviço rurais em todo o Brasil.
         </p>
         <Link
@@ -244,7 +244,7 @@ export default function Home() {
                 onClick={() => setPopupAgros(false)}
                 className="w-full py-3 bg-green-700 text-white font-bold rounded-xl hover:bg-green-800 active:scale-95 transition"
               >
-                🌿 Quero saber mais quando lançar
+                Quero saber mais quando lançar
               </button>
               <button
                 onClick={() => setPopupAgros(false)}

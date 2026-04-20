@@ -10,7 +10,7 @@
     </linearGradient>
   </defs>
 
-  <!-- Background: beige/cream rounded square (brand app icon style) -->
+  <!-- Fundo creme (brand) -->
   <rect width="512" height="512" rx="110" fill="#dad6ca"/>
 
   <!-- Circle outline -->

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#104e27"/>
+      <stop offset="100%" style="stop-color:#679d3f"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#679d3f"/>
+      <stop offset="100%" style="stop-color:#8dc63f"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fundo escuro -->
+  <rect width="512" height="512" rx="110" fill="#104e27"/>
+
+  <!-- Circle outline (claro no escuro) -->
+  <circle cx="256" cy="256" r="200" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="14"/>
+
+  <!-- Leaf -->
+  <path d="M126 340 C126 200 195 130 256 130 C230 175 198 230 198 295 C198 330 173 360 126 360 Z"
+        fill="url(#g2)"/>
+  <path d="M256 130 C230 178 205 242 196 318" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Bar chart: 3 bars -->
+  <rect x="256" y="290" width="30" height="65" rx="5" fill="rgba(255,255,255,0.5)" opacity="0.9"/>
+  <rect x="296" y="257" width="30" height="98" rx="5" fill="rgba(255,255,255,0.7)"/>
+  <rect x="336" y="222" width="30" height="133" rx="5" fill="white"/>
+
+  <!-- Arrow up -->
+  <path d="M351 210 L351 185 M340 198 L351 181 L362 198" fill="none" stroke="white" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- R$ label -->
+  <text x="268" y="215" font-family="Arial, sans-serif" font-weight="900" font-size="36" fill="white">R$</text>
+
+  <!-- Horizon lines -->
+  <path d="M108 398 Q256 382 404 398" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="5" stroke-linecap="round"/>
+  <path d="M130 420 Q256 406 382 420" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="4" stroke-linecap="round"/>
+</svg>

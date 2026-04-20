@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { SERVICOS } from '@/lib/constants'
 import PwaPrompt from '@/components/PwaPrompt'
 import Tour from '@/components/Tour'
+import AgroCoreLogo from '@/components/AgroCoreLogo'
 
 export default function DashboardProdutor({ user }: { user: any }) {
   const services = user.produtor?.services || []
@@ -45,7 +46,7 @@ export default function DashboardProdutor({ user }: { user: any }) {
       <header className="bg-green-700 text-white px-4 py-4">
         <div className="max-w-2xl mx-auto flex justify-between items-center">
           <div>
-            <div className="font-bold text-lg">🌿 AgroCore</div>
+            <AgroCoreLogo size={28} />
             <div className="text-green-200 text-sm">Olá, {user.nome.split(' ')[0]}!</div>
           </div>
           <Link href="/perfil" className="text-green-200 hover:text-white text-sm">Perfil →</Link>

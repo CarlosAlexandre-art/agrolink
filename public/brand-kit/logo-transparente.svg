@@ -10,16 +10,15 @@
     </linearGradient>
   </defs>
 
-  <!-- Background: beige/cream rounded square (brand app icon style) -->
-  <rect width="512" height="512" rx="110" fill="#dad6ca"/>
+  <!-- Sem fundo — transparente -->
 
   <!-- Circle outline -->
-  <circle cx="256" cy="256" r="200" fill="none" stroke="url(#g1)" stroke-width="18"/>
+  <circle cx="256" cy="256" r="220" fill="none" stroke="url(#g1)" stroke-width="18"/>
 
   <!-- Leaf -->
   <path d="M126 340 C126 200 195 130 256 130 C230 175 198 230 198 295 C198 330 173 360 126 360 Z"
         fill="url(#g1)"/>
-  <path d="M256 130 C230 178 205 242 196 318" fill="none" stroke="#dad6ca" stroke-width="4" stroke-linecap="round"/>
+  <path d="M256 130 C230 178 205 242 196 318" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
 
   <!-- Bar chart: 3 bars -->
   <rect x="256" y="290" width="30" height="65" rx="5" fill="url(#g1)" opacity="0.9"/>

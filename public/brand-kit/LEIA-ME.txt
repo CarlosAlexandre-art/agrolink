@@ -1,0 +1,56 @@
+╔══════════════════════════════════════════════════════════╗
+║         AGROCORE — BRAND KIT v1.0 (2025)                ║
+╚══════════════════════════════════════════════════════════╝
+
+Todos os arquivos são vetoriais (.svg) — escaláveis sem perda
+de qualidade para qualquer tamanho.
+
+──────────────────────────────────────────────────────────
+LOGOS (ícone quadrado)
+──────────────────────────────────────────────────────────
+logo-fundo-creme.svg        → Versão oficial (fundo #dad6ca)
+logo-fundo-escuro.svg       → Para fundos verdes escuros
+logo-fundo-claro.svg        → Para fundos brancos/claros
+logo-transparente.svg       → Sem fundo (use sobre qualquer cor)
+logo-marca-dagua.svg        → Para marca d'água em documentos
+
+──────────────────────────────────────────────────────────
+LOGOTIPO (ícone + nome + tagline)
+──────────────────────────────────────────────────────────
+logotipo-horizontal.svg          → Versão positiva (fundo claro)
+logotipo-horizontal-negativo.svg → Versão negativa (fundo escuro)
+
+──────────────────────────────────────────────────────────
+ELEMENTOS DA MARCA
+──────────────────────────────────────────────────────────
+paleta-cores.svg    → 5 cores oficiais com hex
+tipografia.svg      → Escalas tipográficas Montserrat
+
+──────────────────────────────────────────────────────────
+CORES OFICIAIS
+──────────────────────────────────────────────────────────
+Verde Floresta  #104e27   Primário / Headers / Botões
+Verde Campo     #679d3f   Secundário / Acentos / Hover
+Creme Terra     #dad6ca   Neutro claro / Backgrounds
+Cinza Neve      #d8d8d8   Neutro / Bordas / Dividers
+Marrom Solo     #7b492d   Acento terroso / Destaques
+
+──────────────────────────────────────────────────────────
+TIPOGRAFIA
+──────────────────────────────────────────────────────────
+Família:  Montserrat (Google Fonts — gratuita)
+Display:  Peso 900 — headlines grandes
+Título:   Peso 700 — seções e subtítulos
+Corpo:    Peso 400 — texto corrido
+Label:    Peso 600 — badges, labels, caps
+
+──────────────────────────────────────────────────────────
+USO CORRETO
+──────────────────────────────────────────────────────────
+✓ Usar o logo em alta resolução a partir destes vetores
+✓ Respeitar a área de proteção (mínimo 16px ao redor)
+✓ Usar apenas as cores oficiais da paleta
+✗ Não deformar, rotacionar ou recolorir o logo
+✗ Não usar fundos que comprometam a leitura
+
+© 2025 AgroCore · Todos os direitos reservados

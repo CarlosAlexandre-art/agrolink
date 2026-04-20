@@ -11,9 +11,9 @@ function baseTemplate(conteudo: string) {
     <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
     <body style="margin:0;padding:0;background:#f3f4f6;font-family:sans-serif">
       <div style="max-width:560px;margin:32px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08)">
-        <div style="background:#15803d;padding:24px 32px;text-align:center">
-          <div style="color:#fff;font-size:22px;font-weight:bold">🌿 AgroCore</div>
-          <div style="color:#bbf7d0;font-size:13px;margin-top:4px">Marketplace de serviços rurais</div>
+        <div style="background:#104e27;padding:24px 32px;text-align:center">
+          <div style="color:#fff;font-size:22px;font-weight:bold;letter-spacing:-0.5px">AgroCore</div>
+          <div style="color:rgba(255,255,255,0.5);font-size:11px;margin-top:4px;letter-spacing:2px;text-transform:uppercase">Soluções Sustentáveis do Campo</div>
         </div>
         <div style="padding:32px">
           ${conteudo}
@@ -50,7 +50,7 @@ export const emails = {
       </div>
       <p style="color:#6b7280;font-size:13px">O AgroCore conecta produtores rurais com os melhores prestadores de serviço do Brasil.</p>
     `
-    return resend.emails.send({ from: FROM, to, subject: `${nome.split(' ')[0]}, sentimos sua falta no AgroCore! 🌿`, html: baseTemplate(conteudo) })
+    return resend.emails.send({ from: FROM, to, subject: `${nome.split(' ')[0]}, sentimos sua falta no AgroCore!`, html: baseTemplate(conteudo) })
   },
 
   // Novo prestador na região
@@ -118,7 +118,7 @@ export const emails = {
       </div>
       <div style="text-align:center;margin:28px 0">
         <a href="${APP_URL}" style="background:#15803d;color:#fff;padding:14px 32px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:16px">
-          🌿 Quero ser o primeiro a saber
+          Quero ser o primeiro a saber
         </a>
       </div>
     `

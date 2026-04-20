@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import AgroCoreLogo from '@/components/AgroCoreLogo'
 import { createClient } from '@/lib/supabase/client'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
@@ -42,7 +43,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-green-50 flex items-center justify-center px-4">
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/" className="text-3xl font-bold text-green-700">🌿 AgroCore</Link>
+          <Link href="/"><AgroCoreLogo size={36} textColor="text-green-700" /></Link>
           <p className="text-gray-500 mt-2">Entre na sua conta</p>
         </div>
 

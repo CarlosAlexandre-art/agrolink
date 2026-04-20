@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import AgroCoreLogo from '@/components/AgroCoreLogo'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 
@@ -83,7 +84,7 @@ function BemVindoContent() {
 
       {/* Logo */}
       <div className="text-white text-center">
-        <div className="text-3xl font-bold">🌿 AgroCore</div>
+        <AgroCoreLogo size={32} />
       </div>
 
       {/* Slide */}
@@ -127,7 +128,7 @@ function BemVindoContent() {
 
 export default function BemVindoPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-green-700 flex items-center justify-center"><div className="text-white text-2xl">🌿</div></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-green-700 flex items-center justify-center"><AgroCoreLogo size={28} showText={false} /></div>}>
       <BemVindoContent />
     </Suspense>
   )

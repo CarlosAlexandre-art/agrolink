@@ -31,7 +31,7 @@ export async function GET(req: Request) {
       const isProd = user.tipo === 'PRODUTOR'
       await notificarUsuario(
         user.id,
-        '🌿 Sentimos sua falta!',
+        'AgroCore — Sentimos sua falta!',
         isProd ? 'Novos prestadores disponíveis na sua região.' : 'Novos chamados de serviço esperando por você.',
         '/dashboard'
       )

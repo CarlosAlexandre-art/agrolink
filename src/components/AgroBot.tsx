@@ -94,7 +94,7 @@ export default function AgroBot() {
           {/* Header */}
           <div className="bg-green-700 px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-lg">🌿</div>
+              <img src="/icons/icon.svg" alt="AgroBot" className="w-8 h-8 rounded-full bg-white p-0.5" />
               <div>
                 <div className="text-white font-bold text-sm">AgroBot</div>
                 <div className="text-green-200 text-xs">Assistente AgroCore</div>
@@ -183,7 +183,7 @@ export default function AgroBot() {
           onClick={() => setOpen(prev => !prev)}
           className="w-14 h-14 bg-green-700 text-white rounded-full shadow-lg hover:bg-green-800 active:scale-95 transition flex items-center justify-center text-2xl relative"
         >
-          {open ? '×' : '🌿'}
+          {open ? '×' : <img src="/icons/icon.svg" alt="AgroBot" className="w-9 h-9 rounded-full" />}
           {unread && !open && (
             <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-white" />
           )}

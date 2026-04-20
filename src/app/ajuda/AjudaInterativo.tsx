@@ -138,7 +138,7 @@ export default function AjudaInterativo() {
       {agrobotSumido && (
         <div className="bg-green-50 border border-green-200 rounded-2xl p-4">
           <div className="flex items-center gap-3">
-            <span className="text-2xl">🌿</span>
+            <img src="/icons/icon.svg" alt="AgroBot" className="w-8 h-8 rounded-lg" />
             <div className="flex-1">
               <div className="font-bold text-green-700">AgroBot desativado</div>
               <div className="text-sm text-green-600">Reative o assistente virtual quando quiser</div>

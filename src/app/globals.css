@@ -1,21 +1,43 @@
 @import "tailwindcss";
 
+/* ─── AgroCore Brand Colors ─── */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Brand palette */
+  --brand-dark:   #104e27;
+  --brand-green:  #679d3f;
+  --brand-gray:   #d8d8d8;
+  --brand-cream:  #dad6ca;
+  --brand-brown:  #7b492d;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-montserrat);
+}
+
+@theme {
+  /* Override Tailwind green scale with AgroCore brand colors */
+  --color-green-50:  #f2f9ea;
+  --color-green-100: #e4f3d2;
+  --color-green-200: #c5e5a3;
+  --color-green-300: #9dd16b;
+  --color-green-400: #7ab648;
+  --color-green-500: #679d3f;
+  --color-green-600: #4d7d2e;
+  --color-green-700: #104e27;
+  --color-green-800: #0b3a1c;
+  --color-green-900: #072712;
+  --color-green-950: #041409;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Montserrat', Arial, Helvetica, sans-serif;
 }
 
 /* ─── Animações ─── */

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import AgroCoreLogo from '@/components/AgroCoreLogo'
 
 export default function CompletarPerfilPage() {
   const router = useRouter()
@@ -35,7 +36,7 @@ export default function CompletarPerfilPage() {
     <div className="min-h-screen bg-green-50 flex items-center justify-center px-4">
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/" className="text-3xl font-bold text-green-700">🌿 AgroCore</Link>
+          <Link href="/"><AgroCoreLogo size={36} textColor="text-green-700" /></Link>
           <p className="text-gray-700 font-semibold mt-3 text-lg">Bem-vindo! Só mais um passo.</p>
           <p className="text-gray-500 text-sm mt-1">Como você vai usar o AgroCore?</p>
         </div>

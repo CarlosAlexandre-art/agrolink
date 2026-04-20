@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#104e27"/>
+      <stop offset="100%" style="stop-color:#679d3f"/>
+    </linearGradient>
+    <linearGradient id="brandGradLight" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#679d3f"/>
+      <stop offset="100%" style="stop-color:#8dc63f"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Circle outline / crescent arc background -->
+  <circle cx="100" cy="100" r="88" fill="none" stroke="url(#brandGrad)" stroke-width="8"/>
+
+  <!-- Inner circle fill (very subtle) -->
+  <circle cx="100" cy="100" r="80" fill="#dad6ca" opacity="0.15"/>
+
+  <!-- Large leaf (left side) -->
+  <path d="M52 130 C52 80 80 55 100 55 C90 70 78 90 78 115 C78 128 68 140 52 140 Z"
+        fill="url(#brandGrad)"/>
+  <!-- Leaf vein -->
+  <path d="M100 55 C90 72 80 95 75 125" fill="none" stroke="#dad6ca" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Bar chart (right side) - 3 bars growing left to right -->
+  <rect x="100" y="115" width="12" height="25" rx="2" fill="url(#brandGrad)" opacity="0.9"/>
+  <rect x="116" y="102" width="12" height="38" rx="2" fill="url(#brandGrad)"/>
+  <rect x="132" y="88" width="12" height="52" rx="2" fill="url(#brandGradLight)"/>
+
+  <!-- Upward arrow above bars -->
+  <path d="M138 82 L138 72 M134 76 L138 70 L142 76" fill="none" stroke="#679d3f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- R$ symbol (small, positioned center-right) -->
+  <text x="108" y="82" font-family="Arial, sans-serif" font-weight="900" font-size="14" fill="#104e27">R$</text>
+
+  <!-- Horizon / field lines (bottom) -->
+  <path d="M42 155 Q100 148 158 155" fill="none" stroke="#679d3f" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+  <path d="M52 164 Q100 158 148 164" fill="none" stroke="#679d3f" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+</svg>
