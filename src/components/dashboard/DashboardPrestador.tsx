@@ -249,6 +249,20 @@ export default function DashboardPrestador({ user }: { user: any }) {
           </div>
           <span className="text-gray-300">→</span>
         </Link>
+
+        {/* Ecossistema */}
+        <div>
+          <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Ecossistema</div>
+          <a href="https://agro-rate.vercel.app/dashboard" target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-4 bg-gradient-to-r from-emerald-600 to-green-700 text-white rounded-2xl px-5 py-4 shadow-sm hover:opacity-90 transition">
+            <div className="text-3xl">💳</div>
+            <div>
+              <div className="font-bold">AgroRate</div>
+              <div className="text-xs text-green-200">Consulte seu score de crédito rural e acesse linhas de financiamento</div>
+            </div>
+            <span className="ml-auto text-green-200">→</span>
+          </a>
+        </div>
       </div>
 
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex">
