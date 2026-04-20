@@ -1,7 +1,6 @@
 import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
-export const contentType = 'image/png'
 
 export async function GET() {
   return new ImageResponse(
@@ -14,7 +13,6 @@ export async function GET() {
       justifyContent: 'center',
       position: 'relative',
     }}>
-      {/* Circle outline */}
       <div style={{
         position: 'absolute',
         width: 148, height: 148,
@@ -22,7 +20,6 @@ export async function GET() {
         border: '7px solid #104e27',
         display: 'flex',
       }} />
-      {/* Leaf */}
       <div style={{
         position: 'absolute',
         left: 22, top: 28,
@@ -32,22 +29,22 @@ export async function GET() {
         transform: 'rotate(-15deg)',
         display: 'flex',
       }} />
-      {/* Bars */}
       <div style={{ position: 'absolute', right: 28, bottom: 32, display: 'flex', alignItems: 'flex-end', gap: 4 }}>
         <div style={{ width: 12, height: 24, background: '#104e27', borderRadius: 3 }} />
         <div style={{ width: 12, height: 36, background: '#104e27', borderRadius: 3 }} />
         <div style={{ width: 12, height: 50, background: '#679d3f', borderRadius: 3 }} />
       </div>
-      {/* R$ */}
       <div style={{
-        position: 'absolute',
-        right: 30, top: 42,
+        position: 'absolute', right: 30, top: 42,
         fontSize: 18, fontWeight: 900,
-        color: '#104e27',
-        fontFamily: 'sans-serif',
+        color: '#104e27', fontFamily: 'sans-serif',
         display: 'flex',
       }}>R$</div>
     </div>,
-    { width: 192, height: 192 }
+    {
+      width: 192,
+      height: 192,
+      headers: { 'Cache-Control': 'public, max-age=31536000, immutable' },
+    }
   )
 }
