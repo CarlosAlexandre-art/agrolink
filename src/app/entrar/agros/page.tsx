@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import AgroCoreLogo from '@/components/AgroCoreLogo'
 
 function AgroSEntrarContent() {
   const params = useSearchParams()
@@ -61,11 +62,7 @@ function AgroSEntrarContent() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <header className="bg-green-700 text-white px-4 py-4">
         <div className="max-w-sm mx-auto flex items-center gap-3">
-          <span className="text-2xl">🌱</span>
-          <div>
-            <div className="font-bold text-lg leading-tight">AgroCore</div>
-            <div className="text-xs text-green-200">Marketplace agrícola</div>
-          </div>
+          <AgroCoreLogo size={30} showSubtitle subtitleColor="text-green-300" />
         </div>
       </header>
 
@@ -216,7 +213,7 @@ export default function AgroSEntrarPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-green-700 animate-pulse">Carregando...</div>
+        <AgroCoreLogo size={28} textColor="text-green-700" subtitleColor="text-green-500" showSubtitle />
       </div>
     }>
       <AgroSEntrarContent />

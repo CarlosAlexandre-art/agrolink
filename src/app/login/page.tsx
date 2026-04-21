@@ -43,7 +43,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-green-50 flex items-center justify-center px-4">
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/"><AgroCoreLogo size={36} textColor="text-green-700" /></Link>
+          <Link href="/"><AgroCoreLogo size={36} textColor="text-green-700" subtitleColor="text-green-500" showSubtitle /></Link>
           <p className="text-gray-500 mt-2">Entre na sua conta</p>
         </div>
 

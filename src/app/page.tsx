@@ -59,7 +59,7 @@ export default function Home() {
       {/* Header */}
       <header className="bg-green-700 text-white relative z-[60]">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <AgroCoreLogo size={36} />
+          <AgroCoreLogo size={36} showSubtitle subtitleColor="text-green-300" />
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
             <Link

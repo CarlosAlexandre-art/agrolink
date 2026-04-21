@@ -1,0 +1,592 @@
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AgroCore — Identidade Visual 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --dark:  #104e27;
+    --green: #679d3f;
+    --gray:  #d8d8d8;
+    --cream: #dad6ca;
+    --brown: #7b492d;
+  }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: #0a0a0a;
+    color: white;
+    overflow-x: hidden;
+  }
+
+  /* ── SLIDES ── */
+  .slide {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ─ Slide 1: Capa ─ */
+  .s1 {
+    background: linear-gradient(135deg, #104e27 0%, #0a3619 60%, #041409 100%);
+    text-align: center;
+  }
+  .s1::before {
+    content: '';
+    position: absolute;
+    top: -200px; left: 50%;
+    transform: translateX(-50%);
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(103,157,63,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .s1 .logo-big {
+    width: 140px; height: 140px;
+    margin: 0 auto 32px;
+    filter: drop-shadow(0 20px 40px rgba(103,157,63,0.4));
+    animation: floatY 4s ease-in-out infinite;
+  }
+  @keyframes floatY {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-12px); }
+  }
+  .s1 h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 900;
+    letter-spacing: -2px;
+    line-height: 1;
+    background: linear-gradient(135deg, #fff 30%, #679d3f);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .s1 .tagline {
+    margin-top: 16px;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+  .s1 .year-badge {
+    display: inline-block;
+    margin-top: 40px;
+    padding: 8px 20px;
+    background: rgba(103,157,63,0.15);
+    border: 1px solid rgba(103,157,63,0.4);
+    border-radius: 99px;
+    font-size: 0.75rem;
+    color: #679d3f;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  /* ─ Slide 2: Logo ─ */
+  .s2 { background: #f9f6f0; color: #0f172a; }
+  .slide-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+    opacity: 0.4;
+  }
+  .logo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+    width: 100%;
+    max-width: 900px;
+  }
+  .logo-card {
+    border-radius: 24px;
+    padding: 48px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+  .logo-card img { width: 80px; height: 80px; }
+  .lc-dark  { background: var(--dark); color: white; }
+  .lc-light { background: #f9f6f0; border: 2px solid #e5e0d8; color: #0f172a; }
+  .lc-cream { background: var(--cream); color: #0f172a; }
+
+  /* ─ Slide 3: Cores ─ */
+  .s3 { background: #0f172a; }
+  .colors-grid {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 900px;
+  }
+  .color-chip {
+    width: 160px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    transition: transform 0.3s;
+  }
+  .color-chip:hover { transform: translateY(-8px) scale(1.04); }
+  .chip-swatch { height: 120px; }
+  .chip-info {
+    background: #1e293b;
+    padding: 14px;
+  }
+  .chip-name { font-weight: 700; font-size: 0.85rem; }
+  .chip-hex  { font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-top: 2px; font-family: monospace; }
+
+  /* ─ Slide 4: Tipografia ─ */
+  .s4 { background: var(--cream); color: #0f172a; }
+  .type-showcase {
+    max-width: 800px;
+    width: 100%;
+  }
+  .type-row { margin-bottom: 40px; border-bottom: 1px solid rgba(0,0,0,0.08); padding-bottom: 40px; }
+  .type-row:last-child { border: none; margin: 0; padding: 0; }
+  .type-meta { font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; opacity: 0.4; margin-bottom: 8px; }
+  .t-h1 { font-size: clamp(3rem, 7vw, 5.5rem); font-weight: 900; letter-spacing: -2px; color: var(--dark); line-height: 1; }
+  .t-h2 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 700; color: var(--dark); }
+  .t-body { font-size: 1.1rem; font-weight: 400; color: #4a5568; max-width: 500px; line-height: 1.7; }
+  .t-caption { font-size: 0.75rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--green); }
+
+  /* ─ Slide 5: Aplicação ─ */
+  .s5 { background: #104e27; }
+  .mockup-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 960px;
+  }
+  /* App header mockup */
+  .mock-phone {
+    width: 260px;
+    background: #f8fafc;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    color: #0f172a;
+  }
+  .mock-header {
+    background: var(--dark);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+  }
+  .mock-logo-row { display: flex; align-items: center; gap: 8px; }
+  .mock-logo-row img { width: 28px; height: 28px; }
+  .mock-logo-row span { font-weight: 700; font-size: 0.9rem; }
+  .mock-sub { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-top: 2px; }
+  .mock-body { padding: 16px; }
+  .mock-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: var(--dark);
+    color: white;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+  }
+  .mock-card {
+    background: white;
+    border-radius: 12px;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 8px;
+    font-size: 0.75rem;
+  }
+  .mock-card-label { font-weight: 700; color: #0f172a; margin-bottom: 2px; }
+  .mock-card-sub { color: #6b7280; }
+  .mock-badge { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 0.65rem; font-weight: 700; }
+  .badge-green { background: #e4f3d2; color: #104e27; }
+
+  /* PWA icon mockup */
+  .mock-icon-card {
+    background: #1e293b;
+    border-radius: 28px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    color: white;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+  }
+  .pwa-icon {
+    width: 100px; height: 100px;
+    border-radius: 22px;
+    overflow: hidden;
+  }
+  .pwa-icon img { width: 100%; height: 100%; }
+  .mock-icon-label { font-weight: 700; font-size: 0.85rem; }
+  .mock-icon-sub { font-size: 0.7rem; color: rgba(255,255,255,0.4); text-align: center; }
+
+  /* ─ Slide 6: Ecossistema ─ */
+  .s6 { background: #0a3619; }
+  .eco-cards {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 900px;
+  }
+  .eco-card {
+    width: 200px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 28px 20px;
+    text-align: center;
+    transition: transform 0.3s, background 0.3s;
+  }
+  .eco-card:hover { transform: translateY(-6px); background: rgba(255,255,255,0.12); }
+  .eco-card.active { background: rgba(103,157,63,0.2); border-color: rgba(103,157,63,0.5); }
+  .eco-dot { width: 12px; height: 12px; border-radius: 50%; margin: 0 auto 16px; }
+  .eco-name { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+  .eco-sub  { font-size: 0.7rem; color: rgba(255,255,255,0.45); line-height: 1.5; }
+  .eco-arrow { font-size: 1.5rem; color: rgba(103,157,63,0.4); align-self: center; }
+
+  /* ─ Slide 7: Valores ─ */
+  .s7 { background: #f9f6f0; color: #0f172a; }
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    max-width: 900px;
+    width: 100%;
+  }
+  .value-card {
+    background: white;
+    border-radius: 20px;
+    padding: 28px 24px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    border-left: 4px solid var(--green);
+  }
+  .value-icon { font-size: 2rem; margin-bottom: 12px; }
+  .value-title { font-weight: 700; font-size: 0.95rem; color: var(--dark); margin-bottom: 6px; }
+  .value-desc  { font-size: 0.8rem; color: #6b7280; line-height: 1.6; }
+
+  /* ─ Slide 8: Final ─ */
+  .s8 {
+    background: var(--dark);
+    text-align: center;
+  }
+  .s8::after {
+    content: '';
+    position: absolute;
+    bottom: -300px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(103,157,63,0.2) 0%, transparent 70%);
+  }
+  .s8 .logo-final { width: 100px; height: 100px; margin: 0 auto 28px; filter: drop-shadow(0 8px 24px rgba(0,0,0,0.4)); }
+  .s8 h2 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; letter-spacing: -1px; color: white; }
+  .s8 .sub { font-size: 1rem; color: rgba(255,255,255,0.45); margin-top: 12px; letter-spacing: 3px; text-transform: uppercase; }
+
+  /* ─ Divider labels ─ */
+  .slide-num {
+    position: absolute;
+    top: 32px;
+    right: 40px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    opacity: 0.25;
+  }
+
+  h2.slide-title {
+    font-size: clamp(1.6rem, 4vw, 2.8rem);
+    font-weight: 900;
+    letter-spacing: -1px;
+    margin-bottom: 48px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<!-- ─────────────────────────────────────────
+     SLIDE 1 — CAPA
+───────────────────────────────────────── -->
+<div class="slide s1">
+  <span class="slide-num">01 / 08</span>
+  <img class="logo-big" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZzEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTA0ZTI3Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzY3OWQzZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZzIiIHgxPSIwJSIgeTE9IjEwMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojNjc5ZDNmIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhkYzYzZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CgogIDwhLS0gQmFja2dyb3VuZDogYmVpZ2UvY3JlYW0gcm91bmRlZCBzcXVhcmUgKGJyYW5kIGFwcCBpY29uIHN0eWxlKSAtLT4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMCIgZmlsbD0iI2RhZDZjYSIvPgoKICA8IS0tIENpcmNsZSBvdXRsaW5lIC0tPgogIDxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMjAwIiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjZzEpIiBzdHJva2Utd2lkdGg9IjE4Ii8+CgogIDwhLS0gTGVhZiAtLT4KICA8cGF0aCBkPSJNMTI2IDM0MCBDMTI2IDIwMCAxOTUgMTMwIDI1NiAxMzAgQzIzMCAxNzUgMTk4IDIzMCAxOTggMjk1IEMxOTggMzMwIDE3MyAzNjAgMTI2IDM2MCBaIgogICAgICAgIGZpbGw9InVybCgjZzEpIi8+CiAgPHBhdGggZD0iTTI1NiAxMzAgQzIzMCAxNzggMjA1IDI0MiAxOTYgMzE4IiBmaWxsPSJub25lIiBzdHJva2U9IiNkYWQ2Y2EiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDwhLS0gQmFyIGNoYXJ0OiAzIGJhcnMgLS0+CiAgPHJlY3QgeD0iMjU2IiB5PSIyOTAiIHdpZHRoPSIzMCIgaGVpZ2h0PSI2NSIgcng9IjUiIGZpbGw9InVybCgjZzEpIiBvcGFjaXR5PSIwLjkiLz4KICA8cmVjdCB4PSIyOTYiIHk9IjI1NyIgd2lkdGg9IjMwIiBoZWlnaHQ9Ijk4IiByeD0iNSIgZmlsbD0idXJsKCNnMSkiLz4KICA8cmVjdCB4PSIzMzYiIHk9IjIyMiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEzMyIgcng9IjUiIGZpbGw9InVybCgjZzIpIi8+CgogIDwhLS0gQXJyb3cgdXAgLS0+CiAgPHBhdGggZD0iTTM1MSAyMTAgTDM1MSAxODUgTTM0MCAxOTggTDM1MSAxODEgTDM2MiAxOTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KCiAgPCEtLSBSJCBsYWJlbCAtLT4KICA8dGV4dCB4PSIyNjgiIHk9IjIxNSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjM2IiBmaWxsPSIjMTA0ZTI3Ij5SJDwvdGV4dD4KCiAgPCEtLSBIb3Jpem9uIGxpbmVzIC0tPgogIDxwYXRoIGQ9Ik0xMDggMzk4IFEyNTYgMzgyIDQwNCAzOTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuNSIvPgogIDxwYXRoIGQ9Ik0xMzAgNDIwIFEyNTYgNDA2IDM4MiA0MjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuMzUiLz4KPC9zdmc+Cg==" alt="AgroCore" />
+  <h1>AgroCore</h1>
+  <p class="tagline">Identidade Visual 2025</p>
+  <span class="year-badge">Brand Kit · Versão 1.0</span>
+</div>
+
+<!-- ─────────────────────────────────────────
+     SLIDE 2 — LOGO
+───────────────────────────────────────── -->
+<div class="slide s2">
+  <span class="slide-num" style="color:#0f172a">02 / 08</span>
+  <p class="slide-label" style="color:#0f172a">Símbolo & Logotipo</p>
+  <h2 class="slide-title" style="color:#0f172a">O Logo AgroCore</h2>
+
+  <div class="logo-grid">
+    <div class="logo-card lc-dark">
+      <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZzEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTA0ZTI3Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzY3OWQzZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZzIiIHgxPSIwJSIgeTE9IjEwMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojNjc5ZDNmIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhkYzYzZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CgogIDwhLS0gQmFja2dyb3VuZDogYmVpZ2UvY3JlYW0gcm91bmRlZCBzcXVhcmUgKGJyYW5kIGFwcCBpY29uIHN0eWxlKSAtLT4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMCIgZmlsbD0iI2RhZDZjYSIvPgoKICA8IS0tIENpcmNsZSBvdXRsaW5lIC0tPgogIDxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMjAwIiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjZzEpIiBzdHJva2Utd2lkdGg9IjE4Ii8+CgogIDwhLS0gTGVhZiAtLT4KICA8cGF0aCBkPSJNMTI2IDM0MCBDMTI2IDIwMCAxOTUgMTMwIDI1NiAxMzAgQzIzMCAxNzUgMTk4IDIzMCAxOTggMjk1IEMxOTggMzMwIDE3MyAzNjAgMTI2IDM2MCBaIgogICAgICAgIGZpbGw9InVybCgjZzEpIi8+CiAgPHBhdGggZD0iTTI1NiAxMzAgQzIzMCAxNzggMjA1IDI0MiAxOTYgMzE4IiBmaWxsPSJub25lIiBzdHJva2U9IiNkYWQ2Y2EiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDwhLS0gQmFyIGNoYXJ0OiAzIGJhcnMgLS0+CiAgPHJlY3QgeD0iMjU2IiB5PSIyOTAiIHdpZHRoPSIzMCIgaGVpZ2h0PSI2NSIgcng9IjUiIGZpbGw9InVybCgjZzEpIiBvcGFjaXR5PSIwLjkiLz4KICA8cmVjdCB4PSIyOTYiIHk9IjI1NyIgd2lkdGg9IjMwIiBoZWlnaHQ9Ijk4IiByeD0iNSIgZmlsbD0idXJsKCNnMSkiLz4KICA8cmVjdCB4PSIzMzYiIHk9IjIyMiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEzMyIgcng9IjUiIGZpbGw9InVybCgjZzIpIi8+CgogIDwhLS0gQXJyb3cgdXAgLS0+CiAgPHBhdGggZD0iTTM1MSAyMTAgTDM1MSAxODUgTTM0MCAxOTggTDM1MSAxODEgTDM2MiAxOTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KCiAgPCEtLSBSJCBsYWJlbCAtLT4KICA8dGV4dCB4PSIyNjgiIHk9IjIxNSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjM2IiBmaWxsPSIjMTA0ZTI3Ij5SJDwvdGV4dD4KCiAgPCEtLSBIb3Jpem9uIGxpbmVzIC0tPgogIDxwYXRoIGQ9Ik0xMDggMzk4IFEyNTYgMzgyIDQwNCAzOTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuNSIvPgogIDxwYXRoIGQ9Ik0xMzAgNDIwIFEyNTYgNDA2IDM4MiA0MjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuMzUiLz4KPC9zdmc+Cg==" alt="Logo dark bg" />
+      <span>Fundo escuro</span>
+    </div>
+    <div class="logo-card lc-light">
+      <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZzEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTA0ZTI3Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzY3OWQzZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZzIiIHgxPSIwJSIgeTE9IjEwMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojNjc5ZDNmIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhkYzYzZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CgogIDwhLS0gQmFja2dyb3VuZDogYmVpZ2UvY3JlYW0gcm91bmRlZCBzcXVhcmUgKGJyYW5kIGFwcCBpY29uIHN0eWxlKSAtLT4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMCIgZmlsbD0iI2RhZDZjYSIvPgoKICA8IS0tIENpcmNsZSBvdXRsaW5lIC0tPgogIDxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMjAwIiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjZzEpIiBzdHJva2Utd2lkdGg9IjE4Ii8+CgogIDwhLS0gTGVhZiAtLT4KICA8cGF0aCBkPSJNMTI2IDM0MCBDMTI2IDIwMCAxOTUgMTMwIDI1NiAxMzAgQzIzMCAxNzUgMTk4IDIzMCAxOTggMjk1IEMxOTggMzMwIDE3MyAzNjAgMTI2IDM2MCBaIgogICAgICAgIGZpbGw9InVybCgjZzEpIi8+CiAgPHBhdGggZD0iTTI1NiAxMzAgQzIzMCAxNzggMjA1IDI0MiAxOTYgMzE4IiBmaWxsPSJub25lIiBzdHJva2U9IiNkYWQ2Y2EiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDwhLS0gQmFyIGNoYXJ0OiAzIGJhcnMgLS0+CiAgPHJlY3QgeD0iMjU2IiB5PSIyOTAiIHdpZHRoPSIzMCIgaGVpZ2h0PSI2NSIgcng9IjUiIGZpbGw9InVybCgjZzEpIiBvcGFjaXR5PSIwLjkiLz4KICA8cmVjdCB4PSIyOTYiIHk9IjI1NyIgd2lkdGg9IjMwIiBoZWlnaHQ9Ijk4IiByeD0iNSIgZmlsbD0idXJsKCNnMSkiLz4KICA8cmVjdCB4PSIzMzYiIHk9IjIyMiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEzMyIgcng9IjUiIGZpbGw9InVybCgjZzIpIi8+CgogIDwhLS0gQXJyb3cgdXAgLS0+CiAgPHBhdGggZD0iTTM1MSAyMTAgTDM1MSAxODUgTTM0MCAxOTggTDM1MSAxODEgTDM2MiAxOTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KCiAgPCEtLSBSJCBsYWJlbCAtLT4KICA8dGV4dCB4PSIyNjgiIHk9IjIxNSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjM2IiBmaWxsPSIjMTA0ZTI3Ij5SJDwvdGV4dD4KCiAgPCEtLSBIb3Jpem9uIGxpbmVzIC0tPgogIDxwYXRoIGQ9Ik0xMDggMzk4IFEyNTYgMzgyIDQwNCAzOTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuNSIvPgogIDxwYXRoIGQ9Ik0xMzAgNDIwIFEyNTYgNDA2IDM4MiA0MjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuMzUiLz4KPC9zdmc+Cg==" alt="Logo light bg" />
+      <span>Fundo claro</span>
+    </div>
+    <div class="logo-card lc-cream">
+      <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZzEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTA0ZTI3Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzY3OWQzZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZzIiIHgxPSIwJSIgeTE9IjEwMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojNjc5ZDNmIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhkYzYzZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CgogIDwhLS0gQmFja2dyb3VuZDogYmVpZ2UvY3JlYW0gcm91bmRlZCBzcXVhcmUgKGJyYW5kIGFwcCBpY29uIHN0eWxlKSAtLT4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMCIgZmlsbD0iI2RhZDZjYSIvPgoKICA8IS0tIENpcmNsZSBvdXRsaW5lIC0tPgogIDxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMjAwIiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjZzEpIiBzdHJva2Utd2lkdGg9IjE4Ii8+CgogIDwhLS0gTGVhZiAtLT4KICA8cGF0aCBkPSJNMTI2IDM0MCBDMTI2IDIwMCAxOTUgMTMwIDI1NiAxMzAgQzIzMCAxNzUgMTk4IDIzMCAxOTggMjk1IEMxOTggMzMwIDE3MyAzNjAgMTI2IDM2MCBaIgogICAgICAgIGZpbGw9InVybCgjZzEpIi8+CiAgPHBhdGggZD0iTTI1NiAxMzAgQzIzMCAxNzggMjA1IDI0MiAxOTYgMzE4IiBmaWxsPSJub25lIiBzdHJva2U9IiNkYWQ2Y2EiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDwhLS0gQmFyIGNoYXJ0OiAzIGJhcnMgLS0+CiAgPHJlY3QgeD0iMjU2IiB5PSIyOTAiIHdpZHRoPSIzMCIgaGVpZ2h0PSI2NSIgcng9IjUiIGZpbGw9InVybCgjZzEpIiBvcGFjaXR5PSIwLjkiLz4KICA8cmVjdCB4PSIyOTYiIHk9IjI1NyIgd2lkdGg9IjMwIiBoZWlnaHQ9Ijk4IiByeD0iNSIgZmlsbD0idXJsKCNnMSkiLz4KICA8cmVjdCB4PSIzMzYiIHk9IjIyMiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEzMyIgcng9IjUiIGZpbGw9InVybCgjZzIpIi8+CgogIDwhLS0gQXJyb3cgdXAgLS0+CiAgPHBhdGggZD0iTTM1MSAyMTAgTDM1MSAxODUgTTM0MCAxOTggTDM1MSAxODEgTDM2MiAxOTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KCiAgPCEtLSBSJCBsYWJlbCAtLT4KICA8dGV4dCB4PSIyNjgiIHk9IjIxNSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjM2IiBmaWxsPSIjMTA0ZTI3Ij5SJDwvdGV4dD4KCiAgPCEtLSBIb3Jpem9uIGxpbmVzIC0tPgogIDxwYXRoIGQ9Ik0xMDggMzk4IFEyNTYgMzgyIDQwNCAzOTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuNSIvPgogIDxwYXRoIGQ9Ik0xMzAgNDIwIFEyNTYgNDA2IDM4MiA0MjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuMzUiLz4KPC9zdmc+Cg==" alt="Logo cream bg" />
+      <span>Fundo creme</span>
+    </div>
+  </div>
+
+  <p style="margin-top:40px; font-size:0.8rem; opacity:0.4; text-align:center; max-width:500px">
+    O ícone combina <strong>folha</strong> (natureza), <strong>barras de crescimento</strong> (produtividade),
+    <strong>seta</strong> (evolução), <strong>R$</strong> (crédito) e <strong>linhas do horizonte</strong> (o campo).
+  </p>
+</div>
+
+<!-- ─────────────────────────────────────────
+     SLIDE 3 — PALETA DE CORES
+───────────────────────────────────────── -->
+<div class="slide s3">
+  <span class="slide-num">03 / 08</span>
+  <p class="slide-label">Paleta de Cores</p>
+  <h2 class="slide-title">Cores da Marca</h2>
+
+  <div class="colors-grid">
+    <div class="color-chip">
+      <div class="chip-swatch" style="background:#104e27"></div>
+      <div class="chip-info">
+        <div class="chip-name">Verde Floresta</div>
+        <div class="chip-hex">#104e27 · Primário</div>
+      </div>
+    </div>
+    <div class="color-chip">
+      <div class="chip-swatch" style="background:#679d3f"></div>
+      <div class="chip-info">
+        <div class="chip-name">Verde Campo</div>
+        <div class="chip-hex">#679d3f · Secundário</div>
+      </div>
+    </div>
+    <div class="color-chip">
+      <div class="chip-swatch" style="background:#dad6ca"></div>
+      <div class="chip-info">
+        <div class="chip-name">Creme Terra</div>
+        <div class="chip-hex">#dad6ca · Neutro claro</div>
+      </div>
+    </div>
+    <div class="color-chip">
+      <div class="chip-swatch" style="background:#d8d8d8"></div>
+      <div class="chip-info">
+        <div class="chip-name">Cinza Neve</div>
+        <div class="chip-hex">#d8d8d8 · Neutro</div>
+      </div>
+    </div>
+    <div class="color-chip">
+      <div class="chip-swatch" style="background:#7b492d"></div>
+      <div class="chip-info">
+        <div class="chip-name">Marrom Solo</div>
+        <div class="chip-hex">#7b492d · Acento</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────
+     SLIDE 4 — TIPOGRAFIA
+───────────────────────────────────────── -->
+<div class="slide s4">
+  <span class="slide-num" style="color:#0f172a">04 / 08</span>
+  <p class="slide-label">Tipografia</p>
+  <div class="type-showcase">
+    <div class="type-row">
+      <div class="type-meta">Display / Headline</div>
+      <div class="t-h1">AgroCore</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">Título de Seção</div>
+      <div class="t-h2">Soluções Sustentáveis do Campo</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">Corpo de Texto</div>
+      <div class="t-body">Conectamos produtores rurais a prestadores de serviço com tecnologia, segurança e rastreabilidade em tempo real.</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">Label / Badge</div>
+      <div class="t-caption">Serviços Rurais · Marketplace · Brasil</div>
+    </div>
+  </div>
+  <p style="margin-top:40px;font-size:0.75rem;opacity:0.35">Família tipográfica: <strong>Montserrat</strong> (Google Fonts) — pesos 400, 600, 700, 900</p>
+</div>
+
+<!-- ─────────────────────────────────────────
+     SLIDE 5 — APLICAÇÃO NA PLATAFORMA
+───────────────────────────────────────── -->
+<div class="slide s5">
+  <span class="slide-num">05 / 08</span>
+  <p class="slide-label">Aplicação</p>
+  <h2 class="slide-title">Plataforma & PWA</h2>
+
+  <div class="mockup-row">
+
+    <!-- Mockup app mobile -->
+    <div class="mock-phone">
+      <div class="mock-header">
+        <div>
+          <div class="mock-logo-row">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZzEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTA0ZTI3Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzY3OWQzZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZzIiIHgxPSIwJSIgeTE9IjEwMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojNjc5ZDNmIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhkYzYzZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CgogIDwhLS0gQmFja2dyb3VuZDogYmVpZ2UvY3JlYW0gcm91bmRlZCBzcXVhcmUgKGJyYW5kIGFwcCBpY29uIHN0eWxlKSAtLT4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMCIgZmlsbD0iI2RhZDZjYSIvPgoKICA8IS0tIENpcmNsZSBvdXRsaW5lIC0tPgogIDxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMjAwIiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjZzEpIiBzdHJva2Utd2lkdGg9IjE4Ii8+CgogIDwhLS0gTGVhZiAtLT4KICA8cGF0aCBkPSJNMTI2IDM0MCBDMTI2IDIwMCAxOTUgMTMwIDI1NiAxMzAgQzIzMCAxNzUgMTk4IDIzMCAxOTggMjk1IEMxOTggMzMwIDE3MyAzNjAgMTI2IDM2MCBaIgogICAgICAgIGZpbGw9InVybCgjZzEpIi8+CiAgPHBhdGggZD0iTTI1NiAxMzAgQzIzMCAxNzggMjA1IDI0MiAxOTYgMzE4IiBmaWxsPSJub25lIiBzdHJva2U9IiNkYWQ2Y2EiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDwhLS0gQmFyIGNoYXJ0OiAzIGJhcnMgLS0+CiAgPHJlY3QgeD0iMjU2IiB5PSIyOTAiIHdpZHRoPSIzMCIgaGVpZ2h0PSI2NSIgcng9IjUiIGZpbGw9InVybCgjZzEpIiBvcGFjaXR5PSIwLjkiLz4KICA8cmVjdCB4PSIyOTYiIHk9IjI1NyIgd2lkdGg9IjMwIiBoZWlnaHQ9Ijk4IiByeD0iNSIgZmlsbD0idXJsKCNnMSkiLz4KICA8cmVjdCB4PSIzMzYiIHk9IjIyMiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEzMyIgcng9IjUiIGZpbGw9InVybCgjZzIpIi8+CgogIDwhLS0gQXJyb3cgdXAgLS0+CiAgPHBhdGggZD0iTTM1MSAyMTAgTDM1MSAxODUgTTM0MCAxOTggTDM1MSAxODEgTDM2MiAxOTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KCiAgPCEtLSBSJCBsYWJlbCAtLT4KICA8dGV4dCB4PSIyNjgiIHk9IjIxNSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjM2IiBmaWxsPSIjMTA0ZTI3Ij5SJDwvdGV4dD4KCiAgPCEtLSBIb3Jpem9uIGxpbmVzIC0tPgogIDxwYXRoIGQ9Ik0xMDggMzk4IFEyNTYgMzgyIDQwNCAzOTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuNSIvPgogIDxwYXRoIGQ9Ik0xMzAgNDIwIFEyNTYgNDA2IDM4MiA0MjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuMzUiLz4KPC9zdmc+Cg==" alt="logo" />
+            <span>AgroCore</span>
+          </div>
+          <div class="mock-sub">Olá, João!</div>
+        </div>
+        <div style="font-size:0.75rem;color:rgba(255,255,255,0.5)">Perfil →</div>
+      </div>
+      <div class="mock-body">
+        <div class="mock-btn">🌾 SOLICITAR SERVIÇO</div>
+        <div class="mock-card">
+          <div class="mock-card-label">Pulverização aérea</div>
+          <div class="mock-card-sub">Fazenda São Pedro · 180 ha</div>
+          <div style="margin-top:6px">
+            <span class="mock-badge badge-green">Em andamento</span>
+          </div>
+        </div>
+        <div class="mock-card">
+          <div class="mock-card-label">Análise de solo</div>
+          <div class="mock-card-sub">Fazenda São Pedro · Talhão 3</div>
+          <div style="margin-top:6px">
+            <span class="mock-badge" style="background:#e4f3d2;color:#679d3f">Concluído ✓</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ícone PWA -->
+    <div class="mock-icon-card">
+      <div class="pwa-icon">
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZzEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTA0ZTI3Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzY3OWQzZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZzIiIHgxPSIwJSIgeTE9IjEwMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojNjc5ZDNmIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhkYzYzZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CgogIDwhLS0gQmFja2dyb3VuZDogYmVpZ2UvY3JlYW0gcm91bmRlZCBzcXVhcmUgKGJyYW5kIGFwcCBpY29uIHN0eWxlKSAtLT4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMCIgZmlsbD0iI2RhZDZjYSIvPgoKICA8IS0tIENpcmNsZSBvdXRsaW5lIC0tPgogIDxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMjAwIiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjZzEpIiBzdHJva2Utd2lkdGg9IjE4Ii8+CgogIDwhLS0gTGVhZiAtLT4KICA8cGF0aCBkPSJNMTI2IDM0MCBDMTI2IDIwMCAxOTUgMTMwIDI1NiAxMzAgQzIzMCAxNzUgMTk4IDIzMCAxOTggMjk1IEMxOTggMzMwIDE3MyAzNjAgMTI2IDM2MCBaIgogICAgICAgIGZpbGw9InVybCgjZzEpIi8+CiAgPHBhdGggZD0iTTI1NiAxMzAgQzIzMCAxNzggMjA1IDI0MiAxOTYgMzE4IiBmaWxsPSJub25lIiBzdHJva2U9IiNkYWQ2Y2EiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDwhLS0gQmFyIGNoYXJ0OiAzIGJhcnMgLS0+CiAgPHJlY3QgeD0iMjU2IiB5PSIyOTAiIHdpZHRoPSIzMCIgaGVpZ2h0PSI2NSIgcng9IjUiIGZpbGw9InVybCgjZzEpIiBvcGFjaXR5PSIwLjkiLz4KICA8cmVjdCB4PSIyOTYiIHk9IjI1NyIgd2lkdGg9IjMwIiBoZWlnaHQ9Ijk4IiByeD0iNSIgZmlsbD0idXJsKCNnMSkiLz4KICA8cmVjdCB4PSIzMzYiIHk9IjIyMiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEzMyIgcng9IjUiIGZpbGw9InVybCgjZzIpIi8+CgogIDwhLS0gQXJyb3cgdXAgLS0+CiAgPHBhdGggZD0iTTM1MSAyMTAgTDM1MSAxODUgTTM0MCAxOTggTDM1MSAxODEgTDM2MiAxOTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KCiAgPCEtLSBSJCBsYWJlbCAtLT4KICA8dGV4dCB4PSIyNjgiIHk9IjIxNSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjM2IiBmaWxsPSIjMTA0ZTI3Ij5SJDwvdGV4dD4KCiAgPCEtLSBIb3Jpem9uIGxpbmVzIC0tPgogIDxwYXRoIGQ9Ik0xMDggMzk4IFEyNTYgMzgyIDQwNCAzOTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuNSIvPgogIDxwYXRoIGQ9Ik0xMzAgNDIwIFEyNTYgNDA2IDM4MiA0MjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuMzUiLz4KPC9zdmc+Cg==" alt="PWA" />
+      </div>
+      <div class="mock-icon-label">Ícone do App</div>
+      <div class="mock-icon-sub">Fundo creme #dad6ca<br/>com emblema verde</div>
+
+      <div style="width:100%;height:1px;background:rgba(255,255,255,0.1);margin:8px 0"></div>
+
+      <!-- Favicon / Tab preview -->
+      <div style="display:flex;align-items:center;gap:8px;background:#1e293b;padding:8px 12px;border-radius:8px;width:100%">
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZzEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTA0ZTI3Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzY3OWQzZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZzIiIHgxPSIwJSIgeTE9IjEwMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojNjc5ZDNmIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhkYzYzZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CgogIDwhLS0gQmFja2dyb3VuZDogYmVpZ2UvY3JlYW0gcm91bmRlZCBzcXVhcmUgKGJyYW5kIGFwcCBpY29uIHN0eWxlKSAtLT4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMCIgZmlsbD0iI2RhZDZjYSIvPgoKICA8IS0tIENpcmNsZSBvdXRsaW5lIC0tPgogIDxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMjAwIiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjZzEpIiBzdHJva2Utd2lkdGg9IjE4Ii8+CgogIDwhLS0gTGVhZiAtLT4KICA8cGF0aCBkPSJNMTI2IDM0MCBDMTI2IDIwMCAxOTUgMTMwIDI1NiAxMzAgQzIzMCAxNzUgMTk4IDIzMCAxOTggMjk1IEMxOTggMzMwIDE3MyAzNjAgMTI2IDM2MCBaIgogICAgICAgIGZpbGw9InVybCgjZzEpIi8+CiAgPHBhdGggZD0iTTI1NiAxMzAgQzIzMCAxNzggMjA1IDI0MiAxOTYgMzE4IiBmaWxsPSJub25lIiBzdHJva2U9IiNkYWQ2Y2EiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDwhLS0gQmFyIGNoYXJ0OiAzIGJhcnMgLS0+CiAgPHJlY3QgeD0iMjU2IiB5PSIyOTAiIHdpZHRoPSIzMCIgaGVpZ2h0PSI2NSIgcng9IjUiIGZpbGw9InVybCgjZzEpIiBvcGFjaXR5PSIwLjkiLz4KICA8cmVjdCB4PSIyOTYiIHk9IjI1NyIgd2lkdGg9IjMwIiBoZWlnaHQ9Ijk4IiByeD0iNSIgZmlsbD0idXJsKCNnMSkiLz4KICA8cmVjdCB4PSIzMzYiIHk9IjIyMiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEzMyIgcng9IjUiIGZpbGw9InVybCgjZzIpIi8+CgogIDwhLS0gQXJyb3cgdXAgLS0+CiAgPHBhdGggZD0iTTM1MSAyMTAgTDM1MSAxODUgTTM0MCAxOTggTDM1MSAxODEgTDM2MiAxOTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KCiAgPCEtLSBSJCBsYWJlbCAtLT4KICA8dGV4dCB4PSIyNjgiIHk9IjIxNSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjM2IiBmaWxsPSIjMTA0ZTI3Ij5SJDwvdGV4dD4KCiAgPCEtLSBIb3Jpem9uIGxpbmVzIC0tPgogIDxwYXRoIGQ9Ik0xMDggMzk4IFEyNTYgMzgyIDQwNCAzOTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuNSIvPgogIDxwYXRoIGQ9Ik0xMzAgNDIwIFEyNTYgNDA2IDM4MiA0MjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuMzUiLz4KPC9zdmc+Cg==" style="width:16px;height:16px" alt="" />
+        <span style="font-size:0.7rem;color:rgba(255,255,255,0.6)">AgroCore — Soluções...</span>
+      </div>
+      <div class="mock-icon-sub">Favicon (aba do browser)</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────
+     SLIDE 6 — ECOSSISTEMA
+───────────────────────────────────────── -->
+<div class="slide s6">
+  <span class="slide-num">06 / 08</span>
+  <p class="slide-label">Ecossistema</p>
+  <h2 class="slide-title">AgroCore no Ecossistema Agro</h2>
+
+  <div class="eco-cards" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center">
+
+    <div class="eco-card active">
+      <div class="eco-dot" style="background:#679d3f"></div>
+      <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZzEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTA0ZTI3Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzY3OWQzZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZzIiIHgxPSIwJSIgeTE9IjEwMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojNjc5ZDNmIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhkYzYzZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CgogIDwhLS0gQmFja2dyb3VuZDogYmVpZ2UvY3JlYW0gcm91bmRlZCBzcXVhcmUgKGJyYW5kIGFwcCBpY29uIHN0eWxlKSAtLT4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMCIgZmlsbD0iI2RhZDZjYSIvPgoKICA8IS0tIENpcmNsZSBvdXRsaW5lIC0tPgogIDxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMjAwIiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjZzEpIiBzdHJva2Utd2lkdGg9IjE4Ii8+CgogIDwhLS0gTGVhZiAtLT4KICA8cGF0aCBkPSJNMTI2IDM0MCBDMTI2IDIwMCAxOTUgMTMwIDI1NiAxMzAgQzIzMCAxNzUgMTk4IDIzMCAxOTggMjk1IEMxOTggMzMwIDE3MyAzNjAgMTI2IDM2MCBaIgogICAgICAgIGZpbGw9InVybCgjZzEpIi8+CiAgPHBhdGggZD0iTTI1NiAxMzAgQzIzMCAxNzggMjA1IDI0MiAxOTYgMzE4IiBmaWxsPSJub25lIiBzdHJva2U9IiNkYWQ2Y2EiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDwhLS0gQmFyIGNoYXJ0OiAzIGJhcnMgLS0+CiAgPHJlY3QgeD0iMjU2IiB5PSIyOTAiIHdpZHRoPSIzMCIgaGVpZ2h0PSI2NSIgcng9IjUiIGZpbGw9InVybCgjZzEpIiBvcGFjaXR5PSIwLjkiLz4KICA8cmVjdCB4PSIyOTYiIHk9IjI1NyIgd2lkdGg9IjMwIiBoZWlnaHQ9Ijk4IiByeD0iNSIgZmlsbD0idXJsKCNnMSkiLz4KICA8cmVjdCB4PSIzMzYiIHk9IjIyMiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEzMyIgcng9IjUiIGZpbGw9InVybCgjZzIpIi8+CgogIDwhLS0gQXJyb3cgdXAgLS0+CiAgPHBhdGggZD0iTTM1MSAyMTAgTDM1MSAxODUgTTM0MCAxOTggTDM1MSAxODEgTDM2MiAxOTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KCiAgPCEtLSBSJCBsYWJlbCAtLT4KICA8dGV4dCB4PSIyNjgiIHk9IjIxNSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjM2IiBmaWxsPSIjMTA0ZTI3Ij5SJDwvdGV4dD4KCiAgPCEtLSBIb3Jpem9uIGxpbmVzIC0tPgogIDxwYXRoIGQ9Ik0xMDggMzk4IFEyNTYgMzgyIDQwNCAzOTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuNSIvPgogIDxwYXRoIGQ9Ik0xMzAgNDIwIFEyNTYgNDA2IDM4MiA0MjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuMzUiLz4KPC9zdmc+Cg==" style="width:40px;height:40px;margin:0 auto 12px" alt="" />
+      <div class="eco-name">AgroCore</div>
+      <div class="eco-sub">Marketplace de serviços rurais</div>
+    </div>
+
+    <div class="eco-arrow">⟶</div>
+
+    <div class="eco-card">
+      <div class="eco-dot" style="background:#10b981"></div>
+      <div style="font-size:2rem;margin-bottom:12px">🖥</div>
+      <div class="eco-name">AgroOS</div>
+      <div class="eco-sub">Sistema operacional da fazenda</div>
+    </div>
+
+    <div class="eco-arrow">⟶</div>
+
+    <div class="eco-card">
+      <div class="eco-dot" style="background:#3b82f6"></div>
+      <div style="font-size:2rem;margin-bottom:12px">📊</div>
+      <div class="eco-name">AgroRate</div>
+      <div class="eco-sub">Score de crédito rural</div>
+    </div>
+
+  </div>
+
+  <p style="margin-top:48px;font-size:0.8rem;color:rgba(255,255,255,0.35);text-align:center;max-width:500px;line-height:1.8">
+    AgroCore executa os serviços → AgroOS controla a operação → AgroRate transforma tudo em crédito rural.
+  </p>
+</div>
+
+<!-- ─────────────────────────────────────────
+     SLIDE 7 — VALORES DA MARCA
+───────────────────────────────────────── -->
+<div class="slide s7">
+  <span class="slide-num" style="color:#0f172a">07 / 08</span>
+  <p class="slide-label">Valores</p>
+  <h2 class="slide-title" style="color:#0f172a">Essência da Marca</h2>
+
+  <div class="values-grid">
+    <div class="value-card">
+      <div class="value-icon">🌱</div>
+      <div class="value-title">Sustentabilidade</div>
+      <div class="value-desc">Tecnologia que respeita o campo e promove práticas agrícolas responsáveis.</div>
+    </div>
+    <div class="value-card" style="border-color:#104e27">
+      <div class="value-icon">🤝</div>
+      <div class="value-title">Confiança</div>
+      <div class="value-desc">Pagamento seguro, prestadores verificados e rastreamento em tempo real.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">⚡</div>
+      <div class="value-title">Agilidade</div>
+      <div class="value-desc">Do pedido ao match em minutos. Tecnologia que desburocratiza o campo.</div>
+    </div>
+    <div class="value-card" style="border-color:#7b492d">
+      <div class="value-icon">🌍</div>
+      <div class="value-title">Inclusão</div>
+      <div class="value-desc">Democratizando acesso a serviços e crédito para produtores de todos os tamanhos.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────
+     SLIDE 8 — FINAL
+───────────────────────────────────────── -->
+<div class="slide s8">
+  <span class="slide-num">08 / 08</span>
+  <img class="logo-final" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZzEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTA0ZTI3Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzY3OWQzZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZzIiIHgxPSIwJSIgeTE9IjEwMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojNjc5ZDNmIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhkYzYzZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CgogIDwhLS0gQmFja2dyb3VuZDogYmVpZ2UvY3JlYW0gcm91bmRlZCBzcXVhcmUgKGJyYW5kIGFwcCBpY29uIHN0eWxlKSAtLT4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMCIgZmlsbD0iI2RhZDZjYSIvPgoKICA8IS0tIENpcmNsZSBvdXRsaW5lIC0tPgogIDxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMjAwIiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjZzEpIiBzdHJva2Utd2lkdGg9IjE4Ii8+CgogIDwhLS0gTGVhZiAtLT4KICA8cGF0aCBkPSJNMTI2IDM0MCBDMTI2IDIwMCAxOTUgMTMwIDI1NiAxMzAgQzIzMCAxNzUgMTk4IDIzMCAxOTggMjk1IEMxOTggMzMwIDE3MyAzNjAgMTI2IDM2MCBaIgogICAgICAgIGZpbGw9InVybCgjZzEpIi8+CiAgPHBhdGggZD0iTTI1NiAxMzAgQzIzMCAxNzggMjA1IDI0MiAxOTYgMzE4IiBmaWxsPSJub25lIiBzdHJva2U9IiNkYWQ2Y2EiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDwhLS0gQmFyIGNoYXJ0OiAzIGJhcnMgLS0+CiAgPHJlY3QgeD0iMjU2IiB5PSIyOTAiIHdpZHRoPSIzMCIgaGVpZ2h0PSI2NSIgcng9IjUiIGZpbGw9InVybCgjZzEpIiBvcGFjaXR5PSIwLjkiLz4KICA8cmVjdCB4PSIyOTYiIHk9IjI1NyIgd2lkdGg9IjMwIiBoZWlnaHQ9Ijk4IiByeD0iNSIgZmlsbD0idXJsKCNnMSkiLz4KICA8cmVjdCB4PSIzMzYiIHk9IjIyMiIgd2lkdGg9IjMwIiBoZWlnaHQ9IjEzMyIgcng9IjUiIGZpbGw9InVybCgjZzIpIi8+CgogIDwhLS0gQXJyb3cgdXAgLS0+CiAgPHBhdGggZD0iTTM1MSAyMTAgTDM1MSAxODUgTTM0MCAxOTggTDM1MSAxODEgTDM2MiAxOTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KCiAgPCEtLSBSJCBsYWJlbCAtLT4KICA8dGV4dCB4PSIyNjgiIHk9IjIxNSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjM2IiBmaWxsPSIjMTA0ZTI3Ij5SJDwvdGV4dD4KCiAgPCEtLSBIb3Jpem9uIGxpbmVzIC0tPgogIDxwYXRoIGQ9Ik0xMDggMzk4IFEyNTYgMzgyIDQwNCAzOTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuNSIvPgogIDxwYXRoIGQ9Ik0xMzAgNDIwIFEyNTYgNDA2IDM4MiA0MjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY3OWQzZiIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuMzUiLz4KPC9zdmc+Cg==" alt="AgroCore" />
+  <h2>Soluções Sustentáveis<br/>do Campo.</h2>
+  <p class="sub">AgroCore · Brand Kit 2025</p>
+</div>
+
+</body>
+</html>
