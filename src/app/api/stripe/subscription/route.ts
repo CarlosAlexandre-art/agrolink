@@ -20,6 +20,7 @@ export async function POST(req: Request) {
       success_url: `${APP_URL}/planos?sucesso=1`,
       cancel_url: `${APP_URL}/planos`,
       metadata: { supabaseId: user.id },
+      subscription_data: { metadata: { supabaseId: user.id } },
       customer_email: user.email,
     })
 

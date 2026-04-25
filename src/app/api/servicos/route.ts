@@ -5,6 +5,7 @@ import { notificarUsuario } from '@/lib/push'
 import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
 import { SERVICOS } from '@/lib/constants'
 import { sanitizeString, sanitizePositiveNumber } from '@/lib/sanitize'
+import { getLimites } from '@/lib/planos'
 
 // Haversine distance in km
 function calcDistancia(lat1: number, lng1: number, lat2: number, lng2: number): number {
@@ -31,6 +32,21 @@ export async function POST(req: Request) {
 
     if (!dbUser?.produtor) {
       return NextResponse.json({ error: 'Usuário não é produtor' }, { status: 403 })
+    }
+
+    // Verificar limite de serviços ativos do plano
+    const limites = getLimites(dbUser.plan ?? 'free')
+    const ativos = await prisma.service.count({
+      where: {
+        produtorId: dbUser.produtor.id,
+        status: { in: ['AGUARDANDO', 'PROCURANDO', 'AGUARDANDO_PROPOSTA', 'MATCH_ENCONTRADO', 'EM_ROTA', 'EXECUTANDO'] },
+      },
+    })
+    if (ativos >= limites.servicosAtivos) {
+      return NextResponse.json({
+        error: `Limite do plano ${limites.nome} atingido (${limites.servicosAtivos} serviço${limites.servicosAtivos > 1 ? 's' : ''} ativo${limites.servicosAtivos > 1 ? 's' : ''}). Faça upgrade em /planos.`,
+        code: 'PLAN_LIMIT',
+      }, { status: 403 })
     }
 
     const body = await req.json()

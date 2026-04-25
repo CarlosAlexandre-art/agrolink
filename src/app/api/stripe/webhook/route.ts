@@ -27,7 +27,24 @@ export async function POST(req: Request) {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as any
-    const { serviceId } = session.metadata
+    const { serviceId, supabaseId } = session.metadata ?? {}
+
+    // Assinatura paga via checkout — atualiza plano imediatamente
+    if (session.mode === 'subscription' && supabaseId) {
+      const priceId = session.line_items?.data?.[0]?.price?.id
+        ?? (await stripe.checkout.sessions.retrieve(session.id, { expand: ['line_items'] }))
+            .line_items?.data?.[0]?.price?.id
+        ?? ''
+      const plano = PRICE_TO_PLAN[priceId]
+      if (plano) {
+        await prisma.user.updateMany({
+          where: { supabaseId },
+          data: { plan: plano } as any,
+        }).catch(() => {})
+      }
+    }
+
+    if (!serviceId) return NextResponse.json({ received: true })
 
     // Mark payment as reserved (escrow)
     await prisma.payment.update({

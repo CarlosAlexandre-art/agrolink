@@ -84,6 +84,11 @@ model User {
   prestador         Prestador?
   pushSubscriptions PushSubscription[]
   mensagens         Mensagem[]
+  organizationMemberships OrganizationMember[]
+  investorProfiles        InvestorProfile[]
+  offeringEvents          OfferingEvent[]
+  complianceLogs          ComplianceLog[]
+  uploadedOfferingDocuments OfferingDocument[]
 }
 
 model Produtor {
@@ -225,4 +230,273 @@ model Denuncia {
   descricao        String
   emailDenunciado  String?
   createdAt        DateTime @default(now())
+}
+
+enum OrganizationRole {
+  OWNER
+  ADMIN
+  OPERATOR
+  PARTNER_VIEWER
+  INVESTOR
+}
+
+enum OfferingStatus {
+  DRAFT
+  UNDER_REVIEW
+  READY
+  ACTIVE
+  CLOSED
+  SETTLED
+  ARCHIVED
+}
+
+enum AssetCategory {
+  REAL_ESTATE
+  RECEIVABLE
+  CREDIT
+  EQUITY
+  OTHER
+}
+
+enum DocumentCategory {
+  TERM_SHEET
+  LEGAL
+  ASSET_EVIDENCE
+  INVESTOR_MATERIAL
+  REPORT
+  OTHER
+}
+
+enum DocumentVisibility {
+  INTERNAL
+  PARTNER
+  INVESTOR
+}
+
+enum DocumentStatus {
+  DRAFT
+  REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum InvestorOnboardingStatus {
+  LEAD
+  INVITED
+  IN_REVIEW
+  ACTIVE
+  BLOCKED
+}
+
+enum AllocationStatus {
+  PENDING
+  RESERVED
+  CONFIRMED
+  CANCELLED
+  SETTLED
+}
+
+enum EventVisibility {
+  INTERNAL
+  PARTNER
+  INVESTOR
+}
+
+enum OfferingEventType {
+  OPERATION_CREATED
+  DOCUMENT_APPROVED
+  INVESTOR_ADDED
+  ALLOCATION_CONFIRMED
+  DISTRIBUTION_RECORDED
+  NOTICE_PUBLISHED
+  STATUS_CHANGED
+}
+
+enum DistributionStatus {
+  DRAFT
+  SCHEDULED
+  PROCESSED
+  CANCELLED
+}
+
+enum DistributionEntryStatus {
+  PENDING
+  PROCESSED
+  FAILED
+  CANCELLED
+}
+
+model Organization {
+  id          String               @id @default(cuid())
+  nome        String
+  slug        String               @unique
+  tipo        String?
+  logoUrl     String?
+  corPrimaria String?
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  members          OrganizationMember[]
+  offerings        Offering[]
+  investorProfiles InvestorProfile[]
+  complianceLogs   ComplianceLog[]
+}
+
+model OrganizationMember {
+  id             String           @id @default(cuid())
+  organizationId String
+  organization   Organization     @relation(fields: [organizationId], references: [id])
+  userId         String
+  user           User             @relation(fields: [userId], references: [id])
+  role           OrganizationRole
+  createdAt      DateTime         @default(now())
+
+  @@unique([organizationId, userId])
+}
+
+model Offering {
+  id           String         @id @default(cuid())
+  organizationId String
+  organization Organization   @relation(fields: [organizationId], references: [id])
+  nome         String
+  slug         String         @unique
+  tipo         String?
+  status       OfferingStatus @default(DRAFT)
+  resumo       String?
+  moeda        String         @default("BRL")
+  ticketMinimo Decimal?       @db.Decimal(18, 2)
+  targetRaise  Decimal?       @db.Decimal(18, 2)
+  openedAt     DateTime?
+  closedAt     DateTime?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  assets        Asset[]
+  documents     OfferingDocument[]
+  allocations   Allocation[]
+  events        OfferingEvent[]
+  distributions Distribution[]
+}
+
+model Asset {
+  id                 String        @id @default(cuid())
+  offeringId         String
+  offering           Offering      @relation(fields: [offeringId], references: [id])
+  nome               String
+  categoria          AssetCategory @default(OTHER)
+  descricao          String?
+  origem             String?
+  valuationReference String?
+  metadataJson       Json?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  documents OfferingDocument[]
+}
+
+model OfferingDocument {
+  id           String             @id @default(cuid())
+  offeringId   String
+  offering     Offering           @relation(fields: [offeringId], references: [id])
+  assetId      String?
+  asset        Asset?             @relation(fields: [assetId], references: [id])
+  nome         String
+  categoria    DocumentCategory   @default(OTHER)
+  storageKey   String
+  mimeType     String?
+  visibilidade DocumentVisibility @default(INTERNAL)
+  status       DocumentStatus     @default(DRAFT)
+  version      Int                @default(1)
+  uploadedById String?
+  uploadedBy   User?              @relation(fields: [uploadedById], references: [id])
+  createdAt    DateTime           @default(now())
+}
+
+model InvestorProfile {
+  id               String                   @id @default(cuid())
+  organizationId   String
+  organization     Organization             @relation(fields: [organizationId], references: [id])
+  userId           String?
+  user             User?                    @relation(fields: [userId], references: [id])
+  nomeCompleto     String
+  email            String
+  telefone         String?
+  taxId            String?
+  onboardingStatus InvestorOnboardingStatus @default(LEAD)
+  notes            String?
+  createdAt        DateTime                 @default(now())
+  updatedAt        DateTime                 @updatedAt
+
+  allocations Allocation[]
+
+  @@index([organizationId, email])
+}
+
+model Allocation {
+  id                String           @id @default(cuid())
+  offeringId        String
+  offering          Offering         @relation(fields: [offeringId], references: [id])
+  investorProfileId String
+  investorProfile   InvestorProfile  @relation(fields: [investorProfileId], references: [id])
+  className         String?
+  investedAmount    Decimal?         @db.Decimal(18, 2)
+  quantity          Decimal?         @db.Decimal(18, 6)
+  unitPrice         Decimal?         @db.Decimal(18, 6)
+  status            AllocationStatus @default(PENDING)
+  subscribedAt      DateTime?
+  settledAt         DateTime?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  distributionEntries DistributionEntry[]
+}
+
+model OfferingEvent {
+  id          String            @id @default(cuid())
+  offeringId  String
+  offering    Offering          @relation(fields: [offeringId], references: [id])
+  tipo        OfferingEventType
+  titulo      String
+  descricao   String?
+  effectiveAt DateTime?
+  visibility  EventVisibility   @default(INTERNAL)
+  createdById String?
+  createdBy   User?             @relation(fields: [createdById], references: [id])
+  createdAt   DateTime          @default(now())
+}
+
+model ComplianceLog {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  actorUserId    String?
+  actorUser      User?        @relation(fields: [actorUserId], references: [id])
+  entityType     String
+  entityId       String
+  action         String
+  payloadJson    Json?
+  createdAt      DateTime     @default(now())
+}
+
+model Distribution {
+  id              String             @id @default(cuid())
+  offeringId      String
+  offering        Offering           @relation(fields: [offeringId], references: [id])
+  referencePeriod String?
+  grossAmount     Decimal?           @db.Decimal(18, 2)
+  netAmount       Decimal?           @db.Decimal(18, 2)
+  status          DistributionStatus @default(DRAFT)
+  createdAt       DateTime           @default(now())
+
+  entries DistributionEntry[]
+}
+
+model DistributionEntry {
+  id             String                  @id @default(cuid())
+  distributionId String
+  distribution   Distribution            @relation(fields: [distributionId], references: [id])
+  allocationId   String
+  allocation     Allocation              @relation(fields: [allocationId], references: [id])
+  amount         Decimal?                @db.Decimal(18, 2)
+  status         DistributionEntryStatus @default(PENDING)
 }

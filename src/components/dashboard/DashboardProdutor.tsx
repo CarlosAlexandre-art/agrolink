@@ -147,6 +147,19 @@ export default function DashboardProdutor({ user }: { user: any }) {
           </div>
         )}
 
+        {/* Crédito Rural */}
+        <Link
+          href="/credito"
+          className="flex items-center gap-3 bg-white rounded-2xl px-5 py-4 shadow-sm border border-gray-100 hover:border-green-300 transition"
+        >
+          <span className="text-2xl">💳</span>
+          <div className="flex-1">
+            <div className="font-semibold text-gray-800">Crédito Rural</div>
+            <div className="text-xs text-gray-400">Custeio, investimento, Pronaf e mais</div>
+          </div>
+          <span className="text-gray-300">→</span>
+        </Link>
+
         {/* Relatório IA */}
         <Link
           href="/relatorio"
