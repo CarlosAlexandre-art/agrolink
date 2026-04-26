@@ -54,7 +54,7 @@ export default function NovaSenhaPage() {
     setErro('')
     const supabase = createClient()
     const { error } = await supabase.auth.updateUser({ password: senha })
-    if (error) { setErro(error.message); setLoading(false); return }
+    if (error) { setErro('Erro ao salvar nova senha. Solicite um novo link.'); setLoading(false); return }
     router.push('/dashboard')
   }
 
