@@ -23,14 +23,11 @@ export default function NovaSenhaPage() {
     const supabase = createClient()
 
     async function processar() {
-      // Fluxo PKCE: ?code=xxx
+      // Verifica primeiro se o Supabase já processou o token automaticamente
+      const { data: { session: sessionExistente } } = await supabase.auth.getSession()
+      if (sessionExistente) { setPronto(true); return }
+
       const queryParams = new URLSearchParams(searchRef.current)
-      const code = queryParams.get('code')
-      if (code) {
-        const { error } = await supabase.auth.exchangeCodeForSession(code)
-        if (!error) { setPronto(true); return }
-        setExpirou(true); return
-      }
 
       // Fluxo token_hash: ?token_hash=xxx&type=recovery
       const token_hash = queryParams.get('token_hash')
@@ -38,6 +35,17 @@ export default function NovaSenhaPage() {
       if (token_hash && qtype === 'recovery') {
         const { error } = await supabase.auth.verifyOtp({ token_hash, type: 'recovery' })
         if (!error) { setPronto(true); return }
+        setExpirou(true); return
+      }
+
+      // Fluxo PKCE: ?code=xxx
+      const code = queryParams.get('code')
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code)
+        if (!error) { setPronto(true); return }
+        // Se falhou, verifica se o Supabase já havia processado antes
+        const { data: { session: s2 } } = await supabase.auth.getSession()
+        if (s2) { setPronto(true); return }
         setExpirou(true); return
       }
 
@@ -53,7 +61,7 @@ export default function NovaSenhaPage() {
         setExpirou(true); return
       }
 
-      // Supabase já processou o hash — verifica se há sessão ativa de recovery
+      // Nenhum token encontrado
       const { data: { session } } = await supabase.auth.getSession()
       if (session) {
         setPronto(true); return
