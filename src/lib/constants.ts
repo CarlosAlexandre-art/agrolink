@@ -183,6 +183,118 @@ export const SERVICOS = [
     categoria: 'INFRAESTRUTURA' as CategoriaServico,
   },
 
+  // ─── Tecnologia (expansão) ─────────────────────────────────────────────────
+  {
+    value: 'MONITORAMENTO_SATELITE',
+    label: 'Monitoramento por Satélite',
+    icon: '🛰️',
+    descricao: 'Análise de imagens de satélite para lavoura',
+    imagem: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&q=80&auto=format&fit=crop',
+    categoria: 'TECNOLOGIA' as CategoriaServico,
+  },
+  {
+    value: 'AGRICULTURA_PRECISAO',
+    label: 'Agricultura de Precisão',
+    icon: '📊',
+    descricao: 'Mapeamento e aplicação variável de insumos',
+    imagem: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400&q=80&auto=format&fit=crop',
+    categoria: 'TECNOLOGIA' as CategoriaServico,
+  },
+  {
+    value: 'TOPOGRAFIA',
+    label: 'Topografia Rural',
+    icon: '📐',
+    descricao: 'Levantamento topográfico e planialtimétrico',
+    imagem: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&q=80&auto=format&fit=crop',
+    categoria: 'TECNOLOGIA' as CategoriaServico,
+  },
+  {
+    value: 'SENSORIAMENTO_REMOTO',
+    label: 'Sensoriamento Remoto',
+    icon: '📡',
+    descricao: 'NDVI, análise de estresse hídrico e biofísico',
+    imagem: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&q=80&auto=format&fit=crop',
+    categoria: 'TECNOLOGIA' as CategoriaServico,
+  },
+
+  // ─── Lavoura (expansão) ────────────────────────────────────────────────────
+  {
+    value: 'ANALISE_SOLO_AVANCADA',
+    label: 'Análise de Solo Avançada',
+    icon: '🧫',
+    descricao: 'Análise microbiológica e de fertilidade profunda',
+    imagem: 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=400&q=80&auto=format&fit=crop',
+    categoria: 'LAVOURA' as CategoriaServico,
+  },
+  {
+    value: 'IRRIGACAO_AUTOMATIZADA',
+    label: 'Irrigação Automatizada',
+    icon: '💧',
+    descricao: 'Instalação de pivô central e automação',
+    imagem: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&q=80&auto=format&fit=crop',
+    categoria: 'LAVOURA' as CategoriaServico,
+  },
+  {
+    value: 'APLICACAO_DRONE',
+    label: 'Aplicação por Drone',
+    icon: '🚁',
+    descricao: 'Pulverização de precisão com drone agrícola',
+    imagem: 'https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=400&q=80&auto=format&fit=crop',
+    categoria: 'LAVOURA' as CategoriaServico,
+  },
+
+  // ─── Infraestrutura (expansão) ─────────────────────────────────────────────
+  {
+    value: 'INSTALACAO_PIVO',
+    label: 'Instalação de Pivô',
+    icon: '🏗️',
+    descricao: 'Instalação e manutenção de pivô central',
+    imagem: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&q=80&auto=format&fit=crop',
+    categoria: 'INFRAESTRUTURA' as CategoriaServico,
+  },
+  {
+    value: 'ENERGIA_SOLAR_RURAL',
+    label: 'Energia Solar Rural',
+    icon: '☀️',
+    descricao: 'Instalação de painéis solares para propriedades rurais',
+    imagem: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&q=80&auto=format&fit=crop',
+    categoria: 'INFRAESTRUTURA' as CategoriaServico,
+  },
+
+  // ─── Ambiental / Legal ─────────────────────────────────────────────────────
+  {
+    value: 'GESTAO_AMBIENTAL',
+    label: 'Gestão Ambiental',
+    icon: '🌳',
+    descricao: 'CAR, licenciamento, área de reserva legal',
+    imagem: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=400&q=80&auto=format&fit=crop',
+    categoria: 'OUTROS' as CategoriaServico,
+  },
+  {
+    value: 'REGULARIZACAO_FUNDIARIA',
+    label: 'Regularização Fundiária',
+    icon: '📜',
+    descricao: 'Regularização de imóvel rural, titulação e CCIR',
+    imagem: 'https://images.unsplash.com/photo-1455849318743-b2233052fcff?w=400&q=80&auto=format&fit=crop',
+    categoria: 'OUTROS' as CategoriaServico,
+  },
+  {
+    value: 'CERTIFICACAO_AGRICOLA',
+    label: 'Certificação Agrícola',
+    icon: '🏆',
+    descricao: 'Certificação orgânica, GlobalG.A.P., Rainforest',
+    imagem: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&q=80&auto=format&fit=crop',
+    categoria: 'OUTROS' as CategoriaServico,
+  },
+  {
+    value: 'SEGURANCA_RURAL',
+    label: 'Segurança Rural',
+    icon: '🔒',
+    descricao: 'Monitoramento, câmeras e vigilância patrimonial rural',
+    imagem: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80&auto=format&fit=crop',
+    categoria: 'OUTROS' as CategoriaServico,
+  },
+
   // ─── Manutenção ────────────────────────────────────────────────────────────
   {
     value: 'MANUTENCAO_MAQUINAS',
@@ -192,6 +304,14 @@ export const SERVICOS = [
     imagem: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&q=80&auto=format&fit=crop',
     categoria: 'MANUTENCAO' as CategoriaServico,
   },
+  {
+    value: 'MANUTENCAO_COLHEITADEIRA',
+    label: 'Manutenção de Colheitadeira',
+    icon: '⚙️',
+    descricao: 'Revisão, regulagem e reparo de colheitadeiras',
+    imagem: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&q=80&auto=format&fit=crop',
+    categoria: 'MANUTENCAO' as CategoriaServico,
+  },
 
   // ─── Logística ─────────────────────────────────────────────────────────────
   {
@@ -199,6 +319,14 @@ export const SERVICOS = [
     label: 'Transporte',
     icon: '🚛',
     descricao: 'Transporte de grãos, animais e insumos',
+    imagem: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=400&q=80&auto=format&fit=crop',
+    categoria: 'LOGISTICA' as CategoriaServico,
+  },
+  {
+    value: 'TRANSPORTE_GRAOS',
+    label: 'Transporte de Grãos',
+    icon: '🌾',
+    descricao: 'Frete de soja, milho, café e outros grãos a granel',
     imagem: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=400&q=80&auto=format&fit=crop',
     categoria: 'LOGISTICA' as CategoriaServico,
   },

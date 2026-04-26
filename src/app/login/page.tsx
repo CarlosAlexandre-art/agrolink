@@ -11,7 +11,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [loading, setLoading] = useState(false)
-  const [loadingSocial, setLoadingSocial] = useState<'google' | 'linkedin' | null>(null)
+  const [loadingSocial, setLoadingSocial] = useState<'google' | null>(null)
   const [erro, setErro] = useState('')
 
   async function handleLogin(e: React.FormEvent) {
@@ -33,9 +33,7 @@ export default function LoginPage() {
     const supabase = createClient()
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: {
-        redirectTo: `${APP_URL}/api/auth/callback?next=/dashboard`,
-      },
+      options: { redirectTo: `${APP_URL}/api/auth/callback?next=/dashboard` },
     })
   }
 
@@ -48,7 +46,7 @@ export default function LoginPage() {
         </div>
 
         {/* Login social */}
-        <div className="mb-6">
+        <div className="mb-6 space-y-3">
           <button
             onClick={loginGoogle}
             disabled={!!loadingSocial}

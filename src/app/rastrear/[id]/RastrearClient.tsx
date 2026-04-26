@@ -36,6 +36,8 @@ export default function RastrearClient({ serviceId, initialService, servicoLabel
   const [proposta, setProposta] = useState(propostaInicial)
   const [respondendo, setRespondendo] = useState(false)
   const [msgProposta, setMsgProposta] = useState('')
+  const [uploadingFoto, setUploadingFoto] = useState(false)
+  const [fotoMsg, setFotoMsg] = useState('')
 
   useEffect(() => {
     if (service.status === 'CONCLUIDO' || service.status === 'CANCELADO') return
@@ -68,6 +70,28 @@ export default function RastrearClient({ serviceId, initialService, servicoLabel
 
     return () => clearInterval(interval)
   }, [serviceId, service.status, isProdutor])
+
+  async function handleFotoProva(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploadingFoto(true)
+    setFotoMsg('')
+    try {
+      const fd = new FormData()
+      fd.append('foto', file)
+      const res = await fetch(`/api/servicos/${serviceId}/foto-prova`, { method: 'POST', body: fd })
+      if (res.ok) {
+        setFotoMsg('✅ Foto enviada com sucesso!')
+        setService((s: any) => ({ ...s, fotoProva: URL.createObjectURL(file) }))
+      } else {
+        const d = await res.json()
+        setFotoMsg(d.error || 'Erro ao enviar foto')
+      }
+    } catch {
+      setFotoMsg('Erro de conexão. Tente novamente.')
+    }
+    setUploadingFoto(false)
+  }
 
   async function responderProposta(acao: 'ACEITAR' | 'RECUSAR') {
     if (!proposta) return
@@ -319,6 +343,39 @@ export default function RastrearClient({ serviceId, initialService, servicoLabel
               >
                 💳 Concluir pagamento no AgroCore
               </Link>
+            )}
+          </div>
+        )}
+
+        {/* Foto de comprovação — visível para o prestador quando em execução */}
+        {!isProdutor && (service.status === 'EXECUTANDO' || service.status === 'CONCLUIDO') && (
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-200 space-y-3">
+            <h2 className="font-bold text-gray-700">Foto de comprovação</h2>
+            {service.fotoProva ? (
+              <div>
+                <img src={service.fotoProva} alt="Comprovação" className="w-full rounded-xl object-cover max-h-48" />
+                <p className="text-xs text-green-600 font-medium mt-2 text-center">✅ Foto registrada</p>
+              </div>
+            ) : (
+              <p className="text-sm text-gray-400">Nenhuma foto enviada ainda.</p>
+            )}
+            {service.status === 'EXECUTANDO' && (
+              <label className={`flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold text-sm cursor-pointer transition ${uploadingFoto ? 'bg-gray-100 text-gray-400' : 'bg-green-700 text-white hover:bg-green-800'}`}>
+                {uploadingFoto ? 'Enviando...' : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                    </svg>
+                    {service.fotoProva ? 'Trocar foto' : 'Enviar foto'}
+                  </>
+                )}
+                <input type="file" accept="image/*" capture="environment" className="hidden" onChange={handleFotoProva} disabled={uploadingFoto} />
+              </label>
+            )}
+            {fotoMsg && (
+              <p className={`text-sm text-center font-medium p-2 rounded-xl ${fotoMsg.startsWith('✅') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>
+                {fotoMsg}
+              </p>
             )}
           </div>
         )}
