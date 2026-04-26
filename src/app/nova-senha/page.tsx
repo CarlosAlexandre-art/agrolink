@@ -32,6 +32,15 @@ export default function NovaSenhaPage() {
         setExpirou(true); return
       }
 
+      // Fluxo token_hash: ?token_hash=xxx&type=recovery
+      const token_hash = queryParams.get('token_hash')
+      const qtype = queryParams.get('type')
+      if (token_hash && qtype === 'recovery') {
+        const { error } = await supabase.auth.verifyOtp({ token_hash, type: 'recovery' })
+        if (!error) { setPronto(true); return }
+        setExpirou(true); return
+      }
+
       // Fluxo implícito: #access_token=xxx&type=recovery
       const hashParams = new URLSearchParams(hashRef.current.substring(1))
       const access_token = hashParams.get('access_token')
