@@ -217,6 +217,9 @@ export default function GanhosClient({
         <Link href="/dashboard" className="flex-1 py-3 text-center text-gray-500 text-xs">
           <div className="text-xl">🏠</div>Home
         </Link>
+        <Link href="/servicos-disponiveis" className="flex-1 py-3 text-center text-gray-500 text-xs">
+          <div className="text-xl">🔔</div>Pedidos
+        </Link>
         <Link href="/historico" className="flex-1 py-3 text-center text-gray-500 text-xs">
           <div className="text-xl">📋</div>Histórico
         </Link>
