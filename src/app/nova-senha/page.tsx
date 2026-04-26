@@ -14,56 +14,36 @@ export default function NovaSenhaPage() {
   const [confirmar, setConfirmar] = useState('')
   const [loading, setLoading] = useState(false)
   const [erro, setErro] = useState('')
-
-  // Captura o hash ANTES do Supabase processar e limpar
-  const hashRef = useRef(typeof window !== 'undefined' ? window.location.hash : '')
-  const searchRef = useRef(typeof window !== 'undefined' ? window.location.search : '')
+  const settled = useRef(false)
 
   useEffect(() => {
     const supabase = createClient()
 
-    async function processar() {
-      const queryParams = new URLSearchParams(searchRef.current)
-
-      // Fluxo token_hash: ?token_hash=xxx&type=recovery (prioridade máxima)
-      const token_hash = queryParams.get('token_hash')
-      const qtype = queryParams.get('type')
-      if (token_hash && qtype === 'recovery') {
-        const { error } = await supabase.auth.verifyOtp({ token_hash, type: 'recovery' })
-        if (!error) { setPronto(true); return }
-        setExpirou(true); return
-      }
-
-      // Fluxo PKCE: ?code=xxx
-      const code = queryParams.get('code')
-      if (code) {
-        const { error } = await supabase.auth.exchangeCodeForSession(code)
-        if (!error) { setPronto(true); return }
-        setExpirou(true); return
-      }
-
-      // Fluxo implícito: #access_token=xxx&type=recovery
-      const hashParams = new URLSearchParams(hashRef.current.substring(1))
-      const access_token = hashParams.get('access_token')
-      const refresh_token = hashParams.get('refresh_token')
-      const type = hashParams.get('type')
-      if (type === 'recovery' && access_token && refresh_token) {
-        const { error } = await supabase.auth.setSession({ access_token, refresh_token })
-        if (!error) { setPronto(true); return }
-        setExpirou(true); return
-      }
-
-      // Fallback: Supabase já processou o token — verifica sessão ativa
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session) {
-        setPronto(true); return
-      }
-
-      // Nenhum token encontrado
-      setExpirou(true)
+    function resolve(ok: boolean) {
+      if (settled.current) return
+      settled.current = true
+      if (ok) setPronto(true)
+      else setExpirou(true)
     }
 
-    processar()
+    // Supabase dispara PASSWORD_RECOVERY automaticamente ao detectar o token na URL
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') resolve(true)
+      if (event === 'SIGNED_IN') resolve(true)
+    })
+
+    // Fallback: sessão já existia quando o listener foi registrado
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) resolve(true)
+    })
+
+    // Timeout: se em 6s nada aconteceu, o token é inválido
+    const timer = setTimeout(() => resolve(false), 6000)
+
+    return () => {
+      subscription.unsubscribe()
+      clearTimeout(timer)
+    }
   }, [])
 
   async function handleSubmit(e: React.FormEvent) {
