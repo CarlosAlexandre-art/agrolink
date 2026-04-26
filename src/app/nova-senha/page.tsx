@@ -23,13 +23,9 @@ export default function NovaSenhaPage() {
     const supabase = createClient()
 
     async function processar() {
-      // Verifica primeiro se o Supabase já processou o token automaticamente
-      const { data: { session: sessionExistente } } = await supabase.auth.getSession()
-      if (sessionExistente) { setPronto(true); return }
-
       const queryParams = new URLSearchParams(searchRef.current)
 
-      // Fluxo token_hash: ?token_hash=xxx&type=recovery
+      // Fluxo token_hash: ?token_hash=xxx&type=recovery (prioridade máxima)
       const token_hash = queryParams.get('token_hash')
       const qtype = queryParams.get('type')
       if (token_hash && qtype === 'recovery') {
@@ -43,9 +39,6 @@ export default function NovaSenhaPage() {
       if (code) {
         const { error } = await supabase.auth.exchangeCodeForSession(code)
         if (!error) { setPronto(true); return }
-        // Se falhou, verifica se o Supabase já havia processado antes
-        const { data: { session: s2 } } = await supabase.auth.getSession()
-        if (s2) { setPronto(true); return }
         setExpirou(true); return
       }
 
@@ -54,14 +47,13 @@ export default function NovaSenhaPage() {
       const access_token = hashParams.get('access_token')
       const refresh_token = hashParams.get('refresh_token')
       const type = hashParams.get('type')
-
       if (type === 'recovery' && access_token && refresh_token) {
         const { error } = await supabase.auth.setSession({ access_token, refresh_token })
         if (!error) { setPronto(true); return }
         setExpirou(true); return
       }
 
-      // Nenhum token encontrado
+      // Fallback: Supabase já processou o token — verifica sessão ativa
       const { data: { session } } = await supabase.auth.getSession()
       if (session) {
         setPronto(true); return
