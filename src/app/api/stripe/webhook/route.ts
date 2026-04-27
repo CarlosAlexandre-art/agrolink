@@ -7,8 +7,10 @@ import { notificarAgroOS } from '@/lib/agros-webhook'
 
 // Mapeia Stripe price ID → plano interno
 const PRICE_TO_PLAN: Record<string, string> = {
-  [process.env.STRIPE_PRO_PRICE_ID        ?? '']: 'pro',
-  [process.env.STRIPE_ENTERPRISE_PRICE_ID ?? '']: 'enterprise',
+  [process.env.STRIPE_PRODUTOR_MENSAL_PRICE_ID  ?? '']: 'pro',
+  [process.env.STRIPE_PRODUTOR_ANUAL_PRICE_ID   ?? '']: 'pro',
+  [process.env.STRIPE_PRESTADOR_MENSAL_PRICE_ID ?? '']: 'pro',
+  [process.env.STRIPE_PRESTADOR_ANUAL_PRICE_ID  ?? '']: 'pro',
 }
 
 export async function POST(req: Request) {

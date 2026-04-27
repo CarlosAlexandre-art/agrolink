@@ -251,6 +251,33 @@ export default function DashboardPrestador({ user }: { user: any }) {
           <span className="text-gray-300">→</span>
         </Link>
 
+        {/* Assinatura */}
+        {user.plan === 'free' || !user.plan ? (
+          <Link
+            href="/planos"
+            className="flex items-center gap-4 bg-gradient-to-r from-green-700 to-green-600 text-white rounded-2xl px-5 py-4 shadow-sm hover:opacity-90 transition active:scale-95"
+          >
+            <span className="text-3xl">⭐</span>
+            <div className="flex-1">
+              <div className="font-bold text-base">Assine o Pro Prestador</div>
+              <div className="text-xs text-green-200">R$79/mês · Destaque na busca, banner e mais oportunidades</div>
+            </div>
+            <span className="text-green-200 text-lg">→</span>
+          </Link>
+        ) : (
+          <Link
+            href="/planos"
+            className="flex items-center gap-4 bg-white border border-gray-100 rounded-2xl px-5 py-4 shadow-sm hover:border-green-300 transition"
+          >
+            <span className="text-3xl">✅</span>
+            <div className="flex-1">
+              <div className="font-bold text-gray-800">Plano Pro ativo</div>
+              <div className="text-xs text-gray-400">Gerenciar assinatura</div>
+            </div>
+            <span className="text-gray-300">→</span>
+          </Link>
+        )}
+
         {/* Ecossistema */}
         <div>
           <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Ecossistema</div>

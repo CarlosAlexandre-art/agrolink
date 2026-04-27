@@ -4,77 +4,133 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
-const PLANOS = [
+type Plano = {
+  id: string
+  nome: string
+  precoMensal: string
+  precoAnual: string
+  notaMensal: string
+  notaAnual: string
+  cor: string
+  destaque: boolean
+  badge: string | null
+  desc: string
+  features: { txt: string; ok: boolean }[]
+  priceIdMensal: string | null
+  priceIdAnual: string | null
+  cta: string
+}
+
+const PLANOS_PRESTADOR: Plano[] = [
   {
     id: 'free',
     nome: 'Grátis',
-    preco: 'R$ 0',
-    nota: 'para sempre',
+    precoMensal: 'R$ 0',
+    precoAnual: 'R$ 0',
+    notaMensal: 'para sempre',
+    notaAnual: 'para sempre',
+    cor: 'border-gray-200',
+    destaque: false,
+    badge: null,
+    desc: 'Para prestadores que estão começando na plataforma.',
+    features: [
+      { txt: 'Perfil visível na plataforma',    ok: true  },
+      { txt: 'Receber pedidos de serviço',       ok: true  },
+      { txt: 'Chat integrado',                   ok: true  },
+      { txt: 'Rastreamento em tempo real',        ok: true  },
+      { txt: 'Destaque nos resultados de busca', ok: false },
+      { txt: 'Banner na plataforma',             ok: false },
+      { txt: 'Melhores oportunidades primeiro',  ok: false },
+      { txt: 'Suporte prioritário',              ok: false },
+    ],
+    priceIdMensal: null,
+    priceIdAnual: null,
+    cta: 'Plano atual',
+  },
+  {
+    id: 'pro',
+    nome: 'Pro Prestador',
+    precoMensal: 'R$ 79',
+    precoAnual: 'R$ 800',
+    notaMensal: '/mês',
+    notaAnual: '/ano · R$ 66/mês',
+    cor: 'border-green-500 ring-2 ring-green-500',
+    destaque: true,
+    badge: '⚡ Mais visibilidade',
+    desc: 'Destaque seu perfil e feche mais contratos.',
+    features: [
+      { txt: 'Perfil visível na plataforma',    ok: true },
+      { txt: 'Receber pedidos de serviço',       ok: true },
+      { txt: 'Chat integrado',                   ok: true },
+      { txt: 'Rastreamento em tempo real',        ok: true },
+      { txt: 'Destaque nos resultados de busca', ok: true },
+      { txt: 'Banner na plataforma',             ok: true },
+      { txt: 'Melhores oportunidades primeiro',  ok: true },
+      { txt: 'Suporte prioritário',              ok: true },
+    ],
+    priceIdMensal: process.env.NEXT_PUBLIC_STRIPE_PRESTADOR_MENSAL_PRICE_ID || null,
+    priceIdAnual:  process.env.NEXT_PUBLIC_STRIPE_PRESTADOR_ANUAL_PRICE_ID  || null,
+    cta: 'Assinar Pro Prestador',
+  },
+]
+
+const PLANOS_PRODUTOR: Plano[] = [
+  {
+    id: 'free',
+    nome: 'Grátis',
+    precoMensal: 'R$ 0',
+    precoAnual: 'R$ 0',
+    notaMensal: 'para sempre',
+    notaAnual: 'para sempre',
     cor: 'border-gray-200',
     destaque: false,
     badge: null,
     desc: 'Para quem está começando a contratar serviços rurais.',
     features: [
-      { txt: '1 serviço ativo por vez',         ok: true },
-      { txt: 'Acesso a todos os prestadores',   ok: true },
-      { txt: 'Chat integrado',                  ok: true },
-      { txt: 'Rastreamento em tempo real',       ok: true },
-      { txt: 'Urgência ALTA',                   ok: false },
-      { txt: 'Até 5 serviços simultâneos',      ok: false },
-      { txt: 'Histórico completo',              ok: false },
-      { txt: 'Suporte prioritário',             ok: false },
+      { txt: '1 serviço ativo por vez',           ok: true  },
+      { txt: 'Acesso a todos os prestadores',     ok: true  },
+      { txt: 'Chat integrado',                    ok: true  },
+      { txt: 'Rastreamento em tempo real',         ok: true  },
+      { txt: 'Urgência ALTA',                     ok: false },
+      { txt: 'Até 5 serviços simultâneos',        ok: false },
+      { txt: 'Histórico completo',                ok: false },
+      { txt: 'Suporte prioritário',               ok: false },
     ],
-    priceId: null,
+    priceIdMensal: null,
+    priceIdAnual: null,
     cta: 'Plano atual',
   },
   {
     id: 'pro',
-    nome: 'Pro',
-    preco: 'R$ 97',
-    nota: '/mês',
+    nome: 'Pro Produtor',
+    precoMensal: 'R$ 89',
+    precoAnual: 'R$ 900',
+    notaMensal: '/mês',
+    notaAnual: '/ano · R$ 75/mês',
     cor: 'border-green-500 ring-2 ring-green-500',
     destaque: true,
     badge: '🌿 Mais popular',
     desc: 'Para produtores com demanda frequente de serviços.',
     features: [
-      { txt: 'Até 5 serviços simultâneos',      ok: true },
-      { txt: 'Acesso a todos os prestadores',   ok: true },
-      { txt: 'Chat integrado',                  ok: true },
-      { txt: 'Rastreamento em tempo real',       ok: true },
-      { txt: 'Urgência ALTA liberada',          ok: true },
-      { txt: 'Histórico completo',              ok: true },
-      { txt: 'Suporte por e-mail',              ok: true },
-      { txt: 'Suporte WhatsApp 24/7',           ok: false },
+      { txt: 'Até 5 serviços simultâneos',        ok: true },
+      { txt: 'Acesso a todos os prestadores',     ok: true },
+      { txt: 'Chat integrado',                    ok: true },
+      { txt: 'Rastreamento em tempo real',         ok: true },
+      { txt: 'Urgência ALTA liberada',            ok: true },
+      { txt: 'Histórico completo',                ok: true },
+      { txt: 'Melhores propostas primeiro',       ok: true },
+      { txt: 'Suporte prioritário',               ok: true },
     ],
-    priceId: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID || null,
+    priceIdMensal: process.env.NEXT_PUBLIC_STRIPE_PRODUTOR_MENSAL_PRICE_ID || null,
+    priceIdAnual:  process.env.NEXT_PUBLIC_STRIPE_PRODUTOR_ANUAL_PRICE_ID  || null,
     cta: 'Assinar Pro',
-  },
-  {
-    id: 'enterprise',
-    nome: 'Enterprise',
-    preco: 'R$ 297',
-    nota: '/mês',
-    cor: 'border-gray-800',
-    destaque: false,
-    badge: '👑 Completo',
-    desc: 'Para grandes operações com múltiplos contratos simultâneos.',
-    features: [
-      { txt: 'Serviços ilimitados',             ok: true },
-      { txt: 'Acesso a todos os prestadores',   ok: true },
-      { txt: 'Chat integrado',                  ok: true },
-      { txt: 'Rastreamento em tempo real',       ok: true },
-      { txt: 'Urgência ALTA + prioridade',      ok: true },
-      { txt: 'Histórico completo + relatórios', ok: true },
-      { txt: 'Suporte WhatsApp 24/7',           ok: true },
-      { txt: 'Onboarding personalizado',        ok: true },
-    ],
-    priceId: process.env.NEXT_PUBLIC_STRIPE_ENTERPRISE_PRICE_ID || null,
-    cta: 'Assinar Enterprise',
   },
 ]
 
 export default function PlanosPage() {
   const [planoAtual, setPlanoAtual] = useState<string | null>(null)
+  const [tipo, setTipo] = useState<'PRODUTOR' | 'PRESTADOR' | null>(null)
+  const [periodo, setPeriodo] = useState<'mensal' | 'anual'>('mensal')
   const [loading, setLoading] = useState<string | null>(null)
   const [loadingPortal, setLoadingPortal] = useState(false)
   const [sucesso, setSucesso] = useState(false)
@@ -87,12 +143,15 @@ export default function PlanosPage() {
       if (res.ok) {
         const data = await res.json()
         setPlanoAtual(data.plan ?? 'free')
+        setTipo(data.tipo ?? 'PRODUTOR')
       }
     })
     if (new URLSearchParams(window.location.search).get('sucesso') === '1') {
       setSucesso(true)
     }
   }, [])
+
+  const planos = tipo === 'PRESTADOR' ? PLANOS_PRESTADOR : PLANOS_PRODUTOR
 
   async function handleAssinar(priceId: string, planoId: string) {
     setLoading(planoId)
@@ -123,13 +182,13 @@ export default function PlanosPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-green-700 text-white px-4 py-4">
-        <div className="max-w-4xl mx-auto flex items-center gap-3">
+        <div className="max-w-3xl mx-auto flex items-center gap-3">
           <Link href="/dashboard" className="text-white hover:text-green-200">← Voltar</Link>
           <h1 className="font-bold text-lg">Planos AgroCore</h1>
         </div>
       </header>
 
-      <div className="max-w-4xl mx-auto px-4 py-10 space-y-8">
+      <div className="max-w-3xl mx-auto px-4 py-10 space-y-8">
 
         {sucesso && (
           <div className="bg-green-50 border border-green-200 text-green-800 rounded-2xl px-5 py-4 flex items-center gap-3">
@@ -141,14 +200,50 @@ export default function PlanosPage() {
           </div>
         )}
 
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Escolha seu plano</h2>
-          <p className="text-gray-500">Sem fidelidade. Cancele quando quiser.</p>
+        <div className="text-center space-y-4">
+          <h2 className="text-3xl font-bold text-gray-900">Escolha seu plano</h2>
+          <p className="text-gray-500">
+            {tipo === 'PRESTADOR'
+              ? 'Destaque seu perfil e feche mais contratos.'
+              : 'Contrate com mais agilidade e recursos.'}
+            {' '}Cancele quando quiser.
+          </p>
+
+          {/* Toggle mensal / anual */}
+          <div className="inline-flex items-center bg-gray-100 rounded-xl p-1 gap-1">
+            <button
+              onClick={() => setPeriodo('mensal')}
+              className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${
+                periodo === 'mensal'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              Mensal
+            </button>
+            <button
+              onClick={() => setPeriodo('anual')}
+              className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 ${
+                periodo === 'anual'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              Anual
+              <span className="bg-green-100 text-green-700 text-[10px] font-bold px-1.5 py-0.5 rounded-md">
+                2 meses grátis
+              </span>
+            </button>
+          </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {PLANOS.map(plano => {
-            const isCurrent = planoAtual === plano.id || (planoAtual === 'admin')
+        <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+          {planos.map(plano => {
+            const isCurrent = planoAtual === plano.id || (plano.id !== 'free' && planoAtual === 'admin')
+            const preco = periodo === 'anual' ? plano.precoAnual : plano.precoMensal
+            const nota  = periodo === 'anual' ? plano.notaAnual  : plano.notaMensal
+            const priceId = periodo === 'anual' ? plano.priceIdAnual : plano.priceIdMensal
+
             return (
               <div
                 key={plano.id}
@@ -165,10 +260,17 @@ export default function PlanosPage() {
                 <div className="mb-4">
                   <h3 className="text-lg font-bold text-gray-900 mb-1">{plano.nome}</h3>
                   <p className="text-xs text-gray-400 mb-3">{plano.desc}</p>
-                  <div className="flex items-end gap-1">
-                    <span className="text-3xl font-bold text-gray-900">{plano.preco}</span>
-                    <span className="text-sm text-gray-400 mb-0.5">{plano.nota}</span>
+                  <div className="flex items-end gap-1 flex-wrap">
+                    <span className="text-3xl font-bold text-gray-900">{preco}</span>
+                    <span className="text-sm text-gray-400 mb-0.5">{nota}</span>
                   </div>
+                  {periodo === 'anual' && plano.id !== 'free' && (
+                    <p className="text-xs text-green-600 font-medium mt-1">
+                      Economia de{' '}
+                      {plano.id === 'pro' && tipo === 'PRESTADOR' ? 'R$ 148' : 'R$ 168'}
+                      {' '}por ano
+                    </p>
+                  )}
                 </div>
 
                 <ul className="space-y-2.5 flex-1 mb-6">
@@ -190,13 +292,13 @@ export default function PlanosPage() {
 
                 {plano.id === 'free' || isCurrent ? (
                   <div className="w-full py-2.5 rounded-xl text-sm font-semibold text-center bg-gray-100 text-gray-400 cursor-default">
-                    {isCurrent && plano.id !== 'free' ? '✓ Plano atual' : plano.id === 'free' && planoAtual === 'free' ? '✓ Plano atual' : plano.cta}
+                    {isCurrent && plano.id !== 'free' ? '✓ Plano atual' : planoAtual === 'free' || planoAtual === null ? '✓ Plano atual' : plano.cta}
                   </div>
                 ) : (
                   <button
-                    onClick={() => plano.priceId ? handleAssinar(plano.priceId, plano.id) : undefined}
-                    disabled={loading === plano.id || !plano.priceId}
-                    className={`w-full py-2.5 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50 ${plano.destaque ? 'bg-green-700 text-white hover:bg-green-800' : 'bg-gray-900 text-white hover:bg-gray-800'}`}
+                    onClick={() => priceId ? handleAssinar(priceId, plano.id) : undefined}
+                    disabled={loading === plano.id || !priceId}
+                    className="w-full py-2.5 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50 bg-green-700 text-white hover:bg-green-800"
                   >
                     {loading === plano.id ? 'Redirecionando...' : plano.cta}
                   </button>
@@ -206,9 +308,8 @@ export default function PlanosPage() {
           })}
         </div>
 
-        {/* Gerenciar assinatura — só para quem tem plano pago */}
         {planoAtual && planoAtual !== 'free' && planoAtual !== 'admin' && (
-          <div className="bg-white border border-gray-200 rounded-2xl p-5 flex items-center justify-between gap-4">
+          <div className="bg-white border border-gray-200 rounded-2xl p-5 flex items-center justify-between gap-4 max-w-2xl mx-auto">
             <div>
               <div className="font-semibold text-gray-900">Gerenciar assinatura</div>
               <div className="text-sm text-gray-500">Altere método de pagamento, veja faturas ou cancele.</div>
@@ -223,15 +324,18 @@ export default function PlanosPage() {
           </div>
         )}
 
-        {/* FAQ */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        <div className="bg-white rounded-2xl border border-gray-200 p-6 max-w-2xl mx-auto">
           <h3 className="font-bold text-gray-900 mb-4">Perguntas frequentes</h3>
           <div className="grid md:grid-cols-2 gap-5">
             {[
               { q: 'Posso cancelar a qualquer momento?', a: 'Sim. Sem fidelidade ou multa. Cancele direto no painel.' },
-              { q: 'O plano Grátis tem limite de tempo?', a: 'Não. É gratuito para sempre, com 1 serviço ativo por vez.' },
-              { q: 'O que é "serviço ativo"?', a: 'É um pedido de serviço em andamento (procurando prestador, aceito ou em execução).' },
-              { q: 'Como funciona o suporte Enterprise?', a: 'Atendimento prioritário via WhatsApp com resposta em até 2 horas.' },
+              { q: 'O plano Grátis tem limite de tempo?', a: 'Não. É gratuito para sempre.' },
+              tipo === 'PRESTADOR'
+                ? { q: 'O que é "destaque nos resultados"?', a: 'Seu perfil aparece no topo das buscas de produtores na sua região.' }
+                : { q: 'O que é "serviço ativo"?', a: 'É um pedido em andamento (procurando prestador, aceito ou em execução).' },
+              tipo === 'PRESTADOR'
+                ? { q: 'O que são "melhores oportunidades"?', a: 'Você recebe notificações primeiro sobre pedidos urgentes e de alto valor.' }
+                : { q: 'O que é "melhores propostas primeiro"?', a: 'Você vê os prestadores mais bem avaliados e disponíveis no topo da lista.' },
             ].map((item, i) => (
               <div key={i}>
                 <div className="text-sm font-semibold text-gray-900 mb-1">{item.q}</div>
