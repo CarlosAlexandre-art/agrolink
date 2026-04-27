@@ -52,6 +52,13 @@ export async function POST(req: Request) {
     const body = await req.json()
     const { tipo, area, urgencia, descricao, latitude, longitude, endereco } = body
 
+    if (urgencia === 'ALTA' && !limites.urgenciaAlta) {
+      return NextResponse.json({
+        error: 'Urgência ALTA disponível apenas no plano Pro. Faça upgrade em /planos.',
+        code: 'PLAN_LIMIT',
+      }, { status: 403 })
+    }
+
     const TIPOS_VALIDOS = SERVICOS.map(s => s.value)
     const URGENCIAS_VALIDAS = ['BAIXA', 'MEDIA', 'ALTA']
 

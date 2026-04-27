@@ -1,12 +1,21 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { SERVICOS, URGENCIAS, CATEGORIAS, type CategoriaServico } from '@/lib/constants'
 export default function SolicitarPage() {
   const router = useRouter()
   const [step, setStep] = useState(1)
+  const [plano, setPlano] = useState<string>('free')
+
+  useEffect(() => {
+    fetch('/api/perfil/me').then(r => r.ok ? r.json() : null).then(d => {
+      if (d?.plan) setPlano(d.plan)
+    }).catch(() => {})
+  }, [])
+
+  const isPro = ['pro', 'enterprise', 'admin'].includes(plano)
   const [tipo, setTipo] = useState('')
   const [area, setArea] = useState('')
   const [urgencia, setUrgencia] = useState('MEDIA')
@@ -170,20 +179,34 @@ export default function SolicitarPage() {
                 ⚡ Urgência
               </label>
               <div className="space-y-2">
-                {URGENCIAS.map(u => (
-                  <button
-                    key={u.value}
-                    type="button"
-                    onClick={() => setUrgencia(u.value)}
-                    className={`w-full p-3 border-2 rounded-xl text-left transition ${
-                      urgencia === u.value
-                        ? 'border-green-500 bg-green-50'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    <span className="font-semibold text-gray-800">{u.label}</span>
-                  </button>
-                ))}
+                {URGENCIAS.map(u => {
+                  const bloqueada = u.value === 'ALTA' && !isPro
+                  return (
+                    <button
+                      key={u.value}
+                      type="button"
+                      onClick={() => !bloqueada && setUrgencia(u.value)}
+                      disabled={bloqueada}
+                      className={`w-full p-3 border-2 rounded-xl text-left transition ${
+                        bloqueada
+                          ? 'border-gray-100 bg-gray-50 cursor-not-allowed opacity-60'
+                          : urgencia === u.value
+                            ? 'border-green-500 bg-green-50'
+                            : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-gray-800">{u.label}</span>
+                        {bloqueada && (
+                          <Link href="/planos" onClick={e => e.stopPropagation()}
+                            className="text-xs text-green-700 font-semibold border border-green-300 px-2 py-0.5 rounded-full hover:bg-green-50">
+                            🔒 Pro
+                          </Link>
+                        )}
+                      </div>
+                    </button>
+                  )
+                })}
               </div>
             </div>
 

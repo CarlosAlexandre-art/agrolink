@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { SERVICOS } from '@/lib/constants'
+import { getLimites } from '@/lib/planos'
 
 export default async function HistoricoPage() {
   const supabase = await createClient()
@@ -39,6 +40,9 @@ export default async function HistoricoPage() {
 
   if (!dbUser) redirect('/login')
 
+  const limites = getLimites(dbUser.plan ?? 'free')
+  const LIMITE_HISTORICO = limites.historicoCompleto ? Infinity : 5
+
   const statusLabel: Record<string, { label: string; cor: string }> = {
     AGUARDANDO: { label: 'Aguardando', cor: 'bg-gray-100 text-gray-600' },
     PROCURANDO: { label: 'Procurando', cor: 'bg-yellow-100 text-yellow-700' },
@@ -68,7 +72,7 @@ export default async function HistoricoPage() {
               </div>
             ) : (
               <div className="space-y-3">
-                {dbUser.produtor.services.map((s: any) => {
+                {dbUser.produtor.services.slice(0, LIMITE_HISTORICO).map((s: any) => {
                   const servico = SERVICOS.find(sv => sv.value === s.tipo) || { label: s.tipo, icon: '📋' }
                   const st = statusLabel[s.status] || { label: s.status, cor: 'bg-gray-100 text-gray-600' }
                   const prestador = s.matches[0]?.prestador?.user
@@ -100,6 +104,13 @@ export default async function HistoricoPage() {
                     </Link>
                   )
                 })}
+                {!limites.historicoCompleto && dbUser.produtor.services.length > 5 && (
+                  <Link href="/planos"
+                    className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-4 py-3 text-sm">
+                    <span className="text-green-800">🔒 +{dbUser.produtor.services.length - 5} serviços ocultos — <strong>Plano Pro</strong></span>
+                    <span className="text-green-700 font-semibold">Upgrade →</span>
+                  </Link>
+                )}
               </div>
             )}
           </>
