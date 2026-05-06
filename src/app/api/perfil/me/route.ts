@@ -15,7 +15,14 @@ export async function GET() {
 
     if (!dbUser) return NextResponse.json({ error: 'Não encontrado' }, { status: 404 })
 
-    return NextResponse.json(dbUser)
+    const priceIds = {
+      prestadorMensal: process.env.STRIPE_PRESTADOR_MENSAL_PRICE_ID ?? null,
+      prestadorAnual:  process.env.STRIPE_PRESTADOR_ANUAL_PRICE_ID  ?? null,
+      produtorMensal:  process.env.STRIPE_PRODUTOR_MENSAL_PRICE_ID  ?? null,
+      produtorAnual:   process.env.STRIPE_PRODUTOR_ANUAL_PRICE_ID   ?? null,
+    }
+
+    return NextResponse.json({ ...dbUser, priceIds })
   } catch (error) {
     console.error(error)
     return NextResponse.json({ error: 'Erro ao buscar perfil' }, { status: 500 })

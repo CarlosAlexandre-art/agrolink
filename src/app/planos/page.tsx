@@ -134,6 +134,13 @@ export default function PlanosPage() {
   const [loading, setLoading] = useState<string | null>(null)
   const [loadingPortal, setLoadingPortal] = useState(false)
   const [sucesso, setSucesso] = useState(false)
+  const [erro, setErro] = useState('')
+  const [priceIds, setPriceIds] = useState<{
+    prestadorMensal: string | null
+    prestadorAnual: string | null
+    produtorMensal: string | null
+    produtorAnual: string | null
+  } | null>(null)
 
   useEffect(() => {
     const supabase = createClient()
@@ -144,6 +151,7 @@ export default function PlanosPage() {
         const data = await res.json()
         setPlanoAtual(data.plan ?? 'free')
         setTipo(data.tipo ?? 'PRODUTOR')
+        setPriceIds(data.priceIds ?? null)
       }
     })
     if (new URLSearchParams(window.location.search).get('sucesso') === '1') {
@@ -151,10 +159,21 @@ export default function PlanosPage() {
     }
   }, [])
 
-  const planos = tipo === 'PRESTADOR' ? PLANOS_PRESTADOR : PLANOS_PRODUTOR
+  const planos = tipo === 'PRESTADOR'
+    ? PLANOS_PRESTADOR.map(p => ({
+        ...p,
+        priceIdMensal: p.id === 'pro' ? (priceIds?.prestadorMensal ?? p.priceIdMensal) : p.priceIdMensal,
+        priceIdAnual:  p.id === 'pro' ? (priceIds?.prestadorAnual  ?? p.priceIdAnual)  : p.priceIdAnual,
+      }))
+    : PLANOS_PRODUTOR.map(p => ({
+        ...p,
+        priceIdMensal: p.id === 'pro' ? (priceIds?.produtorMensal ?? p.priceIdMensal) : p.priceIdMensal,
+        priceIdAnual:  p.id === 'pro' ? (priceIds?.produtorAnual  ?? p.priceIdAnual)  : p.priceIdAnual,
+      }))
 
   async function handleAssinar(priceId: string, planoId: string) {
     setLoading(planoId)
+    setErro('')
     try {
       const res = await fetch('/api/stripe/subscription', {
         method: 'POST',
@@ -162,7 +181,13 @@ export default function PlanosPage() {
         body: JSON.stringify({ priceId }),
       })
       const data = await res.json()
-      if (data.url) window.location.href = data.url
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        setErro(data.error || 'Erro ao iniciar checkout. Tente novamente.')
+      }
+    } catch {
+      setErro('Erro de conexão. Verifique sua internet e tente novamente.')
     } finally {
       setLoading(null)
     }
@@ -170,10 +195,17 @@ export default function PlanosPage() {
 
   async function handlePortal() {
     setLoadingPortal(true)
+    setErro('')
     try {
       const res = await fetch('/api/stripe/portal', { method: 'POST' })
       const data = await res.json()
-      if (data.url) window.location.href = data.url
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        setErro(data.error || 'Erro ao abrir portal. Tente novamente.')
+      }
+    } catch {
+      setErro('Erro de conexão. Verifique sua internet e tente novamente.')
     } finally {
       setLoadingPortal(false)
     }
@@ -236,6 +268,12 @@ export default function PlanosPage() {
             </button>
           </div>
         </div>
+
+        {erro && (
+          <div className="max-w-2xl mx-auto bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm font-medium">
+            ⚠️ {erro}
+          </div>
+        )}
 
         <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
           {planos.map(plano => {
