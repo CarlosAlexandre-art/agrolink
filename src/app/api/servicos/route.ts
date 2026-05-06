@@ -82,7 +82,7 @@ export async function POST(req: Request) {
     for (const prestador of prestadores) {
       let dist: number | null = null
       if (prestador.user.latitude && prestador.user.longitude) {
-        dist = calcDistancia(latitude, longitude, prestador.user.latitude, prestador.user.longitude)
+        dist = calcDistancia(lat, lng, prestador.user.latitude, prestador.user.longitude)
         if (dist > prestador.raioAtendamento) continue
       }
       matchPromises.push(
