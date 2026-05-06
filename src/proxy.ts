@@ -18,11 +18,10 @@ function getIP(req: NextRequest): string {
 
 function isRateLimited(ip: string, max: number): boolean {
   const now = Date.now()
-  const key = ip
-  const entry = ipStore.get(key)
+  const entry = ipStore.get(ip)
 
   if (!entry || now > entry.resetAt) {
-    ipStore.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS })
+    ipStore.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS })
     return false
   }
 
@@ -43,7 +42,7 @@ function cleanExpired() {
   }
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   const ip = getIP(request)
 
