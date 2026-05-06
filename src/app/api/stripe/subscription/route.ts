@@ -13,6 +13,10 @@ export async function POST(req: Request) {
     const { priceId } = await req.json()
     if (!priceId) return NextResponse.json({ error: 'priceId obrigatório' }, { status: 400 })
 
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json({ error: 'STRIPE_SECRET_KEY não configurada no servidor' }, { status: 500 })
+    }
+
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
@@ -25,8 +29,9 @@ export async function POST(req: Request) {
     })
 
     return NextResponse.json({ url: session.url })
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(error)
-    return NextResponse.json({ error: 'Erro ao criar sessão' }, { status: 500 })
+    const msg = error instanceof Error ? error.message : 'Erro ao criar sessão'
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
 }
