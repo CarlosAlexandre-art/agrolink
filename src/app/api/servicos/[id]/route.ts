@@ -126,7 +126,10 @@ export async function PATCH(_req: Request, { params }: { params: Promise<{ id: s
     }
 
     // Notificar AgroOS sobre mudança de status
-    notificarAgroOS(id, novoStatus).catch(() => {})
+    const extraAgroOS = novoStatus === 'CONCLUIDO'
+      ? { valor: service.payment?.valorPrestador ?? 0, tipo: service.tipo }
+      : undefined
+    notificarAgroOS(id, novoStatus, extraAgroOS).catch(() => {})
 
     return NextResponse.json(updated)
   } catch (error) {
