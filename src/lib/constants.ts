@@ -331,6 +331,32 @@ export const SERVICOS = [
     categoria: 'LOGISTICA' as CategoriaServico,
   },
 
+  // ─── Infraestrutura verde / Ambiental (novos) ─────────────────────────────
+  {
+    value: 'BIOGAS_RURAL',
+    label: 'Biogás Rural',
+    icon: '♻️',
+    descricao: 'Instalação de biodigestor para energia e biofertilizante',
+    imagem: 'https://images.unsplash.com/photo-1508615039623-a25605d2b022?w=400&q=80&auto=format&fit=crop',
+    categoria: 'INFRAESTRUTURA' as CategoriaServico,
+  },
+  {
+    value: 'RASTREABILIDADE',
+    label: 'Rastreabilidade & ESG',
+    icon: '📲',
+    descricao: 'Rastreio de produção, certificação ESG e cadeia de custódia',
+    imagem: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80&auto=format&fit=crop',
+    categoria: 'OUTROS' as CategoriaServico,
+  },
+  {
+    value: 'LICENCIAMENTO_AMBIENTAL',
+    label: 'Licenciamento Ambiental',
+    icon: '📋',
+    descricao: 'CAR, licença ambiental, APP e área de reserva legal',
+    imagem: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&q=80&auto=format&fit=crop',
+    categoria: 'OUTROS' as CategoriaServico,
+  },
+
   // ─── Outros ────────────────────────────────────────────────────────────────
   {
     value: 'OUTROS',
