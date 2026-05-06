@@ -4,10 +4,10 @@ import { stripe } from '@/lib/stripe'
 export async function GET() {
   try {
     // Testa se a chave Stripe está funcionando
-    const account = await stripe.accounts.retrieve()
+    const balance = await stripe.balance.retrieve()
     return NextResponse.json({
       ok: true,
-      accountId: account.id,
+      currency: balance.available[0]?.currency ?? 'ok',
       keyType: process.env.STRIPE_SECRET_KEY?.slice(0, 10) + '...',
       priceIds: {
         prestadorMensal: process.env.STRIPE_PRESTADOR_MENSAL_PRICE_ID ?? 'NÃO CONFIGURADO',
