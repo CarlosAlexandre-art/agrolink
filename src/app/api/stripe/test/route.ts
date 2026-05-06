@@ -2,26 +2,20 @@ import { NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
 
 export async function GET() {
+  const priceId = process.env.STRIPE_PRODUTOR_MENSAL_PRICE_ID
+
   try {
-    // Testa se a chave Stripe está funcionando
-    const balance = await stripe.balance.retrieve()
-    return NextResponse.json({
-      ok: true,
-      currency: balance.available[0]?.currency ?? 'ok',
-      keyType: process.env.STRIPE_SECRET_KEY?.slice(0, 10) + '...',
-      priceIds: {
-        prestadorMensal: process.env.STRIPE_PRESTADOR_MENSAL_PRICE_ID ?? 'NÃO CONFIGURADO',
-        prestadorAnual:  process.env.STRIPE_PRESTADOR_ANUAL_PRICE_ID  ?? 'NÃO CONFIGURADO',
-        produtorMensal:  process.env.STRIPE_PRODUTOR_MENSAL_PRICE_ID  ?? 'NÃO CONFIGURADO',
-        produtorAnual:   process.env.STRIPE_PRODUTOR_ANUAL_PRICE_ID   ?? 'NÃO CONFIGURADO',
-      }
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      payment_method_types: ['card'],
+      line_items: [{ price: priceId!, quantity: 1 }],
+      success_url: 'https://agrocore.live/planos?sucesso=1',
+      cancel_url: 'https://agrocore.live/planos',
+      customer_email: 'teste@agrocore.live',
     })
+    return NextResponse.json({ ok: true, url: session.url?.slice(0, 60) + '...' })
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : String(error)
-    return NextResponse.json({
-      ok: false,
-      error: msg,
-      keyType: process.env.STRIPE_SECRET_KEY?.slice(0, 10) + '...',
-    }, { status: 500 })
+    return NextResponse.json({ ok: false, erro: msg, priceId }, { status: 200 })
   }
 }
