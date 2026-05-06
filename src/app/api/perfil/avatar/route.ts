@@ -25,8 +25,11 @@ export async function POST(req: Request) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
 
-    const ext = file.name.split('.').pop() || 'jpg'
-    const path = `avatars/${user.id}.${ext}`
+    // Garante que o bucket existe e é público
+    await adminClient.storage.createBucket('avatars', { public: true }).catch(() => {})
+
+    const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg'
+    const path = `${user.id}.${ext}`
     const bytes = await file.arrayBuffer()
 
     const { error: uploadError } = await adminClient.storage
@@ -38,14 +41,15 @@ export async function POST(req: Request) {
 
     if (uploadError) {
       console.error('Upload error:', uploadError)
-      return NextResponse.json({ error: 'Erro ao fazer upload' }, { status: 500 })
+      return NextResponse.json({ error: `Erro ao fazer upload: ${uploadError.message}` }, { status: 500 })
     }
 
     const { data: { publicUrl } } = adminClient.storage
       .from('avatars')
       .getPublicUrl(path)
 
-    return NextResponse.json({ url: publicUrl })
+    const urlComCache = `${publicUrl}?t=${Date.now()}`
+    return NextResponse.json({ url: urlComCache })
   } catch (error) {
     console.error(error)
     return NextResponse.json({ error: 'Erro ao processar imagem' }, { status: 500 })
