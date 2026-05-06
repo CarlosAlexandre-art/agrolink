@@ -30,5 +30,18 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", "my-video", "rtk"]
+  "exclude": [
+    "node_modules",
+    "my-video",
+    "rtk",
+    "manage-skills",
+    "deep-dive",
+    "devops-agent",
+    "memory-bank",
+    "overnight-worker",
+    "smart-pr-review",
+    "tapestry",
+    "agro-admin",
+    "agro-admin-temp"
+  ]
 }
