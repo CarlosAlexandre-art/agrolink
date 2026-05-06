@@ -63,7 +63,7 @@ export async function POST(req: Request) {
         type: 'recovery',
         email: userEmail,
         options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://agrolink-opal.vercel.app'}/nova-senha`,
+          redirectTo: `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://agrocore.live'}/nova-senha`,
         },
       }).catch(() => {}) // não bloquear o fluxo se falhar
     }

@@ -5,8 +5,6 @@ import { notificarUsuario } from '@/lib/push'
 import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
 import { SERVICOS } from '@/lib/constants'
 import { sanitizeString, sanitizePositiveNumber } from '@/lib/sanitize'
-import { getLimites } from '@/lib/planos'
-
 // Haversine distance in km
 function calcDistancia(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371
@@ -34,30 +32,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Usuário não é produtor' }, { status: 403 })
     }
 
-    // Verificar limite de serviços ativos do plano
-    const limites = getLimites(dbUser.plan ?? 'free')
-    const ativos = await prisma.service.count({
-      where: {
-        produtorId: dbUser.produtor.id,
-        status: { in: ['AGUARDANDO', 'PROCURANDO', 'AGUARDANDO_PROPOSTA', 'MATCH_ENCONTRADO', 'EM_ROTA', 'EXECUTANDO'] },
-      },
-    })
-    if (ativos >= limites.servicosAtivos) {
-      return NextResponse.json({
-        error: `Limite do plano ${limites.nome} atingido (${limites.servicosAtivos} serviço${limites.servicosAtivos > 1 ? 's' : ''} ativo${limites.servicosAtivos > 1 ? 's' : ''}). Faça upgrade em /planos.`,
-        code: 'PLAN_LIMIT',
-      }, { status: 403 })
-    }
-
     const body = await req.json()
     const { tipo, area, urgencia, descricao, latitude, longitude, endereco } = body
-
-    if (urgencia === 'ALTA' && !limites.urgenciaAlta) {
-      return NextResponse.json({
-        error: 'Urgência ALTA disponível apenas no plano Pro. Faça upgrade em /planos.',
-        code: 'PLAN_LIMIT',
-      }, { status: 403 })
-    }
 
     const TIPOS_VALIDOS = SERVICOS.map(s => s.value)
     const URGENCIAS_VALIDAS = ['BAIXA', 'MEDIA', 'ALTA']
@@ -149,7 +125,7 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET(req: Request) {
+export async function GET(_req: Request) {
   try {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()

@@ -1,7 +1,7 @@
 import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://agrolink-opal.vercel.app'
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://agrocore.live'
 const FROM = 'AgroCore <noreply@parceirosdeproposito.com>'
 
 function baseTemplate(conteudo: string) {
