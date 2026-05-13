@@ -23,10 +23,10 @@ export const PLANOS_CONFIG: Record<PlanoId, {
   },
   enterprise: {
     nome: 'Enterprise',
-    servicosAtivos: 999,
+    servicosAtivos: Infinity,
     urgenciaAlta: true,
     historicoCompleto: true,
-    suporte: 'WhatsApp 24/7',
+    suporte: 'WhatsApp 24/7 + Gestor dedicado',
   },
   admin: {
     nome: 'Admin',

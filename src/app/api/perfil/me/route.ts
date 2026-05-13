@@ -16,10 +16,14 @@ export async function GET() {
     if (!dbUser) return NextResponse.json({ error: 'Não encontrado' }, { status: 404 })
 
     const priceIds = {
-      prestadorMensal: process.env.STRIPE_PRESTADOR_MENSAL_PRICE_ID ?? null,
-      prestadorAnual:  process.env.STRIPE_PRESTADOR_ANUAL_PRICE_ID  ?? null,
-      produtorMensal:  process.env.STRIPE_PRODUTOR_MENSAL_PRICE_ID  ?? null,
-      produtorAnual:   process.env.STRIPE_PRODUTOR_ANUAL_PRICE_ID   ?? null,
+      prestadorMensal:           process.env.STRIPE_PRESTADOR_MENSAL_PRICE_ID            ?? null,
+      prestadorAnual:            process.env.STRIPE_PRESTADOR_ANUAL_PRICE_ID             ?? null,
+      produtorMensal:            process.env.STRIPE_PRODUTOR_MENSAL_PRICE_ID             ?? null,
+      produtorAnual:             process.env.STRIPE_PRODUTOR_ANUAL_PRICE_ID              ?? null,
+      prestadorEnterpriseMensal: process.env.STRIPE_PRESTADOR_ENTERPRISE_MENSAL_PRICE_ID ?? null,
+      prestadorEnterpriseAnual:  process.env.STRIPE_PRESTADOR_ENTERPRISE_ANUAL_PRICE_ID  ?? null,
+      produtorEnterpriseMensal:  process.env.STRIPE_PRODUTOR_ENTERPRISE_MENSAL_PRICE_ID  ?? null,
+      produtorEnterpriseAnual:   process.env.STRIPE_PRODUTOR_ENTERPRISE_ANUAL_PRICE_ID   ?? null,
     }
 
     return NextResponse.json({ ...dbUser, priceIds })
