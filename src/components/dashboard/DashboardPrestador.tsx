@@ -39,6 +39,8 @@ export default function DashboardPrestador({ user }: { user: any }) {
   const [qtdServicos, setQtdServicos] = useState(0)
   const [rota, setRota] = useState<any>(null)
   const [loadingRota, setLoadingRota] = useState(false)
+  const [previsao, setPrevisao] = useState<any>(null)
+  const [loadingPrevisao, setLoadingPrevisao] = useState(false)
 
   useEffect(() => {
     garantirSubscription()
@@ -73,6 +75,17 @@ export default function DashboardPrestador({ user }: { user: any }) {
       if (res.ok) setRota(await res.json())
     } finally {
       setLoadingRota(false)
+    }
+  }
+
+  async function carregarPrevisao() {
+    setLoadingPrevisao(true)
+    setPrevisao(null)
+    try {
+      const res = await fetch('/api/ai/previsao-demanda')
+      if (res.ok) setPrevisao(await res.json())
+    } finally {
+      setLoadingPrevisao(false)
     }
   }
 
@@ -277,6 +290,69 @@ export default function DashboardPrestador({ user }: { user: any }) {
             )}
           </div>
         )}
+
+        {/* Previsão de Demanda — ML + NIM */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-50">
+            <div>
+              <div className="font-bold text-gray-800">📈 Previsão de Demanda</div>
+              <div className="text-xs text-gray-400">Tendência de chamados na sua região</div>
+            </div>
+            <button
+              onClick={carregarPrevisao}
+              disabled={loadingPrevisao}
+              className="text-xs font-bold bg-indigo-600 text-white px-3 py-1.5 rounded-xl hover:bg-indigo-700 transition disabled:opacity-50"
+            >
+              {loadingPrevisao ? '⏳ Analisando...' : '⚡ Analisar'}
+            </button>
+          </div>
+
+          {!previsao && !loadingPrevisao && (
+            <div className="px-5 py-4 text-sm text-gray-400">
+              Clique em Analisar para ver quais serviços estão com maior demanda nos próximos 30 dias.
+            </div>
+          )}
+
+          {loadingPrevisao && (
+            <div className="px-5 py-4 flex items-center gap-2 text-sm text-indigo-600">
+              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+              </svg>
+              Processando tendências dos últimos 6 meses...
+            </div>
+          )}
+
+          {previsao && (
+            <div className="px-5 py-4 space-y-4">
+              <div className="space-y-2">
+                {previsao.tendencias.slice(0, 4).map((t: any) => (
+                  <div key={t.tipo} className="flex items-center gap-3 py-1.5">
+                    <span className="text-xl w-6 text-center">{t.icon}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-semibold text-gray-800 truncate">{t.label}</div>
+                      <div className="text-xs text-gray-400">{t.lastMonth} chamados/mês atual</div>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <div className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                        t.tendencia === 'crescendo' ? 'bg-green-100 text-green-700' :
+                        t.tendencia === 'caindo'    ? 'bg-red-100 text-red-600' :
+                        'bg-gray-100 text-gray-500'
+                      }`}>
+                        {t.tendencia === 'crescendo' ? '⬆' : t.tendencia === 'caindo' ? '⬇' : '→'} proj. {t.proj30}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-3">
+                <div className="text-xs font-semibold text-indigo-600 mb-1 uppercase tracking-wide">Insight IA</div>
+                <p className="text-xs text-slate-700 whitespace-pre-wrap leading-relaxed">{previsao.insightIA}</p>
+              </div>
+              <p className="text-[10px] text-gray-300 text-right">{previsao.raioKm} km · {previsao.totalServicos} serviços · {previsao.modelo}</p>
+            </div>
+          )}
+        </div>
 
         {/* Resumo */}
         <div className="grid grid-cols-2 gap-4">
