@@ -37,6 +37,8 @@ async function garantirSubscription() {
 export default function DashboardPrestador({ user }: { user: any }) {
   const [disponivel, setDisponivel] = useState(user.prestador?.disponivel ?? true)
   const [qtdServicos, setQtdServicos] = useState(0)
+  const [rota, setRota] = useState<any>(null)
+  const [loadingRota, setLoadingRota] = useState(false)
 
   useEffect(() => {
     garantirSubscription()
@@ -61,6 +63,17 @@ export default function DashboardPrestador({ user }: { user: any }) {
 
   function getServicoLabel(tipo: string) {
     return SERVICOS.find(s => s.value === tipo) || { label: tipo, icon: '📋' }
+  }
+
+  async function otimizarRota() {
+    setLoadingRota(true)
+    setRota(null)
+    try {
+      const res = await fetch('/api/rota-otimizada')
+      if (res.ok) setRota(await res.json())
+    } finally {
+      setLoadingRota(false)
+    }
   }
 
   async function toggleDisponivel() {
@@ -215,6 +228,53 @@ export default function DashboardPrestador({ user }: { user: any }) {
                 )
               })}
             </div>
+          </div>
+        )}
+
+        {/* Rota do Dia — aparece quando há 2+ serviços em andamento */}
+        {emAndamento.length >= 2 && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-50">
+              <div>
+                <div className="font-bold text-gray-800">🗺️ Rota do Dia</div>
+                <div className="text-xs text-gray-400">Ordem otimizada para {emAndamento.length} visitas</div>
+              </div>
+              <button
+                onClick={otimizarRota}
+                disabled={loadingRota}
+                className="text-xs font-bold bg-blue-600 text-white px-3 py-1.5 rounded-xl hover:bg-blue-700 transition disabled:opacity-50"
+              >
+                {loadingRota ? '⏳ Calculando...' : '⚡ Otimizar'}
+              </button>
+            </div>
+            {rota && (
+              <div className="px-5 py-3 space-y-2">
+                <div className="flex gap-4 text-xs text-gray-500 pb-2 border-b border-gray-50">
+                  <span>📍 {rota.otimizacao.paradas} paradas</span>
+                  <span>🚗 {rota.totalKm} km total</span>
+                  <span>⏱️ ~{rota.totalMin} min</span>
+                  {rota.otimizacao.reducaoPercent > 0 && (
+                    <span className="text-green-600 font-semibold">↓ {rota.otimizacao.reducaoPercent}% menor</span>
+                  )}
+                </div>
+                {rota.stops.map((stop: any) => (
+                  <div key={stop.id} className="flex items-start gap-3 py-1">
+                    <div className="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                      {stop.ordem}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-semibold text-gray-800 truncate">{stop.label}</div>
+                      {stop.endereco && <div className="text-xs text-gray-400 truncate">{stop.endereco}</div>}
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <div className="text-xs font-semibold text-blue-600">{stop.distanciaKm} km</div>
+                      <div className="text-[10px] text-gray-400">{stop.tempoMin} min</div>
+                    </div>
+                  </div>
+                ))}
+                <div className="text-[10px] text-gray-300 text-center pt-1">{rota.otimizacao.algoritmo}</div>
+              </div>
+            )}
           </div>
         )}
 
