@@ -25,8 +25,9 @@ export async function POST(req: Request) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
 
-    // Garante que o bucket existe e é público
+    // Garante que o bucket existe e é público (updateBucket funciona mesmo se já existe)
     await adminClient.storage.createBucket('avatars', { public: true }).catch(() => {})
+    await adminClient.storage.updateBucket('avatars', { public: true }).catch(() => {})
 
     const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg'
     const path = `${user.id}.${ext}`

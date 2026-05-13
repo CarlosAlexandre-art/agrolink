@@ -140,14 +140,28 @@ export default function GanhosClient({
         </div>
 
         {/* Total histórico */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm text-center">
-          <div className="text-sm text-gray-500 mb-1">Total histórico recebido</div>
-          <div className="text-3xl font-bold text-green-700">
+        <div className="bg-white rounded-2xl p-6 shadow-sm">
+          <div className="text-sm text-gray-500 mb-3 text-center">Total histórico recebido</div>
+          <div className="text-3xl font-bold text-green-700 text-center mb-3">
             R$ {totalLiquido.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </div>
-          <div className="text-xs text-gray-400 mt-1">
-            Após comissão AgroCore de {(comissao * 100).toFixed(0)}%
+          <div className="space-y-1 text-xs text-gray-500 border-t pt-3">
+            <div className="flex justify-between">
+              <span>Valor bruto dos serviços</span>
+              <span className="font-medium text-gray-700">R$ {totalBruto.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+            </div>
+            <div className="flex justify-between text-red-400">
+              <span>Comissão AgroCore ({(comissao * 100).toFixed(0)}%)</span>
+              <span>- R$ {(totalBruto * comissao).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+            </div>
+            <div className="flex justify-between text-gray-400 text-[11px]">
+              <span>Taxa Stripe (~3.49% + R$0,39 por serviço)</span>
+              <span>cobrada à parte</span>
+            </div>
           </div>
+          <p className="text-[10px] text-gray-400 mt-2 text-center">
+            O saldo disponível para saque pode ser ligeiramente menor após as taxas de processamento Stripe.
+          </p>
         </div>
 
         {/* Stats */}
