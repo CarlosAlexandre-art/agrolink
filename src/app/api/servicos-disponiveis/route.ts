@@ -36,6 +36,7 @@ export async function GET() {
         }
       },
       orderBy: [
+        { smartScore: 'desc' },
         { service: { urgencia: 'desc' } },
         { createdAt: 'desc' }
       ]

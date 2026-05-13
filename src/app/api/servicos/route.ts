@@ -5,6 +5,7 @@ import { notificarUsuario } from '@/lib/push'
 import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
 import { SERVICOS } from '@/lib/constants'
 import { sanitizeString, sanitizePositiveNumber } from '@/lib/sanitize'
+import { scoreMatchesForService } from '@/lib/smart-match'
 // Haversine distance in km
 function calcDistancia(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371
@@ -98,6 +99,9 @@ export async function POST(req: Request) {
     }
 
     await Promise.all(matchPromises)
+
+    // Smart Match: calcula score de inteligência para cada match (não bloqueia resposta)
+    scoreMatchesForService(service.id, tipo, urgenciaSanitizada, descricaoSanitizada || null).catch(() => {})
 
     const servicoLabel = SERVICOS.find(s => s.value === tipo)?.label ?? tipo
 

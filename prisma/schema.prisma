@@ -186,6 +186,8 @@ model Match {
   distancia      Float?
   valorProposto  Float?
   mensagemProposta String?
+  smartScore     Float?
+  smartReason    String?
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
 

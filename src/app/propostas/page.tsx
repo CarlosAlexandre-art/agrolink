@@ -107,14 +107,19 @@ export default function PropostasPage() {
           const service = matches[0].service
           const servicoLabel = SERVICOS.find(s => s.value === service.tipo)?.label ?? service.tipo
           const servicoIcon = SERVICOS.find(s => s.value === service.tipo)?.icon ?? '📋'
+          const hasSmartScore = matches.some(m => m.smartScore != null)
           const planRank: Record<string, number> = { enterprise: 0, pro: 1, free: 2 }
           const ordenados = [...matches].sort((a, b) => {
+            if (hasSmartScore) {
+              const diff = (b.smartScore ?? 0) - (a.smartScore ?? 0)
+              if (diff !== 0) return diff
+            }
             const rankA = planRank[a.prestador.user.plan ?? 'free'] ?? 2
             const rankB = planRank[b.prestador.user.plan ?? 'free'] ?? 2
             if (rankA !== rankB) return rankA - rankB
             return (a.valorProposto ?? 0) - (b.valorProposto ?? 0)
           })
-          const menorPrecoId = ordenados[0]?.id
+          const menorPrecoId = !hasSmartScore ? ordenados[0]?.id : null
 
           return (
             <div key={serviceId} className="bg-white rounded-2xl shadow-sm overflow-hidden">
@@ -189,6 +194,15 @@ export default function PropostasPage() {
                           </div>
                         </div>
                         <div className="text-right flex-shrink-0">
+                          {m.smartScore != null && (
+                            <div className={`text-[10px] font-bold px-2 py-0.5 rounded-full mb-1 inline-block ${
+                              m.smartScore >= 75 ? 'bg-blue-100 text-blue-700 border border-blue-300'
+                              : m.smartScore >= 50 ? 'bg-gray-100 text-gray-600 border border-gray-300'
+                              : 'bg-orange-50 text-orange-600 border border-orange-200'
+                            }`}>
+                              ⚡ {m.smartScore}
+                            </div>
+                          )}
                           <div className="text-2xl font-bold text-green-700">
                             R$ {m.valorProposto?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                           </div>
