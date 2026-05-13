@@ -24,8 +24,22 @@ export default function SolicitarPage() {
   const [gerandoDesc, setGerandoDesc] = useState(false)
   const [erroDesc, setErroDesc] = useState('')
   const [catFiltro, setCatFiltro] = useState<CategoriaServico | 'TODOS'>('TODOS')
-  const [coords] = useState<{ lat: number; lng: number } | null>(null)
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null)
+  const [geoStatus, setGeoStatus] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
   const [endereco, setEndereco] = useState('')
+
+  useEffect(() => {
+    if (!navigator.geolocation) return
+    setGeoStatus('loading')
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude })
+        setGeoStatus('ok')
+      },
+      () => setGeoStatus('error'),
+      { timeout: 8000, maximumAge: 60000 }
+    )
+  }, [])
 
   async function gerarDescricao() {
     setGerandoDesc(true)
@@ -46,13 +60,32 @@ export default function SolicitarPage() {
     }
   }
 
+  async function geocodificarEndereco(end: string): Promise<{ lat: number; lng: number } | null> {
+    try {
+      const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(end + ', Brasil')}&format=json&limit=1`
+      const res = await fetch(url, { headers: { 'Accept-Language': 'pt-BR' } })
+      const data = await res.json()
+      if (data?.[0]) return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) }
+    } catch {}
+    return null
+  }
+
   async function handleSubmit() {
     if (!tipo) return
-    if (!coords && !endereco) {
-      alert('Informe a localização ou digite o endereço.')
+    setLoading(true)
+
+    let finalCoords = coords
+
+    // Se não tem GPS, tenta geocodificar o endereço digitado
+    if (!finalCoords && endereco.trim().length > 3) {
+      finalCoords = await geocodificarEndereco(endereco)
+    }
+
+    if (!finalCoords) {
+      alert('Informe um endereço válido ou permita acesso à localização do dispositivo.')
+      setLoading(false)
       return
     }
-    setLoading(true)
 
     const res = await fetch('/api/servicos', {
       method: 'POST',
@@ -62,8 +95,8 @@ export default function SolicitarPage() {
         area: area ? parseFloat(area) : null,
         urgencia,
         descricao,
-        latitude: coords?.lat ?? -15.7801,
-        longitude: coords?.lng ?? -47.9292,
+        latitude: finalCoords.lat,
+        longitude: finalCoords.lng,
         endereco,
       })
     })
@@ -148,6 +181,23 @@ export default function SolicitarPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 📍 Localização da propriedade
               </label>
+              {/* Status do GPS */}
+              {geoStatus === 'loading' && (
+                <div className="flex items-center gap-2 text-sm text-blue-600 mb-2 bg-blue-50 px-3 py-2 rounded-xl">
+                  <span className="animate-spin">⏳</span> Obtendo sua localização GPS…
+                </div>
+              )}
+              {geoStatus === 'ok' && (
+                <div className="flex items-center gap-2 text-sm text-green-700 mb-2 bg-green-50 px-3 py-2 rounded-xl">
+                  ✅ Localização GPS capturada ({coords?.lat.toFixed(4)}, {coords?.lng.toFixed(4)})
+                  <button type="button" onClick={() => { setCoords(null); setGeoStatus('error') }} className="ml-auto text-xs text-gray-400 hover:text-gray-600">Usar endereço</button>
+                </div>
+              )}
+              {geoStatus === 'error' && (
+                <div className="text-xs text-amber-600 mb-2 bg-amber-50 px-3 py-2 rounded-xl">
+                  ⚠️ GPS não disponível — digite o endereço da fazenda abaixo para calcular a localização.
+                </div>
+              )}
               <input
                 type="text"
                 value={endereco}
@@ -155,6 +205,9 @@ export default function SolicitarPage() {
                 placeholder="Ex: Fazenda Boa Vista, Sorriso - MT"
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
               />
+              {!coords && (
+                <p className="text-xs text-gray-400 mt-1">O endereço será convertido automaticamente para coordenadas ao confirmar o pedido.</p>
+              )}
             </div>
 
             {/* Área */}

@@ -221,7 +221,7 @@ export default function Home() {
               <div className="inline-block bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full mb-3">
                 EM BREVE
               </div>
-              <h2 className="text-xl font-bold text-gray-800 mb-2">Conheça o AgroOS</h2>
+              <h2 className="text-xl font-bold text-gray-800 mb-2">Conheça o SmartAgroOS</h2>
               <p className="text-sm text-gray-500 leading-relaxed">
                 O sistema operacional da sua fazenda. Controle operacional completo integrado ao AgroCore — em uma só plataforma.
               </p>

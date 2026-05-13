@@ -27,7 +27,7 @@ export async function GET() {
         service: true,
         prestador: {
           include: {
-            user: { select: { nome: true, cidade: true, estado: true, avatarUrl: true } },
+            user: { select: { nome: true, cidade: true, estado: true, avatarUrl: true, plan: true } },
           }
         }
       },

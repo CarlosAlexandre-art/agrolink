@@ -107,7 +107,13 @@ export default function PropostasPage() {
           const service = matches[0].service
           const servicoLabel = SERVICOS.find(s => s.value === service.tipo)?.label ?? service.tipo
           const servicoIcon = SERVICOS.find(s => s.value === service.tipo)?.icon ?? '📋'
-          const ordenados = [...matches].sort((a, b) => (a.valorProposto ?? 0) - (b.valorProposto ?? 0))
+          const planRank: Record<string, number> = { enterprise: 0, pro: 1, free: 2 }
+          const ordenados = [...matches].sort((a, b) => {
+            const rankA = planRank[a.prestador.user.plan ?? 'free'] ?? 2
+            const rankB = planRank[b.prestador.user.plan ?? 'free'] ?? 2
+            if (rankA !== rankB) return rankA - rankB
+            return (a.valorProposto ?? 0) - (b.valorProposto ?? 0)
+          })
           const menorPrecoId = ordenados[0]?.id
 
           return (
@@ -159,9 +165,17 @@ export default function PropostasPage() {
                             </div>
                           </Link>
                           <div className="min-w-0">
-                            <Link href={`/prestador/${m.prestadorId}`} className="font-semibold text-gray-800 hover:text-green-700 transition block truncate">
-                              {m.prestador.user.nome}
-                            </Link>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <Link href={`/prestador/${m.prestadorId}`} className="font-semibold text-gray-800 hover:text-green-700 transition truncate">
+                                {m.prestador.user.nome}
+                              </Link>
+                              {m.prestador.user.plan === 'pro' && (
+                                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 border border-green-300 shrink-0">PRO</span>
+                              )}
+                              {m.prestador.user.plan === 'enterprise' && (
+                                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-700 border border-purple-300 shrink-0">ENTERPRISE</span>
+                              )}
+                            </div>
                             {m.prestador.user.cidade && (
                               <div className="text-xs text-gray-400">{m.prestador.user.cidade}, {m.prestador.user.estado}</div>
                             )}

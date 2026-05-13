@@ -12,10 +12,10 @@ const securityHeaders = [
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com",
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co https://lh3.googleusercontent.com",
+      "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co https://*.googleusercontent.com https://*.openstreetmap.org",
       "media-src 'self' https://videos.pexels.com https://*.pexels.com https://player.vimeo.com https://*.vimeocdn.com https://vod-progressive.akamaized.net",
       "frame-src https://js.stripe.com https://hooks.stripe.com",
-      "connect-src 'self' https://*.supabase.co https://api.stripe.com https://api.z-api.io wss://*.supabase.co",
+      "connect-src 'self' https://*.supabase.co https://api.stripe.com https://api.z-api.io wss://*.supabase.co https://nominatim.openstreetmap.org",
       "font-src 'self'",
     ].join('; '),
   },
@@ -26,7 +26,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: '*.supabase.co' },
-      { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+      { protocol: 'https', hostname: '*.googleusercontent.com' },
     ],
   },
   async headers() {

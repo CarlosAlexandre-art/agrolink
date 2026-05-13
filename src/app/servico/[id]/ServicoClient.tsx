@@ -351,13 +351,18 @@ export default function ServicoClient({
                     <span className="font-bold text-green-700 text-2xl">R$ {matchAceito.valorProposto?.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between items-center text-xs text-gray-400">
-                    <span>Prestador recebe (após 5%)</span>
-                    <span>R$ {(matchAceito.valorProposto * 0.95).toFixed(2)}</span>
+                    <span>Taxa da plataforma (5%)</span>
+                    <span>- R$ {(matchAceito.valorProposto * 0.05).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between items-center text-xs text-gray-400">
-                    <span>Taxa da plataforma (5%)</span>
-                    <span>R$ {(matchAceito.valorProposto * 0.05).toFixed(2)}</span>
+                    <span>Taxa de processamento Stripe (~2.5% + fixo)</span>
+                    <span>- R$ {(matchAceito.valorProposto * 0.025 + 0.40).toFixed(2)} aprox.</span>
                   </div>
+                  <div className="flex justify-between items-center text-sm font-semibold text-gray-700 border-t pt-2 mt-1">
+                    <span>Prestador recebe (estimativa)</span>
+                    <span className="text-green-700">R$ {(matchAceito.valorProposto * 0.925 - 0.40).toFixed(2)}</span>
+                  </div>
+                  <p className="text-[11px] text-gray-400">* Estimativa. A tarifa exata do Stripe varia conforme o método de pagamento.</p>
                 </div>
 
                 {matchAceito.mensagemProposta && (
