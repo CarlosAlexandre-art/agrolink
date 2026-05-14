@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
-import { groq } from '@/lib/groq'
+import { chatGroq } from '@/lib/groq'
 import { SERVICOS } from '@/lib/constants'
 
 function haversine(lat1: number, lng1: number, lat2: number, lng2: number): number {
@@ -104,10 +104,11 @@ export async function GET() {
       .sort((a, b) => b.slope - a.slope)
       .slice(0, 5)
 
-    const insightIA = await groq([{
-      role: 'user',
-      content: `Você é um analista de mercado de serviços agrícolas no Brasil.
-Analise os dados abaixo e gere recomendações para um prestador de serviços rurais.
+    const insightIA = await chatGroq(
+      'Você é um analista de mercado de serviços agrícolas no Brasil.',
+      [{
+        role: 'user',
+        content: `Analise os dados abaixo e gere recomendações para um prestador de serviços rurais.
 
 Raio de análise: ${raio} km | Serviços analisados: ${filtered.length} | Período: 6 meses
 
@@ -118,7 +119,9 @@ Gere em 3 partes curtas:
 1. Oportunidade principal (1 frase — qual serviço priorizar e por quê)
 2. Alerta de mercado (1 frase — se algum está caindo ou saturando)
 3. Dica prática para os próximos 30 dias`,
-    }], 350)
+      }],
+      350
+    )
 
     return NextResponse.json({
       raioKm: raio,
