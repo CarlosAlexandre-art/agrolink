@@ -74,32 +74,6 @@ const PLANOS_PRESTADOR: Plano[] = [
     priceIdAnual:  process.env.NEXT_PUBLIC_STRIPE_PRESTADOR_ANUAL_PRICE_ID  || null,
     cta: 'Assinar Pro Prestador',
   },
-  {
-    id: 'enterprise',
-    nome: 'Enterprise',
-    precoMensal: 'R$ 199',
-    precoAnual: 'R$ 1.990',
-    notaMensal: '/mês',
-    notaAnual: '/ano · R$ 165/mês',
-    cor: 'border-gray-800',
-    destaque: false,
-    badge: '🏢 Grandes operações',
-    desc: 'Para prestadores com múltiplas equipes e alto volume.',
-    features: [
-      { txt: 'Perfil visível na plataforma',    ok: true },
-      { txt: 'Receber pedidos de serviço',       ok: true },
-      { txt: 'Chat integrado',                   ok: true },
-      { txt: 'Rastreamento em tempo real',        ok: true },
-      { txt: 'Destaque nos resultados de busca', ok: true },
-      { txt: 'Banner na plataforma',             ok: true },
-      { txt: 'Melhores oportunidades primeiro',  ok: true },
-      { txt: 'Suporte WhatsApp 24/7',            ok: true },
-      { txt: 'Gestor de conta dedicado',         ok: true },
-    ],
-    priceIdMensal: null,
-    priceIdAnual: null,
-    cta: 'Assinar Enterprise',
-  },
 ]
 
 const PLANOS_PRODUTOR: Plano[] = [
@@ -155,32 +129,6 @@ const PLANOS_PRODUTOR: Plano[] = [
     priceIdAnual:  process.env.NEXT_PUBLIC_STRIPE_PRODUTOR_ANUAL_PRICE_ID  || null,
     cta: 'Assinar Pro',
   },
-  {
-    id: 'enterprise',
-    nome: 'Enterprise',
-    precoMensal: 'R$ 299',
-    precoAnual: 'R$ 2.990',
-    notaMensal: '/mês',
-    notaAnual: '/ano · R$ 249/mês',
-    cor: 'border-gray-800',
-    destaque: false,
-    badge: '🏢 Grandes operações',
-    desc: 'Para agropecuárias e complexos agroindustriais.',
-    features: [
-      { txt: 'Serviços simultâneos ilimitados',   ok: true },
-      { txt: 'Acesso a todos os prestadores',     ok: true },
-      { txt: 'Chat integrado',                    ok: true },
-      { txt: 'Rastreamento em tempo real',         ok: true },
-      { txt: 'Urgência ALTA liberada',            ok: true },
-      { txt: 'Histórico completo',                ok: true },
-      { txt: 'Melhores propostas primeiro',       ok: true },
-      { txt: 'Suporte WhatsApp 24/7',             ok: true },
-      { txt: 'Gestor dedicado + API access',      ok: true },
-    ],
-    priceIdMensal: null,
-    priceIdAnual: null,
-    cta: 'Assinar Enterprise',
-  },
 ]
 
 export default function PlanosPage() {
@@ -196,10 +144,6 @@ export default function PlanosPage() {
     prestadorAnual: string | null
     produtorMensal: string | null
     produtorAnual: string | null
-    prestadorEnterpriseMensal: string | null
-    prestadorEnterpriseAnual: string | null
-    produtorEnterpriseMensal: string | null
-    produtorEnterpriseAnual: string | null
   } | null>(null)
 
   useEffect(() => {
@@ -222,21 +166,13 @@ export default function PlanosPage() {
   const planos = tipo === 'PRESTADOR'
     ? PLANOS_PRESTADOR.map(p => ({
         ...p,
-        priceIdMensal: p.id === 'pro'        ? (priceIds?.prestadorMensal           ?? p.priceIdMensal)
-                      : p.id === 'enterprise' ? (priceIds?.prestadorEnterpriseMensal ?? p.priceIdMensal)
-                      : p.priceIdMensal,
-        priceIdAnual:  p.id === 'pro'        ? (priceIds?.prestadorAnual            ?? p.priceIdAnual)
-                      : p.id === 'enterprise' ? (priceIds?.prestadorEnterpriseAnual  ?? p.priceIdAnual)
-                      : p.priceIdAnual,
+        priceIdMensal: p.id === 'pro' ? (priceIds?.prestadorMensal ?? p.priceIdMensal) : p.priceIdMensal,
+        priceIdAnual:  p.id === 'pro' ? (priceIds?.prestadorAnual  ?? p.priceIdAnual)  : p.priceIdAnual,
       }))
     : PLANOS_PRODUTOR.map(p => ({
         ...p,
-        priceIdMensal: p.id === 'pro'        ? (priceIds?.produtorMensal           ?? p.priceIdMensal)
-                      : p.id === 'enterprise' ? (priceIds?.produtorEnterpriseMensal ?? p.priceIdMensal)
-                      : p.priceIdMensal,
-        priceIdAnual:  p.id === 'pro'        ? (priceIds?.produtorAnual            ?? p.priceIdAnual)
-                      : p.id === 'enterprise' ? (priceIds?.produtorEnterpriseAnual  ?? p.priceIdAnual)
-                      : p.priceIdAnual,
+        priceIdMensal: p.id === 'pro' ? (priceIds?.produtorMensal ?? p.priceIdMensal) : p.priceIdMensal,
+        priceIdAnual:  p.id === 'pro' ? (priceIds?.produtorAnual  ?? p.priceIdAnual)  : p.priceIdAnual,
       }))
 
   async function handleAssinar(priceId: string, planoId: string) {
@@ -443,8 +379,8 @@ export default function PlanosPage() {
                 ? { q: 'O que é "destaque nos resultados"?', a: 'Seu perfil aparece no topo das buscas de produtores na sua região.' }
                 : { q: 'O que é "serviço ativo"?', a: 'É um pedido em andamento (procurando prestador, aceito ou em execução).' },
               tipo === 'PRESTADOR'
-                ? { q: 'O que inclui o Enterprise?', a: 'Tudo do Pro + gestor de conta dedicado, suporte WhatsApp 24/7 e relatórios avançados.' }
-                : { q: 'O que inclui o Enterprise?', a: 'Serviços ilimitados simultâneos, gestor dedicado, WhatsApp 24/7 e acesso à API AgroCore.' },
+                ? { q: 'O plano Pro inclui suporte?', a: 'Sim. Suporte prioritário via e-mail com resposta em até 24h.' }
+                : { q: 'O Pro permite quantos serviços simultâneos?', a: 'Até 5 serviços simultâneos, com urgência ALTA liberada.' },
             ].map((item, i) => (
               <div key={i}>
                 <div className="text-sm font-semibold text-gray-900 mb-1">{item.q}</div>
