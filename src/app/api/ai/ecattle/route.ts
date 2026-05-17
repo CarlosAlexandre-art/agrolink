@@ -81,20 +81,20 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ ok: true, tipo: 'animal', dados })
     }
 
-    // Consulta propriedade via CPF/CNPJ do usuário
+    // Consulta propriedade via email do usuário como identificador
     const dbUser = await prisma.user.findUnique({
       where: { supabaseId: user.id },
-      select: { cpfMasked: true, cnpjMasked: true },
+      select: { nome: true, email: true },
     })
 
-    if (!dbUser?.cpfMasked && !dbUser?.cnpjMasked) {
+    if (!dbUser) {
       return NextResponse.json({
         ok: false,
-        mensagem: 'CPF/CNPJ não cadastrado no perfil. Complete seu cadastro para consultar rastreabilidade.',
+        mensagem: 'Usuário não encontrado. Faça login novamente.',
       }, { status: 400 })
     }
 
-    const doc = dbUser.cnpjMasked ?? dbUser.cpfMasked ?? ''
+    const doc = dbUser.email
     const dados = await consultarPropriedadeSISBOV(doc)
 
     if (!dados) {
