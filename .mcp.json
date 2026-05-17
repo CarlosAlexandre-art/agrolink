@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "code-review-graph": {
+      "command": "code-review-graph",
+      "args": [
+        "serve"
+      ],
+      "type": "stdio"
+    },
+    "agrocore-mcp": {
+      "command": "npx",
+      "args": [
+        "tsx",
+        "src/mcp-servers/agro-mcp.ts"
+      ],
+      "type": "stdio",
+      "env": {
+        "OPENWEATHER_API_KEY": "${OPENWEATHER_API_KEY}"
+      }
+    }
+  }
+}
