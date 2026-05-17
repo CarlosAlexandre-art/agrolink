@@ -125,7 +125,7 @@ export async function POST(req: NextRequest) {
               select: {
                 status: true,
                 valorProposto: true,
-                service: { select: { tipo: true, precoFinal: true } },
+                service: { select: { tipo: true, precoFinal: true, status: true } },
               },
             },
             avaliacoes: { select: { nota: true } },
