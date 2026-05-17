@@ -162,7 +162,7 @@ export async function POST(req: NextRequest) {
         valorProposto: m.valorProposto,
       }))
       const ganhoTotal = p.matches
-        .filter(m => m.status === 'CONCLUIDO' && m.service.precoFinal)
+        .filter(m => m.service.status === 'CONCLUIDO' && m.service.precoFinal)
         .reduce((sum, m) => sum + Number(m.service.precoFinal) * 0.95, 0)
       system = buildPrestadorSystem(
         dbUser.nome,
