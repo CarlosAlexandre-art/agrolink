@@ -240,8 +240,8 @@ export default function DashboardProdutor({ user }: { user: any }) {
         <Link href="/solicitar" className="flex-1 py-3 text-center text-gray-500 text-xs">
           <div className="text-xl">➕</div>Solicitar
         </Link>
-        <Link data-tour="nav-historico" href="/historico" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">📋</div>Histórico
+        <Link href="/equipe-ia" className="flex-1 py-3 text-center text-gray-500 text-xs">
+          <div className="text-xl">🤖</div>Equipe IA
         </Link>
         <Link data-tour="nav-perfil" href="/perfil" className="flex-1 py-3 text-center text-gray-500 text-xs">
           <div className="text-xl">👤</div>Perfil

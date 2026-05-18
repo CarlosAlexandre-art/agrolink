@@ -433,6 +433,9 @@ export default function DashboardPrestador({ user }: { user: any }) {
         <Link href="/dashboard" className="flex-1 py-3 text-center text-green-700 font-semibold text-xs">
           <div className="text-xl">🏠</div>Home
         </Link>
+        <Link href="/equipe-ia" className="flex-1 py-3 text-center text-gray-500 text-xs">
+          <div className="text-xl">🤖</div>Equipe IA
+        </Link>
         <Link href="/servicos-disponiveis" className="flex-1 py-3 text-center text-gray-500 text-xs relative">
           <div className="text-xl">🔔</div>Pedidos
           {qtdServicos > 0 && (
