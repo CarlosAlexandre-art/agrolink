@@ -199,6 +199,7 @@ export default function EquipeIAPage() {
   const [newAgent, setNewAgent] = useState({ nome: '', role: '', trigger: 'MANUAL' })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [addError, setAddError] = useState<string | null>(null)
 
   const loadAgents = useCallback(async () => {
     try {
@@ -212,12 +213,19 @@ export default function EquipeIAPage() {
   useEffect(() => { loadAgents() }, [loadAgents])
 
   async function addFromTemplate(tmpl: typeof TEMPLATES[0]) {
+    setAddError(null)
     const r = await fetch('/api/agents', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ nome: tmpl.nome, role: tmpl.role, tipo: tmpl.tipo, tools: tmpl.tools, trigger: 'MANUAL' }),
     })
-    if (r.ok) { await loadAgents(); setTab('minha-equipe') }
+    if (r.ok) {
+      await loadAgents()
+      setTab('minha-equipe')
+    } else {
+      const body = await r.json().catch(() => ({}))
+      setAddError(body.error ?? `Erro ${r.status} ao adicionar agente`)
+    }
   }
 
   async function addCustom() {
@@ -283,6 +291,11 @@ export default function EquipeIAPage() {
         {/* Specialists Tab */}
         {tab === 'especialistas' && (
           <div className="space-y-3">
+            {addError && (
+              <div className="rounded-xl px-4 py-3 text-sm text-red-700 border border-red-200 bg-red-50">
+                {addError}
+              </div>
+            )}
             <p className="text-xs text-gray-500">Agentes pré-configurados para o marketplace agrícola:</p>
             {TEMPLATES.map(tmpl => {
               const already = agents.find(a => a.tipo === tmpl.tipo)
