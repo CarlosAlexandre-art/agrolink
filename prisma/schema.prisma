@@ -117,6 +117,39 @@ model User {
   offeringEvents          OfferingEvent[]
   complianceLogs          ComplianceLog[]
   uploadedOfferingDocuments OfferingDocument[]
+  agentConfigs      AgentConfig[]
+}
+
+model AgentConfig {
+  id           String      @id @default(cuid())
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  nome         String
+  role         String
+  tipo         String      @default("CUSTOMIZADO")
+  systemPrompt String?
+  tools        String[]
+  trigger      String      @default("MANUAL")
+  ativo        Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  runs         AgentRun[]
+
+  @@index([userId])
+}
+
+model AgentRun {
+  id          String      @id @default(cuid())
+  agentId     String
+  agent       AgentConfig @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  userId      String
+  status      String      @default("RUNNING")
+  startedAt   DateTime    @default(now())
+  finishedAt  DateTime?
+  resultado   String?
+  toolCalls   String?
+  erro        String?
+
+  @@index([agentId])
 }
 
 model Produtor {
