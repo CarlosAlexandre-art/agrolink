@@ -4,15 +4,16 @@ import { prisma } from '@/lib/prisma'
 
 const db = prisma as any
 
-export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
 
     const dbUser = await db.user.findUnique({ where: { supabaseId: user.id }, select: { id: true } })
     const agent = await db.agentConfig.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: { runs: { orderBy: { startedAt: 'desc' }, take: 10, select: { id: true, status: true, startedAt: true, finishedAt: true, resultado: true, erro: true } } },
     })
     if (!agent || agent.userId !== dbUser?.id) return NextResponse.json({ error: 'Não encontrado' }, { status: 404 })
@@ -22,19 +23,20 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
   }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
 
     const dbUser = await db.user.findUnique({ where: { supabaseId: user.id }, select: { id: true } })
-    const agent = await db.agentConfig.findUnique({ where: { id: params.id } })
+    const agent = await db.agentConfig.findUnique({ where: { id } })
     if (!agent || agent.userId !== dbUser?.id) return NextResponse.json({ error: 'Não encontrado' }, { status: 404 })
 
     const body = await req.json()
     const updated = await db.agentConfig.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         nome: body.nome ?? agent.nome,
         role: body.role ?? agent.role,
@@ -50,17 +52,18 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
 
     const dbUser = await db.user.findUnique({ where: { supabaseId: user.id }, select: { id: true } })
-    const agent = await db.agentConfig.findUnique({ where: { id: params.id } })
+    const agent = await db.agentConfig.findUnique({ where: { id } })
     if (!agent || agent.userId !== dbUser?.id) return NextResponse.json({ error: 'Não encontrado' }, { status: 404 })
 
-    await db.agentConfig.delete({ where: { id: params.id } })
+    await db.agentConfig.delete({ where: { id } })
     return NextResponse.json({ ok: true })
   } catch (e: any) {
     return NextResponse.json({ error: e?.message ?? 'Erro interno' }, { status: 500 })
