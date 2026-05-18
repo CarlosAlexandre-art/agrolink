@@ -134,21 +134,32 @@ function AgentCard({ agent, onRun, onDelete }: { agent: Agent; onRun: (a: Agent)
 }
 
 function ResultModal({ agent, onClose }: { agent: Agent | null; onClose: () => void }) {
-  const [loading, setLoading] = useState(false)
+  const [state, setState] = useState<'loading' | 'done' | 'error' | 'rate_limit'>('loading')
   const [result, setResult] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [countdown, setCountdown] = useState(0)
+
+  const doRun = useCallback(async (a: Agent) => {
+    setState('loading'); setResult(null); setError(null); setCountdown(0)
+    try {
+      const r = await fetch(`/api/agents/${a.id}/run`, { method: 'POST' })
+      const d = await r.json()
+      if (d.ok) { setState('done'); setResult(d.resultado) }
+      else if (d.error === 'RATE_LIMIT') { setState('rate_limit'); setCountdown(d.retryAfter ?? 15) }
+      else { setState('error'); setError(d.error ?? 'Erro') }
+    } catch (e: any) { setState('error'); setError(e.message) }
+  }, [])
+
+  useEffect(() => { if (agent) doRun(agent) }, [agent, doRun])
 
   useEffect(() => {
-    if (!agent) return
-    setLoading(true)
-    setResult(null)
-    setError(null)
-    fetch(`/api/agents/${agent.id}/run`, { method: 'POST' })
-      .then(r => r.json())
-      .then(d => { if (d.ok) setResult(d.resultado); else setError(d.error ?? 'Erro') })
-      .catch(e => setError(e.message))
-      .finally(() => setLoading(false))
-  }, [agent])
+    if (countdown <= 0) {
+      if (state === 'rate_limit' && agent) doRun(agent)
+      return
+    }
+    const t = setTimeout(() => setCountdown(c => c - 1), 1000)
+    return () => clearTimeout(t)
+  }, [countdown, state, agent, doRun])
 
   if (!agent) return null
   const tmpl = TEMPLATES.find(t => t.tipo === agent.tipo)
@@ -160,27 +171,39 @@ function ResultModal({ agent, onClose }: { agent: Agent | null; onClose: () => v
           <span className="text-2xl">{tmpl?.icon ?? '🤖'}</span>
           <div className="flex-1 min-w-0">
             <div className="font-bold">{agent.nome}</div>
-            <div className="text-xs text-green-200">Executando análise</div>
+            <div className="text-xs text-green-200">
+              {state === 'loading' ? 'Executando análise' : state === 'done' ? 'Concluído' : state === 'rate_limit' ? 'Alta demanda' : 'Erro'}
+            </div>
           </div>
           <button onClick={onClose} className="text-green-200 hover:text-white transition-colors">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
           </button>
         </div>
         <div className="p-5">
-          {loading && (
+          {state === 'loading' && (
             <div className="flex flex-col items-center gap-4 py-8">
               <div className="w-10 h-10 border-4 border-green-200 border-t-green-600 rounded-full animate-spin"/>
               <p className="text-sm text-gray-500 text-center">Agente coletando dados e analisando…</p>
             </div>
           )}
-          {error && <div className="bg-red-50 border border-red-200 rounded-xl p-4"><p className="text-sm text-red-600">{error}</p></div>}
-          {result && (
+          {state === 'rate_limit' && (
+            <div className="flex flex-col items-center gap-4 py-6">
+              <div className="text-4xl">⏳</div>
+              <div className="text-center">
+                <p className="font-bold text-gray-800 mb-1">Alta demanda dos agentes autônomos</p>
+                <p className="text-sm text-gray-500">Aguarde a recuperação — retentando em</p>
+                <p className="text-3xl font-black text-amber-500 mt-2">{countdown}s</p>
+              </div>
+            </div>
+          )}
+          {state === 'error' && <div className="bg-red-50 border border-red-200 rounded-xl p-4"><p className="text-sm text-red-600">{error}</p></div>}
+          {state === 'done' && result && (
             <div className="bg-gray-50 rounded-xl p-4 max-h-72 overflow-y-auto">
               <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{result}</p>
             </div>
           )}
         </div>
-        {!loading && (
+        {(state === 'done' || state === 'error') && (
           <div className="px-5 pb-5">
             <button onClick={onClose} className="w-full py-3 rounded-xl bg-green-600 text-white font-bold hover:bg-green-700 transition-colors">
               Fechar
