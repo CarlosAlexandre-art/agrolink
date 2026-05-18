@@ -228,14 +228,16 @@ export default function DashboardProdutor({ user }: { user: any }) {
         <Link href="/dashboard" className="flex-1 py-3 text-center text-green-700 font-semibold text-xs">
           <div className="text-xl">🏠</div>Home
         </Link>
-        <Link href="/propostas" className="flex-1 py-3 text-center text-gray-500 text-xs relative">
-          <div className="text-xl">💰</div>
-          Propostas
-          {qtdPropostas > 0 && (
-            <span className="absolute top-2 right-4 w-4 h-4 bg-red-500 rounded-full text-white text-[10px] flex items-center justify-center font-bold">
-              {qtdPropostas}
-            </span>
-          )}
+        <Link href="/propostas" className="flex-1 py-3 text-center text-gray-500 text-xs">
+          <div className="relative inline-block">
+            <span className="text-xl">💰</span>
+            {qtdPropostas > 0 && (
+              <span className="absolute -top-1 -right-2 w-4 h-4 bg-red-500 rounded-full text-white text-[10px] flex items-center justify-center font-bold leading-none">
+                {qtdPropostas}
+              </span>
+            )}
+          </div>
+          <div>Propostas</div>
         </Link>
         <Link href="/solicitar" className="flex-1 py-3 text-center text-gray-500 text-xs">
           <div className="text-xl">➕</div>Solicitar

@@ -436,13 +436,16 @@ export default function DashboardPrestador({ user }: { user: any }) {
         <Link href="/equipe-ia" className="flex-1 py-3 text-center text-gray-500 text-xs">
           <div className="text-xl">🤖</div>Equipe IA
         </Link>
-        <Link href="/servicos-disponiveis" className="flex-1 py-3 text-center text-gray-500 text-xs relative">
-          <div className="text-xl">🔔</div>Pedidos
-          {qtdServicos > 0 && (
-            <span className="absolute top-2 right-4 w-4 h-4 bg-red-500 rounded-full text-white text-[10px] flex items-center justify-center font-bold">
-              {qtdServicos > 9 ? '9+' : qtdServicos}
-            </span>
-          )}
+        <Link href="/servicos-disponiveis" className="flex-1 py-3 text-center text-gray-500 text-xs">
+          <div className="relative inline-block">
+            <span className="text-xl">🔔</span>
+            {qtdServicos > 0 && (
+              <span className="absolute -top-1 -right-2 w-4 h-4 bg-red-500 rounded-full text-white text-[10px] flex items-center justify-center font-bold leading-none">
+                {qtdServicos > 9 ? '9+' : qtdServicos}
+              </span>
+            )}
+          </div>
+          <div>Pedidos</div>
         </Link>
         <Link href="/historico" className="flex-1 py-3 text-center text-gray-500 text-xs">
           <div className="text-xl">📋</div>Histórico

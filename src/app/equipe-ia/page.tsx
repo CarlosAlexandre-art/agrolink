@@ -381,6 +381,12 @@ export default function EquipeIAPage() {
         <Link href="/dashboard" className="flex-1 py-3 text-center text-gray-500 text-xs">
           <div className="text-xl">🏠</div>Home
         </Link>
+        <Link href="/propostas" className="flex-1 py-3 text-center text-gray-500 text-xs">
+          <div className="text-xl">💰</div>Propostas
+        </Link>
+        <Link href="/solicitar" className="flex-1 py-3 text-center text-gray-500 text-xs">
+          <div className="text-xl">➕</div>Solicitar
+        </Link>
         <button className="flex-1 py-3 text-center text-green-700 text-xs font-semibold">
           <div className="text-xl">🤖</div>Equipe IA
         </button>
