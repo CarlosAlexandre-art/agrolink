@@ -29,10 +29,23 @@ export async function chatGroq(
     return data.choices[0].message.content as string
   }
 
-  const completion = await groq.chat.completions.create({
-    model: GROQ_MODEL,
-    max_tokens: maxTokens,
-    messages: allMessages,
-  })
-  return completion.choices[0].message.content ?? ''
+  try {
+    const completion = await groq.chat.completions.create({
+      model: GROQ_MODEL,
+      max_tokens: maxTokens,
+      messages: allMessages,
+    })
+    return completion.choices[0].message.content ?? ''
+  } catch (e: any) {
+    // 429 rate limit — fallback para modelo menor com limite mais alto
+    if (e?.status === 429 || e?.message?.includes('rate_limit') || e?.message?.includes('429')) {
+      const completion = await groq.chat.completions.create({
+        model: 'llama-3.1-8b-instant',
+        max_tokens: maxTokens,
+        messages: allMessages,
+      })
+      return completion.choices[0].message.content ?? ''
+    }
+    throw e
+  }
 }
