@@ -5,6 +5,7 @@ import { stripe } from '@/lib/stripe'
 import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
 import { SERVICOS } from '@/lib/constants'
 import { notificarAgroOS } from '@/lib/agros-webhook'
+import { notificarAgroRate } from '@/lib/agrorate-webhook'
 
 const STATUS_FLOW: Record<string, string> = {
   MATCH_ENCONTRADO: 'EM_ROTA',
@@ -131,6 +132,11 @@ export async function PATCH(_req: Request, { params }: { params: Promise<{ id: s
       ? { valor: service.payment?.valor ?? 0, tipo: service.tipo }
       : undefined
     notificarAgroOS(id, novoStatus, extraAgroOS).catch(() => {})
+
+    // Notificar AgroRate para recalcular score do produtor quando serviço concluído
+    if (novoStatus === 'CONCLUIDO' && service.produtor.user.supabaseId) {
+      notificarAgroRate(service.produtor.user.supabaseId, 'servico_concluido').catch(() => {})
+    }
 
     return NextResponse.json(updated)
   } catch (error) {

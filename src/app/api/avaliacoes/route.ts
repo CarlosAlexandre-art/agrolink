@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
 import { SERVICOS } from '@/lib/constants'
+import { notificarAgroRate } from '@/lib/agrorate-webhook'
 
 export async function POST(req: Request) {
   try {
@@ -83,6 +84,9 @@ export async function POST(req: Request) {
         wpp.avaliacaoRecebida(prestadorAtualizado.user.nome, nota, comentario || null, servicoLabel)
       ).catch(() => {})
     }
+
+    // Notificar AgroRate para recalcular score do produtor após nova avaliação
+    notificarAgroRate(user.id, 'avaliacao_recebida').catch(() => {})
 
     // If form submission, redirect back
     if (!contentType.includes('application/json')) {
