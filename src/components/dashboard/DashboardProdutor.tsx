@@ -212,11 +212,11 @@ export default function DashboardProdutor({ user }: { user: any }) {
                 <div className="text-xs text-green-200">Score de crédito rural</div>
               </div>
             </a>
-            <a href="https://agros-os.vercel.app/dashboard" target="_blank" rel="noopener noreferrer"
+            <a href="https://agroos.com.br/dashboard" target="_blank" rel="noopener noreferrer"
               className="flex flex-col gap-2 bg-gradient-to-br from-slate-700 to-slate-800 text-white rounded-2xl p-4 shadow-sm hover:opacity-90 transition">
               <div className="text-2xl">🌾</div>
               <div>
-                <div className="font-bold text-sm">AgroOS</div>
+                <div className="font-bold text-sm">SmartAgroOS</div>
                 <div className="text-xs text-slate-300">Gestão da fazenda</div>
               </div>
             </a>

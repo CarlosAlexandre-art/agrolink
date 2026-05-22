@@ -68,6 +68,23 @@ export async function POST(req: Request) {
       }).catch(() => {}) // não bloquear o fluxo se falhar
     }
 
+    // Resolver coordenadas: 1) endereço fornecido, 2) perfil do usuário, 3) centro do Brasil
+    let lat = user.latitude ?? -15.7801
+    let lng = user.longitude ?? -47.9292
+    if (location) {
+      try {
+        const geoRes = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location + ', Brasil')}&format=json&limit=1`,
+          { headers: { 'Accept-Language': 'pt-BR', 'User-Agent': 'AgroCore/1.0' } }
+        )
+        const geoData = await geoRes.json()
+        if (geoData?.[0]) {
+          lat = parseFloat(geoData[0].lat)
+          lng = parseFloat(geoData[0].lon)
+        }
+      } catch {}
+    }
+
     // Criar serviço
     const service = await prisma.service.create({
       data: {
@@ -77,8 +94,8 @@ export async function POST(req: Request) {
         endereco: location || null,
         status: 'PROCURANDO',
         urgencia: 'MEDIA',
-        latitude: 0,
-        longitude: 0,
+        latitude: lat,
+        longitude: lng,
       }
     })
 

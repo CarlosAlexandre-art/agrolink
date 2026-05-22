@@ -247,8 +247,8 @@ export default function ServicoClient({
           </div>
         </div>
 
-        {/* Mapa do serviço */}
-        {service.latitude && service.longitude && (
+        {/* Mapa do serviço — omite se coordenadas são (0,0), que indica localização não resolvida */}
+        {service.latitude && service.longitude && !(service.latitude === 0 && service.longitude === 0) && (
           <div>
             <h2 className="font-bold text-gray-700 mb-2">📍 Localização do serviço</h2>
             <MapaServico
