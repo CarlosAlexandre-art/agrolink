@@ -8,30 +8,36 @@ export async function GET() {
   return new ImageResponse(
     <div style={{
       width: 512, height: 512,
-      background: 'linear-gradient(145deg, #0a2e12 0%, #0f3d1e 50%, #1a5c2a 100%)',
+      background: 'linear-gradient(145deg, #052e12 0%, #0f3d1e 100%)',
       borderRadius: 116,
       display: 'flex',
-      flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: 26,
     }}>
-      {/* Folha grande — elemento principal */}
+      {/* Círculo branco — badge de alto contraste */}
       <div style={{
-        width: 202, height: 276,
+        width: 374, height: 374,
         background: 'white',
-        borderRadius: '50% 6% 50% 6%',
-        transform: 'rotate(-15deg)',
-      }} />
-      {/* Barras crescentes */}
-      <div style={{
+        borderRadius: '50%',
         display: 'flex',
-        alignItems: 'flex-end',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
         gap: 20,
       }}>
-        <div style={{ width: 42, height: 58, background: 'rgba(255,255,255,0.35)', borderRadius: '10px 10px 0 0' }} />
-        <div style={{ width: 42, height: 90, background: 'rgba(255,255,255,0.60)', borderRadius: '10px 10px 0 0' }} />
-        <div style={{ width: 42, height: 128, background: 'rgba(255,255,255,0.92)', borderRadius: '10px 10px 0 0' }} />
+        {/* Folha em verde escuro sobre branco */}
+        <div style={{
+          width: 134, height: 202,
+          background: '#0f3d1e',
+          borderRadius: '50%',
+          transform: 'rotate(-20deg)',
+        }} />
+        {/* Barras crescentes */}
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 16 }}>
+          <div style={{ width: 36, height: 48, background: 'rgba(15,61,30,0.35)', borderRadius: '8px 8px 0 0' }} />
+          <div style={{ width: 36, height: 74, background: 'rgba(15,61,30,0.65)', borderRadius: '8px 8px 0 0' }} />
+          <div style={{ width: 36, height: 106, background: '#0f3d1e', borderRadius: '8px 8px 0 0' }} />
+        </div>
       </div>
     </div>,
     { width: 512, height: 512 }

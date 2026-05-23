@@ -8,30 +8,36 @@ export async function GET() {
   return new ImageResponse(
     <div style={{
       width: 192, height: 192,
-      background: 'linear-gradient(145deg, #0a2e12 0%, #0f3d1e 50%, #1a5c2a 100%)',
+      background: 'linear-gradient(145deg, #052e12 0%, #0f3d1e 100%)',
       borderRadius: 44,
       display: 'flex',
-      flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: 10,
     }}>
-      {/* Folha grande — elemento principal */}
+      {/* Círculo branco — badge de alto contraste */}
       <div style={{
-        width: 76, height: 104,
+        width: 140, height: 140,
         background: 'white',
-        borderRadius: '50% 6% 50% 6%',
-        transform: 'rotate(-15deg)',
-      }} />
-      {/* Barras crescentes — mais largas e visíveis */}
-      <div style={{
+        borderRadius: '50%',
         display: 'flex',
-        alignItems: 'flex-end',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
         gap: 8,
       }}>
-        <div style={{ width: 16, height: 22, background: 'rgba(255,255,255,0.35)', borderRadius: '4px 4px 0 0' }} />
-        <div style={{ width: 16, height: 34, background: 'rgba(255,255,255,0.60)', borderRadius: '4px 4px 0 0' }} />
-        <div style={{ width: 16, height: 48, background: 'rgba(255,255,255,0.92)', borderRadius: '4px 4px 0 0' }} />
+        {/* Folha em verde escuro sobre branco — alto contraste */}
+        <div style={{
+          width: 50, height: 76,
+          background: '#0f3d1e',
+          borderRadius: '50%',
+          transform: 'rotate(-20deg)',
+        }} />
+        {/* Barras crescentes visíveis */}
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6 }}>
+          <div style={{ width: 14, height: 18, background: 'rgba(15,61,30,0.35)', borderRadius: '3px 3px 0 0' }} />
+          <div style={{ width: 14, height: 28, background: 'rgba(15,61,30,0.65)', borderRadius: '3px 3px 0 0' }} />
+          <div style={{ width: 14, height: 40, background: '#0f3d1e', borderRadius: '3px 3px 0 0' }} />
+        </div>
       </div>
     </div>,
     { width: 192, height: 192 }
