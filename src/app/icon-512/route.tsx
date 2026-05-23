@@ -1,55 +1,49 @@
 import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
+export const contentType = 'image/png'
+export const size = { width: 512, height: 512 }
 
 export async function GET() {
   return new ImageResponse(
     <div style={{
       width: 512, height: 512,
-      background: '#dad6ca',
-      borderRadius: 110,
+      background: '#ede9df',
+      borderRadius: 116,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      position: 'relative',
     }}>
+      {/* Círculo verde — tudo centralizado dentro */}
       <div style={{
-        position: 'absolute',
-        width: 390, height: 390,
+        width: 370, height: 370,
+        background: 'linear-gradient(145deg, #0f3d1e 0%, #1a5c2a 50%, #2d7a1f 100%)',
         borderRadius: '50%',
-        border: '18px solid #104e27',
         display: 'flex',
-      }} />
-      <div style={{
-        position: 'absolute',
-        left: 56, top: 72,
-        width: 148, height: 240,
-        background: 'linear-gradient(135deg, #104e27, #679d3f)',
-        borderRadius: '50% 10% 50% 10%',
-        transform: 'rotate(-15deg)',
-        display: 'flex',
-      }} />
-      <div style={{ position: 'absolute', right: 72, bottom: 86, display: 'flex', alignItems: 'flex-end', gap: 10 }}>
-        <div style={{ width: 30, height: 65, background: '#104e27', borderRadius: 6, opacity: 0.9 }} />
-        <div style={{ width: 30, height: 98, background: '#104e27', borderRadius: 6 }} />
-        <div style={{ width: 30, height: 133, background: '#679d3f', borderRadius: 6 }} />
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 20,
+      }}>
+        {/* Folha */}
+        <div style={{
+          width: 100, height: 134,
+          background: 'rgba(255,255,255,0.92)',
+          borderRadius: '50% 8% 50% 8%',
+          transform: 'rotate(-12deg)',
+        }} />
+        {/* Barras crescentes */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'flex-end',
+          gap: 14,
+        }}>
+          <div style={{ width: 28, height: 44, background: 'rgba(255,255,255,0.38)', borderRadius: '5px 5px 0 0' }} />
+          <div style={{ width: 28, height: 64, background: 'rgba(255,255,255,0.60)', borderRadius: '5px 5px 0 0' }} />
+          <div style={{ width: 28, height: 90, background: 'rgba(255,255,255,0.90)', borderRadius: '5px 5px 0 0' }} />
+        </div>
       </div>
-      <div style={{
-        position: 'absolute', right: 78, top: 140,
-        fontSize: 36, color: '#679d3f', fontWeight: 900,
-        fontFamily: 'sans-serif', display: 'flex',
-      }}>↑</div>
-      <div style={{
-        position: 'absolute', right: 82, top: 180,
-        fontSize: 46, fontWeight: 900,
-        color: '#104e27', fontFamily: 'sans-serif',
-        display: 'flex',
-      }}>R$</div>
     </div>,
-    {
-      width: 512,
-      height: 512,
-      headers: { 'Cache-Control': 'public, max-age=31536000, immutable' },
-    }
+    { width: 512, height: 512 }
   )
 }
