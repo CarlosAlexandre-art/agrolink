@@ -138,7 +138,7 @@ export default function AjudaPage() {
               📱 WhatsApp
             </a>
             <a
-              href="mailto:suporte@agrocore.com.br"
+              href="mailto:suporte@oryonag.com.br"
               className="flex-1 py-3 bg-white/20 text-white font-bold rounded-xl text-center text-sm hover:bg-white/30 transition border border-white/30"
             >
               ✉️ Email
