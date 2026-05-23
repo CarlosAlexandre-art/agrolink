@@ -8,40 +8,30 @@ export async function GET() {
   return new ImageResponse(
     <div style={{
       width: 192, height: 192,
-      background: '#ede9df',
+      background: 'linear-gradient(145deg, #0a2e12 0%, #0f3d1e 50%, #1a5c2a 100%)',
       borderRadius: 44,
       display: 'flex',
+      flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
+      gap: 10,
     }}>
-      {/* Círculo verde — tudo centralizado dentro */}
+      {/* Folha grande — elemento principal */}
       <div style={{
-        width: 138, height: 138,
-        background: 'linear-gradient(145deg, #0f3d1e 0%, #1a5c2a 50%, #2d7a1f 100%)',
-        borderRadius: '50%',
+        width: 76, height: 104,
+        background: 'white',
+        borderRadius: '50% 6% 50% 6%',
+        transform: 'rotate(-15deg)',
+      }} />
+      {/* Barras crescentes — mais largas e visíveis */}
+      <div style={{
         display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: 'flex-end',
         gap: 8,
       }}>
-        {/* Folha */}
-        <div style={{
-          width: 38, height: 50,
-          background: 'rgba(255,255,255,0.92)',
-          borderRadius: '50% 8% 50% 8%',
-          transform: 'rotate(-12deg)',
-        }} />
-        {/* Barras crescentes */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'flex-end',
-          gap: 5,
-        }}>
-          <div style={{ width: 10, height: 16, background: 'rgba(255,255,255,0.38)', borderRadius: '2px 2px 0 0' }} />
-          <div style={{ width: 10, height: 24, background: 'rgba(255,255,255,0.60)', borderRadius: '2px 2px 0 0' }} />
-          <div style={{ width: 10, height: 34, background: 'rgba(255,255,255,0.90)', borderRadius: '2px 2px 0 0' }} />
-        </div>
+        <div style={{ width: 16, height: 22, background: 'rgba(255,255,255,0.35)', borderRadius: '4px 4px 0 0' }} />
+        <div style={{ width: 16, height: 34, background: 'rgba(255,255,255,0.60)', borderRadius: '4px 4px 0 0' }} />
+        <div style={{ width: 16, height: 48, background: 'rgba(255,255,255,0.92)', borderRadius: '4px 4px 0 0' }} />
       </div>
     </div>,
     { width: 192, height: 192 }
