@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import AgroCoreLogo from '@/components/AgroCoreLogo'
@@ -14,35 +14,26 @@ export default function NovaSenhaPage() {
   const [confirmar, setConfirmar] = useState('')
   const [loading, setLoading] = useState(false)
   const [erro, setErro] = useState('')
-  const settled = useRef(false)
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const code = params.get('code')
     const supabase = createClient()
 
-    function resolve(ok: boolean) {
-      if (settled.current) return
-      settled.current = true
-      if (ok) setPronto(true)
-      else setExpirou(true)
-    }
-
-    // Supabase dispara PASSWORD_RECOVERY automaticamente ao detectar o token na URL
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') resolve(true)
-      if (event === 'SIGNED_IN') resolve(true)
-    })
-
-    // Fallback: sessão já existia quando o listener foi registrado
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) resolve(true)
-    })
-
-    // Timeout: se em 6s nada aconteceu, o token é inválido
-    const timer = setTimeout(() => resolve(false), 6000)
-
-    return () => {
-      subscription.unsubscribe()
-      clearTimeout(timer)
+    if (code) {
+      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+        if (!error) {
+          setPronto(true)
+          window.history.replaceState({}, '', window.location.pathname)
+        } else {
+          setExpirou(true)
+        }
+      })
+    } else {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session) setPronto(true)
+        else setExpirou(true)
+      })
     }
   }, [])
 
