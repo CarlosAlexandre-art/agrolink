@@ -26,6 +26,7 @@ export default function NovaSenhaPage() {
           setPronto(true)
           window.history.replaceState({}, '', window.location.pathname)
         } else {
+          console.error('[nova-senha] exchangeCodeForSession error:', error.message, error)
           setExpirou(true)
         }
       })
