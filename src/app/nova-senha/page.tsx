@@ -16,26 +16,48 @@ export default function NovaSenhaPage() {
   const [erro, setErro] = useState('')
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const code = params.get('code')
     const supabase = createClient()
 
+    // Fluxo implicit: Supabase redireciona com #access_token=...&type=recovery
+    const hash = window.location.hash
+    if (hash && hash.includes('access_token')) {
+      const p = new URLSearchParams(hash.substring(1))
+      const type = p.get('type')
+      const accessToken = p.get('access_token')
+      const refreshToken = p.get('refresh_token') ?? ''
+      if (type === 'recovery' && accessToken) {
+        supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken })
+          .then(({ error }) => {
+            if (!error) {
+              setPronto(true)
+              window.history.replaceState({}, '', window.location.pathname)
+            } else {
+              setErroLink(error.message)
+            }
+          })
+        return
+      }
+    }
+
+    // Fluxo PKCE: Supabase redireciona com ?code=... (fallback)
+    const code = new URLSearchParams(window.location.search).get('code')
     if (code) {
       supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
         if (!error) {
           setPronto(true)
           window.history.replaceState({}, '', window.location.pathname)
         } else {
-          console.error('[nova-senha] exchangeCodeForSession error:', error.message, error)
-          setErroLink(error.message || 'Erro desconhecido')
+          setErroLink(error.message)
         }
       })
-    } else {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        if (session) setPronto(true)
-        else setErroLink('Nenhum código de recuperação encontrado na URL.')
-      })
+      return
     }
+
+    // Sem parâmetros — verificar se já tem sessão ativa
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setPronto(true)
+      else setErroLink('Link não encontrado. Solicite um novo link de recuperação.')
+    })
   }, [])
 
   async function handleSubmit(e: React.FormEvent) {
@@ -55,9 +77,8 @@ export default function NovaSenhaPage() {
       <div className="min-h-screen bg-green-50 flex items-center justify-center px-4">
         <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md text-center">
           <div className="text-5xl mb-4">⏰</div>
-          <h1 className="text-xl font-bold text-gray-800 mb-2">Erro ao validar link</h1>
-          <p className="text-gray-500 mb-2">Detalhes do erro (para diagnóstico):</p>
-          <p className="text-red-600 text-sm font-mono bg-red-50 border border-red-200 rounded-lg p-3 mb-6 text-left break-all">{erroLink}</p>
+          <h1 className="text-xl font-bold text-gray-800 mb-2">Link expirado</h1>
+          <p className="text-gray-500 mb-6">Este link já foi usado ou expirou. Solicite um novo.</p>
           <Link href="/recuperar-senha" className="block w-full py-3 bg-green-700 text-white font-bold rounded-xl hover:bg-green-800 transition text-center">
             Solicitar novo link
           </Link>
