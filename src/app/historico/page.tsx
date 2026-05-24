@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { SERVICOS } from '@/lib/constants'
 import { getLimites } from '@/lib/planos'
+import BottomNav from '@/components/BottomNav'
 
 export default async function HistoricoPage() {
   const supabase = await createClient()
@@ -164,37 +165,7 @@ export default async function HistoricoPage() {
         )}
       </div>
 
-      {/* Bottom nav */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex">
-        <Link href="/dashboard" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">🏠</div>Home
-        </Link>
-        {dbUser.tipo === 'PRODUTOR' ? (
-          <>
-            <Link href="/propostas" className="flex-1 py-3 text-center text-gray-500 text-xs">
-              <div className="text-xl">💰</div>Propostas
-            </Link>
-            <Link href="/solicitar" className="flex-1 py-3 text-center text-gray-500 text-xs">
-              <div className="text-xl">➕</div>Solicitar
-            </Link>
-          </>
-        ) : (
-          <Link href="/servicos-disponiveis" className="flex-1 py-3 text-center text-gray-500 text-xs">
-            <div className="text-xl">🔔</div>Pedidos
-          </Link>
-        )}
-        <Link href="/historico" className="flex-1 py-3 text-center text-green-700 font-semibold text-xs">
-          <div className="text-xl">📋</div>Histórico
-        </Link>
-        {dbUser.tipo === 'PRESTADOR' && (
-          <Link href="/ganhos" className="flex-1 py-3 text-center text-gray-500 text-xs">
-            <div className="text-xl">💰</div>Ganhos
-          </Link>
-        )}
-        <Link href="/perfil" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">👤</div>Perfil
-        </Link>
-      </nav>
+      <BottomNav tipo={dbUser.tipo as 'PRODUTOR' | 'PRESTADOR'} />
     </div>
   )
 }

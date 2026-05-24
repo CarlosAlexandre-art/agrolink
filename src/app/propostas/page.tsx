@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { SERVICOS } from '@/lib/constants'
 import { getBadgesPrestador } from '@/lib/badges'
 import BadgeChip from '@/components/BadgeChip'
+import BottomNav from '@/components/BottomNav'
 
 export default function PropostasPage() {
   const [propostas, setPropostas] = useState<any[]>([])
@@ -247,23 +248,7 @@ export default function PropostasPage() {
         })}
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex">
-        <Link href="/dashboard" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">🏠</div>Home
-        </Link>
-        <Link href="/propostas" className="flex-1 py-3 text-center text-green-700 font-semibold text-xs">
-          <div className="text-xl">💰</div>Propostas
-        </Link>
-        <Link href="/solicitar" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">➕</div>Solicitar
-        </Link>
-        <Link href="/historico" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">📋</div>Histórico
-        </Link>
-        <Link href="/perfil" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">👤</div>Perfil
-        </Link>
-      </nav>
+      <BottomNav tipo="PRODUTOR" />
     </div>
   )
 }

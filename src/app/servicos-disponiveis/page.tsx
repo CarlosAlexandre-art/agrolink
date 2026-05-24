@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { SERVICOS } from '@/lib/constants'
 import { getBadgesProdutor } from '@/lib/badges'
 import BadgeChip from '@/components/BadgeChip'
+import BottomNav from '@/components/BottomNav'
 
 const URGENCIA_COR: Record<string, string> = {
   ALTA:  'bg-red-100 text-red-700',
@@ -129,23 +130,7 @@ export default function ServicosDisponiveisPage() {
         })}
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex">
-        <Link href="/dashboard" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">🏠</div>Home
-        </Link>
-        <Link href="/servicos-disponiveis" className="flex-1 py-3 text-center text-green-700 font-semibold text-xs">
-          <div className="text-xl">🔔</div>Pedidos
-        </Link>
-        <Link href="/historico" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">📋</div>Histórico
-        </Link>
-        <Link href="/ganhos" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">💰</div>Ganhos
-        </Link>
-        <Link href="/perfil" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">👤</div>Perfil
-        </Link>
-      </nav>
+      <BottomNav tipo="PRESTADOR" />
     </div>
   )
 }

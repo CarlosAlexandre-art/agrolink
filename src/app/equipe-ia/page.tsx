@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import AgroCoreLogo from '@/components/AgroCoreLogo'
+import BottomNav from '@/components/BottomNav'
 
 type AgentRun = { id: string; status: string; startedAt: string; finishedAt?: string; resultado?: string; erro?: string | null }
 type Agent = { id: string; nome: string; role: string; tipo: string; ativo: boolean; trigger: string; tools: string[]; runs: AgentRun[]; createdAt: string }
@@ -412,24 +413,7 @@ export default function EquipeIAPage() {
         )}
       </div>
 
-      {/* Bottom Nav */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex">
-        <Link href="/dashboard" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">🏠</div>Home
-        </Link>
-        <Link href="/propostas" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">💰</div>Propostas
-        </Link>
-        <Link href="/solicitar" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">➕</div>Solicitar
-        </Link>
-        <Link href="/equipe-ia" className="flex-1 py-3 text-center text-green-700 text-xs font-semibold">
-          <div className="text-xl">🤖</div>Equipe IA
-        </Link>
-        <Link href="/perfil" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">👤</div>Perfil
-        </Link>
-      </nav>
+      <BottomNav tipo="PRODUTOR" />
       <div className="h-16"/>
 
       <ResultModal agent={running} onClose={async () => { setRunning(null); await loadAgents() }} />
