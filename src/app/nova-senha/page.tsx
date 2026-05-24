@@ -9,7 +9,7 @@ import { createClient } from '@/lib/supabase/client'
 export default function NovaSenhaPage() {
   const router = useRouter()
   const [pronto, setPronto] = useState(false)
-  const [expirou, setExpirou] = useState(false)
+  const [erroLink, setErroLink] = useState('')
   const [senha, setSenha] = useState('')
   const [confirmar, setConfirmar] = useState('')
   const [loading, setLoading] = useState(false)
@@ -27,13 +27,13 @@ export default function NovaSenhaPage() {
           window.history.replaceState({}, '', window.location.pathname)
         } else {
           console.error('[nova-senha] exchangeCodeForSession error:', error.message, error)
-          setExpirou(true)
+          setErroLink(error.message || 'Erro desconhecido')
         }
       })
     } else {
       supabase.auth.getSession().then(({ data: { session } }) => {
         if (session) setPronto(true)
-        else setExpirou(true)
+        else setErroLink('Nenhum código de recuperação encontrado na URL.')
       })
     }
   }, [])
@@ -50,13 +50,14 @@ export default function NovaSenhaPage() {
     router.push('/dashboard')
   }
 
-  if (expirou) {
+  if (erroLink) {
     return (
       <div className="min-h-screen bg-green-50 flex items-center justify-center px-4">
         <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md text-center">
           <div className="text-5xl mb-4">⏰</div>
-          <h1 className="text-xl font-bold text-gray-800 mb-2">Link expirado</h1>
-          <p className="text-gray-500 mb-6">Este link já foi usado ou expirou. Solicite um novo.</p>
+          <h1 className="text-xl font-bold text-gray-800 mb-2">Erro ao validar link</h1>
+          <p className="text-gray-500 mb-2">Detalhes do erro (para diagnóstico):</p>
+          <p className="text-red-600 text-sm font-mono bg-red-50 border border-red-200 rounded-lg p-3 mb-6 text-left break-all">{erroLink}</p>
           <Link href="/recuperar-senha" className="block w-full py-3 bg-green-700 text-white font-bold rounded-xl hover:bg-green-800 transition text-center">
             Solicitar novo link
           </Link>
