@@ -44,3 +44,8 @@ next-env.d.ts
 
 .vercel
 .env*.local
+
+# Videos locais
+*.mp4
+my-video/
+public/video*
