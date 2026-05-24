@@ -1,0 +1,21 @@
+# Videos grandes não rastreados
+public/video 1.mp4
+my-video/
+
+# Ferramentas de dev
+.cursor/
+.claude/
+.kiro/
+.opencode.json
+.windsurfrules
+.cursorrules
+GEMINI.md
+deep-dive/
+devops-agent/
+manage-skills/
+memory-bank/
+smart-pr-review/
+spline-mcp-server/
+tapestry/
+overnight-worker/
+src/app/camaleao/
