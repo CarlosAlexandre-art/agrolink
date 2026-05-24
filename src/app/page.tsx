@@ -13,7 +13,7 @@ import { createClient } from '@/lib/supabase/client'
 export default function Home() {
   const { t } = useI18n()
   const router = useRouter()
-  const [popupAgros, setPopupAgros] = useState(false)
+
   const [videoError, setVideoError] = useState(false)
   const servicosDestaque = SERVICOS.slice(0, 6)
 
@@ -42,17 +42,6 @@ export default function Home() {
     return () => clearInterval(interval)
   }, [videoError])
 
-  // Popup AgroOS — mostra 1x por sessão
-  useEffect(() => {
-    const visto = sessionStorage.getItem('agros_popup')
-    if (!visto) {
-      const t = setTimeout(() => {
-        setPopupAgros(true)
-        sessionStorage.setItem('agros_popup', '1')
-      }, 3000)
-      return () => clearTimeout(t)
-    }
-  }, [])
 
   return (
     <div className="min-h-screen bg-white">
@@ -207,55 +196,6 @@ export default function Home() {
         </Link>
       </section>
 
-      {/* Popup AgroOS — entrada */}
-      {popupAgros && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-7 relative animate-slide-up">
-            <button
-              onClick={() => setPopupAgros(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl leading-none"
-            >✕</button>
-
-            <div className="text-center mb-5">
-              <div className="text-5xl mb-3">🚀</div>
-              <div className="inline-block bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full mb-3">
-                EM BREVE
-              </div>
-              <h2 className="text-xl font-bold text-gray-800 mb-2">Conheça o SmartAgroOS</h2>
-              <p className="text-sm text-gray-500 leading-relaxed">
-                O sistema operacional da sua fazenda. Controle operacional completo integrado ao AgroCore — em uma só plataforma.
-              </p>
-            </div>
-
-            <div className="space-y-2 text-sm text-gray-600 mb-5">
-              <div className="flex items-center gap-2">
-                <span className="text-green-600">✓</span> Gestão de operações em tempo real
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-green-600">✓</span> IA operacional para decisões
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-green-600">✓</span> Integrado ao AgroCore
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <button
-                onClick={() => setPopupAgros(false)}
-                className="w-full py-3 bg-green-700 text-white font-bold rounded-xl hover:bg-green-800 active:scale-95 transition"
-              >
-                Quero saber mais quando lançar
-              </button>
-              <button
-                onClick={() => setPopupAgros(false)}
-                className="w-full py-2 text-gray-400 text-sm hover:text-gray-600 transition"
-              >
-                Agora não
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Footer */}
       <footer className="py-8 px-4 bg-gray-800 text-gray-400 text-center">

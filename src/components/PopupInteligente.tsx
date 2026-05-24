@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 
-export type PopupTipo = 'agroOS' | 'compartilhar' | null
+export type PopupTipo = 'compartilhar' | null
 
 interface Props {
   tipo: PopupTipo
@@ -39,36 +39,7 @@ export default function PopupInteligente({ tipo, onFechar }: Props) {
           ✕
         </button>
 
-        {tipo === 'agroOS' && (
-          <>
-            <div className="text-5xl text-center mb-4">🚀</div>
-            <h2 className="text-xl font-bold text-gray-800 text-center mb-2">
-              Parabéns pelo serviço concluído!
-            </h2>
-            <p className="text-sm text-gray-500 text-center mb-5">
-              Que tal levar sua operação ainda mais longe? O <strong className="text-green-700">AgroOS</strong> é o sistema operacional da sua fazenda — controle total em um só lugar.
-            </p>
-            <div className="space-y-3">
-              <a
-                href="https://agroos.com.br"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={onFechar}
-                className="flex items-center justify-center gap-2 w-full py-3 bg-green-700 text-white font-bold rounded-xl hover:bg-green-800 active:scale-95 transition"
-              >
-                Conhecer o AgroOS
-              </a>
-              <button
-                onClick={onFechar}
-                className="w-full py-3 text-gray-500 text-sm hover:text-gray-700 transition"
-              >
-                Agora não
-              </button>
-            </div>
-          </>
-        )}
-
-        {tipo === 'compartilhar' && (
+{tipo === 'compartilhar' && (
           <>
             <div className="text-5xl text-center mb-4">⭐</div>
             <h2 className="text-xl font-bold text-gray-800 text-center mb-2">

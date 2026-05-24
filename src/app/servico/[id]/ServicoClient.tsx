@@ -106,7 +106,6 @@ export default function ServicoClient({
       setService((prev: any) => ({ ...prev, status: data.status }))
       if (data.status === 'CONCLUIDO') {
         setAgradecimento('servico')
-        setTimeout(() => setPopup('agroOS'), 2500)
       }
     }
     setLoadingAvancar(false)
