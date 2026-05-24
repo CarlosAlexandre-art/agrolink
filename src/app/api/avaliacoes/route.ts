@@ -4,6 +4,14 @@ import { prisma } from '@/lib/prisma'
 import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
 import { SERVICOS } from '@/lib/constants'
 import { notificarAgroRate } from '@/lib/agrorate-webhook'
+import { z } from 'zod'
+
+const avaliacaoSchema = z.object({
+  serviceId: z.string().uuid(),
+  prestadorId: z.string().uuid(),
+  nota: z.number().int().min(1).max(5),
+  comentario: z.string().max(1000).nullable().optional(),
+})
 
 export async function POST(req: Request) {
   try {
@@ -21,26 +29,28 @@ export async function POST(req: Request) {
     }
 
     // Support both JSON body (API) and form submission
-    let serviceId: string, prestadorId: string, nota: number, comentario: string | undefined
+    let rawData: unknown
     const contentType = req.headers.get('content-type') || ''
 
     if (contentType.includes('application/json')) {
       const body = await req.json()
-      serviceId = body.serviceId
-      prestadorId = body.prestadorId
-      nota = parseInt(body.nota)
-      comentario = body.comentario
+      rawData = { ...body, nota: parseInt(body.nota) }
     } else {
       const formData = await req.formData()
-      serviceId = formData.get('serviceId') as string
-      prestadorId = formData.get('prestadorId') as string
-      nota = parseInt(formData.get('nota') as string)
-      comentario = formData.get('comentario') as string | undefined
+      rawData = {
+        serviceId: formData.get('serviceId'),
+        prestadorId: formData.get('prestadorId'),
+        nota: parseInt(formData.get('nota') as string),
+        comentario: formData.get('comentario') || null,
+      }
     }
 
-    if (!serviceId || !prestadorId || !nota || nota < 1 || nota > 5) {
-      return NextResponse.json({ error: 'Dados inválidos' }, { status: 400 })
+    const parsed = avaliacaoSchema.safeParse(rawData)
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Dados inválidos', details: parsed.error.flatten() }, { status: 400 })
     }
+
+    const { serviceId, prestadorId, nota, comentario } = parsed.data
 
     // Verify service belongs to this produtor and is concluded
     const service = await prisma.service.findFirst({
@@ -51,44 +61,29 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Serviço não encontrado ou não concluído' }, { status: 404 })
     }
 
-    // Create avaliacao
     const avaliacao = await prisma.avaliacao.create({
-      data: {
-        serviceId,
-        prestadorId,
-        nota,
-        comentario: comentario || null,
-      }
+      data: { serviceId, prestadorId, nota, comentario: comentario ?? null }
     })
 
-    // Update prestador average rating
-    const todasAvaliacoes = await prisma.avaliacao.findMany({
-      where: { prestadorId }
-    })
+    const todasAvaliacoes = await prisma.avaliacao.findMany({ where: { prestadorId } })
     const media = todasAvaliacoes.reduce((acc: number, a: { nota: number }) => acc + a.nota, 0) / todasAvaliacoes.length
 
     const prestadorAtualizado = await prisma.prestador.update({
       where: { id: prestadorId },
-      data: {
-        avaliacao: media,
-        totalAvaliacoes: todasAvaliacoes.length,
-      },
+      data: { avaliacao: media, totalAvaliacoes: todasAvaliacoes.length },
       include: { user: true }
     })
 
-    // Notificar prestador via WhatsApp
     if (prestadorAtualizado.user.telefone) {
       const servicoLabel = SERVICOS.find(s => s.value === service.tipo)?.label ?? service.tipo
       enviarWhatsApp(
         prestadorAtualizado.user.telefone,
-        wpp.avaliacaoRecebida(prestadorAtualizado.user.nome, nota, comentario || null, servicoLabel)
+        wpp.avaliacaoRecebida(prestadorAtualizado.user.nome, nota, comentario ?? null, servicoLabel)
       ).catch(() => {})
     }
 
-    // Notificar AgroRate para recalcular score do produtor após nova avaliação
     notificarAgroRate(user.id, 'avaliacao_recebida').catch(() => {})
 
-    // If form submission, redirect back
     if (!contentType.includes('application/json')) {
       return Response.redirect(new URL(`/servico/${serviceId}`, req.url))
     }

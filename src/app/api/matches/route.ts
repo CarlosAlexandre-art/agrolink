@@ -4,6 +4,14 @@ import { prisma } from '@/lib/prisma'
 import { notificarUsuario } from '@/lib/push'
 import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
 import { notificarAgroOS } from '@/lib/agros-webhook'
+import { z } from 'zod'
+
+const matchSchema = z.object({
+  matchId: z.string().uuid(),
+  acao: z.enum(['ACEITAR', 'RECUSAR']),
+  valorProposto: z.number().positive().max(9_999_999).optional(),
+  mensagemProposta: z.string().max(500).nullable().optional(),
+})
 
 export async function PATCH(req: Request) {
   try {
@@ -20,11 +28,12 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: 'Usuário não é prestador' }, { status: 403 })
     }
 
-    const { matchId, acao, valorProposto, mensagemProposta } = await req.json()
-
-    if (!matchId || !['ACEITAR', 'RECUSAR'].includes(acao)) {
-      return NextResponse.json({ error: 'Dados inválidos' }, { status: 400 })
+    const parsed = matchSchema.safeParse(await req.json())
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Dados inválidos', details: parsed.error.flatten() }, { status: 400 })
     }
+
+    const { matchId, acao, valorProposto, mensagemProposta } = parsed.data
 
     if (acao === 'ACEITAR' && (!valorProposto || valorProposto <= 0)) {
       return NextResponse.json({ error: 'Informe o valor da proposta' }, { status: 400 })
@@ -40,40 +49,36 @@ export async function PATCH(req: Request) {
     }
 
     if (acao === 'ACEITAR') {
-      // Prestador envia proposta — outros podem enviar também, produtor escolhe
       await prisma.match.update({
         where: { id: matchId },
         data: {
           status: 'ACEITO',
           valorProposto,
-          mensagemProposta: mensagemProposta || null,
+          mensagemProposta: mensagemProposta ?? null,
         }
       })
 
-      // Atualiza status do serviço para que o rastreamento reflita a proposta
       await prisma.service.update({
         where: { id: match.serviceId },
         data: { status: 'AGUARDANDO_PROPOSTA' }
       })
 
-      // Notificar AgroOS que nova proposta foi recebida
       notificarAgroOS(match.serviceId, 'AGUARDANDO_PROPOSTA', { prestadorNome: dbUser.nome }).catch(() => {})
 
-      // Notify produtor that they have a proposal
       const produtorUserId = match.service.produtor.userId
       const produtorUser = match.service.produtor.user
 
       await notificarUsuario(
         produtorUserId,
         '💰 Nova proposta recebida!',
-        `${dbUser.nome} enviou uma proposta de R$ ${valorProposto.toFixed(2)} para seu serviço.`,
+        `${dbUser.nome} enviou uma proposta de R$ ${valorProposto!.toFixed(2)} para seu serviço.`,
         `/propostas`
       )
 
       if (produtorUser.telefone) {
         enviarWhatsApp(
           produtorUser.telefone,
-          wpp.propostaRecebida(produtorUser.nome, dbUser.nome, valorProposto, match.serviceId)
+          wpp.propostaRecebida(produtorUser.nome, dbUser.nome, valorProposto!, match.serviceId)
         ).catch(() => {})
       }
 
