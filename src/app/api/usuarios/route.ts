@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
+import { ServiceType } from '@prisma/client'
 import { z } from 'zod'
 
 const criarUsuarioSchema = z.object({
@@ -41,7 +42,7 @@ export async function POST(req: Request) {
         ...(tipo === 'PRODUTOR' ? {
           produtor: { create: { nomeFazenda: nomeFazenda ?? null } }
         } : {
-          prestador: { create: { servicosOferecidos: servicosOferecidos ?? [] } }
+          prestador: { create: { servicosOferecidos: (servicosOferecidos ?? []) as ServiceType[] } }
         })
       },
       include: { produtor: true, prestador: true }
