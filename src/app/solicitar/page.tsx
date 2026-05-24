@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { SERVICOS, URGENCIAS, CATEGORIAS, type CategoriaServico } from '@/lib/constants'
+import BottomNav from '@/components/BottomNav'
 export default function SolicitarPage() {
   const router = useRouter()
   const [step, setStep] = useState(1)
@@ -303,6 +304,7 @@ export default function SolicitarPage() {
           </div>
         )}
       </div>
+      <BottomNav tipo="PRODUTOR" />
     </div>
   )
 }

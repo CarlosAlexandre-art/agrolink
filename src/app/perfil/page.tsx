@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma'
 import { SERVICOS } from '@/lib/constants'
 import LogoutButton from '@/components/LogoutButton'
 import ConnectStripeButton from '@/components/ConnectStripeButton'
+import BottomNav from '@/components/BottomNav'
 
 export default async function PerfilPage() {
   const supabase = await createClient()
@@ -162,6 +163,8 @@ export default async function PerfilPage() {
         {/* Logout */}
         <LogoutButton />
       </div>
+      <BottomNav tipo={dbUser.tipo as 'PRODUTOR' | 'PRESTADOR'} />
+      <div className="h-16" />
     </div>
   )
 }
