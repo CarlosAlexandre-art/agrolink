@@ -51,6 +51,15 @@ export default async function GanhosPage() {
     ['MATCH_ENCONTRADO', 'EM_ROTA', 'EXECUTANDO'].includes(m.service.status)
   ).length
 
+  const porTipo: Record<string, { total: number; count: number }> = {}
+  for (const m of concluidos) {
+    const tipo = m.service.tipo as string
+    if (!porTipo[tipo]) porTipo[tipo] = { total: 0, count: 0 }
+    porTipo[tipo].total += (m.service.precoFinal || m.service.precoEstimado || 0) * (1 - COMISSAO)
+    porTipo[tipo].count++
+  }
+  const porTipoArray = Object.entries(porTipo).sort((a, b) => b[1].total - a[1].total)
+
   return (
     <GanhosClient
       totalLiquido={totalLiquido}
@@ -60,7 +69,7 @@ export default async function GanhosPage() {
       emAndamento={emAndamento}
       avaliacao={dbUser.prestador?.avaliacao ?? 0}
       meses={meses}
-      temConta={!!dbUser.prestador?.stripeAccountId}
+      porTipo={porTipoArray}
     />
   )
 }
