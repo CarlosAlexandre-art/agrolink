@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client'
 
 export default function NovaSenhaPage() {
   const router = useRouter()
+  const [supabase] = useState(() => createClient())
   const [pronto, setPronto] = useState(false)
   const [erroLink, setErroLink] = useState('')
   const [senha, setSenha] = useState('')
@@ -16,8 +17,6 @@ export default function NovaSenhaPage() {
   const [erro, setErro] = useState('')
 
   useEffect(() => {
-    const supabase = createClient()
-
     // Fluxo implicit: Supabase redireciona com #access_token=...&type=recovery
     const hash = window.location.hash
     if (hash && hash.includes('access_token')) {
@@ -58,7 +57,7 @@ export default function NovaSenhaPage() {
       if (session) setPronto(true)
       else setErroLink('Link não encontrado. Solicite um novo link de recuperação.')
     })
-  }, [])
+  }, [supabase])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -66,9 +65,8 @@ export default function NovaSenhaPage() {
     if (senha.length < 6) { setErro('A senha deve ter pelo menos 6 caracteres.'); return }
     setLoading(true)
     setErro('')
-    const supabase = createClient()
     const { error } = await supabase.auth.updateUser({ password: senha })
-    if (error) { setErro('Erro ao salvar nova senha. Solicite um novo link.'); setLoading(false); return }
+    if (error) { setErro(`Erro: ${error.message}`); setLoading(false); return }
     router.push('/dashboard')
   }
 
