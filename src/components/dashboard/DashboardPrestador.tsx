@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { SERVICOS } from '@/lib/constants'
 import PwaPrompt from '@/components/PwaPrompt'
 import Tour from '@/components/Tour'
@@ -35,6 +36,7 @@ async function garantirSubscription() {
 }
 
 export default function DashboardPrestador({ user }: { user: any }) {
+  const pathname = usePathname()
   const [disponivel, setDisponivel] = useState(user.prestador?.disponivel ?? true)
   const [qtdServicos, setQtdServicos] = useState(0)
   const [rota, setRota] = useState<any>(null)
@@ -429,32 +431,64 @@ export default function DashboardPrestador({ user }: { user: any }) {
         </div>
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex">
-        <Link href="/dashboard" className="flex-1 py-3 text-center text-green-700 font-semibold text-xs">
-          <div className="text-xl">🏠</div>Home
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex shadow-[0_-2px_12px_rgba(0,0,0,0.06)]">
+        {/* Home */}
+        <Link href="/dashboard" className={`flex-1 flex flex-col items-center pt-2 pb-3 gap-1 relative text-xs font-medium transition-colors ${pathname === '/dashboard' ? 'text-green-600' : 'text-gray-400'}`}>
+          {pathname === '/dashboard' && <span className="absolute top-0 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-green-600 rounded-b" />}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><path d="M9 21V12h6v9"/>
+          </svg>
+          <span>Home</span>
         </Link>
-        <Link href="/equipe-ia" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">🤖</div>Equipe IA
+        {/* Equipe IA */}
+        <Link href="/equipe-ia" className={`flex-1 flex flex-col items-center pt-2 pb-3 gap-1 relative text-xs font-medium transition-colors ${pathname === '/equipe-ia' ? 'text-green-600' : 'text-gray-400'}`}>
+          {pathname === '/equipe-ia' && <span className="absolute top-0 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-green-600 rounded-b" />}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="9" width="18" height="11" rx="2"/><path d="M8 9V7a4 4 0 0 1 8 0v2"/><path d="M12 4v3"/>
+            <line x1="9" y1="14" x2="9.01" y2="14" strokeWidth="2.5"/><line x1="15" y1="14" x2="15.01" y2="14" strokeWidth="2.5"/>
+            <path d="M9.5 18a3 3 0 0 0 5 0"/>
+          </svg>
+          <span>Equipe IA</span>
         </Link>
-        <Link href="/servicos-disponiveis" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="relative inline-block">
-            <span className="text-xl">🔔</span>
+        {/* Pedidos */}
+        <Link href="/servicos-disponiveis" className={`flex-1 flex flex-col items-center pt-2 pb-3 gap-1 relative text-xs font-medium transition-colors ${pathname === '/servicos-disponiveis' ? 'text-green-600' : 'text-gray-400'}`}>
+          {pathname === '/servicos-disponiveis' && <span className="absolute top-0 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-green-600 rounded-b" />}
+          <div className="relative">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
             {qtdServicos > 0 && (
-              <span className="absolute -top-1 -right-2 w-4 h-4 bg-red-500 rounded-full text-white text-[10px] flex items-center justify-center font-bold leading-none">
+              <span className="absolute -top-1 -right-2 min-w-[14px] h-[14px] bg-red-500 rounded-full text-white text-[9px] flex items-center justify-center font-bold leading-none px-0.5 border-2 border-white">
                 {qtdServicos > 9 ? '9+' : qtdServicos}
               </span>
             )}
           </div>
-          <div>Pedidos</div>
+          <span>Pedidos</span>
         </Link>
-        <Link href="/historico" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">📋</div>Histórico
+        {/* Histórico */}
+        <Link href="/historico" className={`flex-1 flex flex-col items-center pt-2 pb-3 gap-1 relative text-xs font-medium transition-colors ${pathname === '/historico' ? 'text-green-600' : 'text-gray-400'}`}>
+          {pathname === '/historico' && <span className="absolute top-0 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-green-600 rounded-b" />}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+          <span>Histórico</span>
         </Link>
-        <Link data-tour="nav-ganhos" href="/ganhos" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">💰</div>Ganhos
+        {/* Ganhos */}
+        <Link data-tour="nav-ganhos" href="/ganhos" className={`flex-1 flex flex-col items-center pt-2 pb-3 gap-1 relative text-xs font-medium transition-colors ${pathname === '/ganhos' ? 'text-green-600' : 'text-gray-400'}`}>
+          {pathname === '/ganhos' && <span className="absolute top-0 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-green-600 rounded-b" />}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+            <line x1="17" y1="15" x2="17.01" y2="15" strokeWidth="2.5"/>
+          </svg>
+          <span>Ganhos</span>
         </Link>
-        <Link data-tour="nav-perfil" href="/perfil" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">👤</div>Perfil
+        {/* Perfil */}
+        <Link data-tour="nav-perfil" href="/perfil" className={`flex-1 flex flex-col items-center pt-2 pb-3 gap-1 relative text-xs font-medium transition-colors ${pathname === '/perfil' ? 'text-green-600' : 'text-gray-400'}`}>
+          {pathname === '/perfil' && <span className="absolute top-0 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-green-600 rounded-b" />}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+          </svg>
+          <span>Perfil</span>
         </Link>
       </nav>
       <div className="h-16" />

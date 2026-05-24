@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { SERVICOS } from '@/lib/constants'
 import PwaPrompt from '@/components/PwaPrompt'
 import Tour from '@/components/Tour'
 import AgroCoreLogo from '@/components/AgroCoreLogo'
 
 export default function DashboardProdutor({ user }: { user: any }) {
+  const pathname = usePathname()
   const services = user.produtor?.services || []
   const [qtdPropostas, setQtdPropostas] = useState(0)
 
@@ -224,29 +226,57 @@ export default function DashboardProdutor({ user }: { user: any }) {
         </div>
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex">
-        <Link href="/dashboard" className="flex-1 py-3 text-center text-green-700 font-semibold text-xs">
-          <div className="text-xl">🏠</div>Home
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex shadow-[0_-2px_12px_rgba(0,0,0,0.06)]">
+        {/* Home */}
+        <Link href="/dashboard" className={`flex-1 flex flex-col items-center pt-2 pb-3 gap-1 relative text-xs font-medium transition-colors ${pathname === '/dashboard' ? 'text-green-600' : 'text-gray-400'}`}>
+          {pathname === '/dashboard' && <span className="absolute top-0 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-green-600 rounded-b" />}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><path d="M9 21V12h6v9"/>
+          </svg>
+          <span>Home</span>
         </Link>
-        <Link href="/propostas" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="relative inline-block">
-            <span className="text-xl">💰</span>
+        {/* Propostas */}
+        <Link href="/propostas" className={`flex-1 flex flex-col items-center pt-2 pb-3 gap-1 relative text-xs font-medium transition-colors ${pathname === '/propostas' ? 'text-green-600' : 'text-gray-400'}`}>
+          {pathname === '/propostas' && <span className="absolute top-0 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-green-600 rounded-b" />}
+          <div className="relative">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
             {qtdPropostas > 0 && (
-              <span className="absolute -top-1 -right-2 w-4 h-4 bg-red-500 rounded-full text-white text-[10px] flex items-center justify-center font-bold leading-none">
+              <span className="absolute -top-1 -right-2 min-w-[14px] h-[14px] bg-red-500 rounded-full text-white text-[9px] flex items-center justify-center font-bold leading-none px-0.5 border-2 border-white">
                 {qtdPropostas}
               </span>
             )}
           </div>
-          <div>Propostas</div>
+          <span>Propostas</span>
         </Link>
-        <Link href="/solicitar" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">➕</div>Solicitar
+        {/* Solicitar — FAB central */}
+        <Link href="/solicitar" className="flex-1 flex flex-col items-center pt-1 pb-3 gap-1 relative text-xs font-semibold text-green-600">
+          <span className="w-10 h-10 -mt-1 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center shadow-lg shadow-green-500/30">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+          </span>
+          <span>Solicitar</span>
         </Link>
-        <Link href="/equipe-ia" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">🤖</div>Equipe IA
+        {/* Equipe IA */}
+        <Link href="/equipe-ia" className={`flex-1 flex flex-col items-center pt-2 pb-3 gap-1 relative text-xs font-medium transition-colors ${pathname === '/equipe-ia' ? 'text-green-600' : 'text-gray-400'}`}>
+          {pathname === '/equipe-ia' && <span className="absolute top-0 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-green-600 rounded-b" />}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="9" width="18" height="11" rx="2"/><path d="M8 9V7a4 4 0 0 1 8 0v2"/><path d="M12 4v3"/>
+            <line x1="9" y1="14" x2="9.01" y2="14" strokeWidth="2.5"/><line x1="15" y1="14" x2="15.01" y2="14" strokeWidth="2.5"/>
+            <path d="M9.5 18a3 3 0 0 0 5 0"/>
+          </svg>
+          <span>Equipe IA</span>
         </Link>
-        <Link data-tour="nav-perfil" href="/perfil" className="flex-1 py-3 text-center text-gray-500 text-xs">
-          <div className="text-xl">👤</div>Perfil
+        {/* Perfil */}
+        <Link data-tour="nav-perfil" href="/perfil" className={`flex-1 flex flex-col items-center pt-2 pb-3 gap-1 relative text-xs font-medium transition-colors ${pathname === '/perfil' ? 'text-green-600' : 'text-gray-400'}`}>
+          {pathname === '/perfil' && <span className="absolute top-0 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-green-600 rounded-b" />}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+          </svg>
+          <span>Perfil</span>
         </Link>
       </nav>
       <div className="h-16" />
