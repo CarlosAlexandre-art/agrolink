@@ -17,14 +17,16 @@ export default function NovaSenhaPage() {
   const [erro, setErro] = useState('')
 
   useEffect(() => {
-    // Fluxo implicit: Supabase redireciona com #access_token=...&type=recovery
+    // Fluxo principal: servidor trocou o code em /auth/callback e gravou sessão nos cookies
+    // getSession() a encontra diretamente
+
+    // Fallback implicit: hash com #access_token (links antigos ou clientes legacy)
     const hash = window.location.hash
     if (hash && hash.includes('access_token')) {
       const p = new URLSearchParams(hash.substring(1))
-      const type = p.get('type')
       const accessToken = p.get('access_token')
       const refreshToken = p.get('refresh_token') ?? ''
-      if (type === 'recovery' && accessToken) {
+      if (p.get('type') === 'recovery' && accessToken) {
         supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken })
           .then(({ error }) => {
             if (!error) {
@@ -38,21 +40,6 @@ export default function NovaSenhaPage() {
       }
     }
 
-    // Fluxo PKCE: Supabase redireciona com ?code=... (fallback)
-    const code = new URLSearchParams(window.location.search).get('code')
-    if (code) {
-      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
-        if (!error) {
-          setPronto(true)
-          window.history.replaceState({}, '', window.location.pathname)
-        } else {
-          setErroLink(error.message)
-        }
-      })
-      return
-    }
-
-    // Sem parâmetros — verificar se já tem sessão ativa
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) setPronto(true)
       else setErroLink('Link não encontrado. Solicite um novo link de recuperação.')
