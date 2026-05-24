@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+const aiChatLimiter = new Map<string, { count: number; resetAt: number }>()
 
 const SYSTEM_PROMPT = `Você é o AgroBot, assistente virtual da AgroCore — plataforma que conecta produtores rurais a prestadores de serviços agrícolas no Brasil.
 
@@ -30,6 +31,19 @@ Seja sempre direto, simpático e use linguagem simples. Responda em português b
 
 export async function POST(req: Request) {
   try {
+    // Rate limit: 20 mensagens por hora por IP
+    const ip = (req.headers as Headers).get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
+    const now = Date.now()
+    if (!aiChatLimiter.has(ip) || now > aiChatLimiter.get(ip)!.resetAt) {
+      aiChatLimiter.set(ip, { count: 1, resetAt: now + 3600_000 })
+    } else {
+      const entry = aiChatLimiter.get(ip)!
+      if (entry.count >= 20) {
+        return NextResponse.json({ error: 'Limite de mensagens atingido. Tente novamente em 1 hora.' }, { status: 429 })
+      }
+      entry.count++
+    }
+
     const { messages, userType } = await req.json()
 
     if (!messages || !Array.isArray(messages)) {

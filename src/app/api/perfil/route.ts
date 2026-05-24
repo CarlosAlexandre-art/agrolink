@@ -1,6 +1,16 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
+import { z } from 'zod'
+
+const atualizarPerfilSchema = z.object({
+  nome: z.string().min(1).max(200).optional(),
+  telefone: z.string().max(20).nullable().optional(),
+  estado: z.string().max(2).nullable().optional(),
+  cidade: z.string().max(100).nullable().optional(),
+  nomeFazenda: z.string().max(200).nullable().optional(),
+  avatarUrl: z.string().url().max(500).nullable().optional(),
+})
 
 export async function PATCH(req: Request) {
   try {
@@ -8,8 +18,12 @@ export async function PATCH(req: Request) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
 
-    const body = await req.json()
-    const { nome, telefone, estado, cidade, nomeFazenda, avatarUrl } = body
+    const parsed = atualizarPerfilSchema.safeParse(await req.json())
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Dados inválidos', details: parsed.error.flatten() }, { status: 400 })
+    }
+
+    const { nome, telefone, estado, cidade, nomeFazenda, avatarUrl } = parsed.data
 
     const dbUser = await prisma.user.findUnique({
       where: { supabaseId: user.id },
@@ -20,11 +34,11 @@ export async function PATCH(req: Request) {
     await prisma.user.update({
       where: { id: dbUser.id },
       data: {
-        nome: nome || dbUser.nome,
-        telefone: telefone ?? dbUser.telefone,
-        estado: estado ?? dbUser.estado,
-        cidade: cidade ?? dbUser.cidade,
-        avatarUrl: avatarUrl ?? dbUser.avatarUrl,
+        ...(nome !== undefined && { nome }),
+        ...(telefone !== undefined && { telefone }),
+        ...(estado !== undefined && { estado }),
+        ...(cidade !== undefined && { cidade }),
+        ...(avatarUrl !== undefined && { avatarUrl }),
       }
     })
 

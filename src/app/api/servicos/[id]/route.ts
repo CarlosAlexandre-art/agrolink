@@ -16,6 +16,28 @@ const STATUS_FLOW: Record<string, string> = {
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
+
+    const dbUser = await prisma.user.findUnique({
+      where: { supabaseId: user.id },
+      include: { produtor: true, prestador: true }
+    })
+    if (!dbUser) return NextResponse.json({ error: 'Não encontrado' }, { status: 404 })
+
+    // Somente o produtor do serviço ou um prestador com match pode ver
+    const whereOr: object[] = []
+    if (dbUser.produtor) whereOr.push({ produtorId: dbUser.produtor.id })
+    if (dbUser.prestador) whereOr.push({ matches: { some: { prestadorId: dbUser.prestador.id } } })
+
+    if (whereOr.length === 0) return NextResponse.json({ error: 'Não encontrado' }, { status: 404 })
+
+    const hasAccess = await prisma.service.findFirst({
+      where: { id, OR: whereOr },
+      select: { id: true }
+    })
+    if (!hasAccess) return NextResponse.json({ error: 'Não encontrado' }, { status: 404 })
 
     const service = await prisma.service.findUnique({
       where: { id },
@@ -32,7 +54,6 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     })
 
     if (!service) return NextResponse.json({ error: 'Não encontrado' }, { status: 404 })
-
     return NextResponse.json(service)
   } catch (error) {
     console.error(error)
