@@ -51,7 +51,7 @@ export const SERVICOS = [
     label: 'Tratoreação / Preparo de Solo',
     icon: '🚜',
     descricao: 'Aração, gradagem e preparo do solo',
-    imagem: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1562859579-8ee03a048c92?w=400&q=80&auto=format&fit=crop',
     categoria: 'MECANIZACAO' as CategoriaServico,
   },
   {
@@ -85,7 +85,7 @@ export const SERVICOS = [
     label: 'Controle de Pragas',
     icon: '🐛',
     descricao: 'Controle integrado de pragas e doenças',
-    imagem: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1556075798-4825dfaaf498?w=400&q=80&auto=format&fit=crop',
     categoria: 'LAVOURA' as CategoriaServico,
   },
   {
@@ -127,7 +127,7 @@ export const SERVICOS = [
     label: 'Georreferenciamento',
     icon: '📡',
     descricao: 'Demarcação e registro GPS da propriedade',
-    imagem: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&q=80&auto=format&fit=crop',
     categoria: 'TECNOLOGIA' as CategoriaServico,
   },
 
@@ -155,7 +155,7 @@ export const SERVICOS = [
     label: 'Cercamento',
     icon: '🏗️',
     descricao: 'Construção e reparo de cercas rurais',
-    imagem: 'https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1468421870903-ef3301b8a0e7?w=400&q=80&auto=format&fit=crop',
     categoria: 'INFRAESTRUTURA' as CategoriaServico,
   },
   {
@@ -163,7 +163,7 @@ export const SERVICOS = [
     label: 'Terraplanagem',
     icon: '⛏️',
     descricao: 'Nivelamento e movimentação de terra',
-    imagem: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=400&q=80&auto=format&fit=crop',
     categoria: 'INFRAESTRUTURA' as CategoriaServico,
   },
   {
@@ -171,7 +171,7 @@ export const SERVICOS = [
     label: 'Armazenagem',
     icon: '🏚️',
     descricao: 'Armazenamento de grãos e insumos',
-    imagem: 'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1529260830199-42c24126f198?w=400&q=80&auto=format&fit=crop',
     categoria: 'INFRAESTRUTURA' as CategoriaServico,
   },
   {
@@ -205,7 +205,7 @@ export const SERVICOS = [
     label: 'Topografia Rural',
     icon: '📐',
     descricao: 'Levantamento topográfico e planialtimétrico',
-    imagem: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&q=80&auto=format&fit=crop',
     categoria: 'TECNOLOGIA' as CategoriaServico,
   },
   {
@@ -213,7 +213,7 @@ export const SERVICOS = [
     label: 'Sensoriamento Remoto',
     icon: '📡',
     descricao: 'NDVI, análise de estresse hídrico e biofísico',
-    imagem: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80&auto=format&fit=crop',
     categoria: 'TECNOLOGIA' as CategoriaServico,
   },
 
@@ -223,7 +223,7 @@ export const SERVICOS = [
     label: 'Análise de Solo Avançada',
     icon: '🧫',
     descricao: 'Análise microbiológica e de fertilidade profunda',
-    imagem: 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=400&q=80&auto=format&fit=crop',
     categoria: 'LAVOURA' as CategoriaServico,
   },
   {
@@ -231,7 +231,7 @@ export const SERVICOS = [
     label: 'Irrigação Automatizada',
     icon: '💧',
     descricao: 'Instalação de pivô central e automação',
-    imagem: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1620912185049-71a5c37f23b1?w=400&q=80&auto=format&fit=crop',
     categoria: 'LAVOURA' as CategoriaServico,
   },
   {
@@ -239,7 +239,7 @@ export const SERVICOS = [
     label: 'Aplicação por Drone',
     icon: '🚁',
     descricao: 'Pulverização de precisão com drone agrícola',
-    imagem: 'https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1527977966376-1c8408f9f108?w=400&q=80&auto=format&fit=crop',
     categoria: 'LAVOURA' as CategoriaServico,
   },
 
@@ -249,7 +249,7 @@ export const SERVICOS = [
     label: 'Instalação de Pivô',
     icon: '🏗️',
     descricao: 'Instalação e manutenção de pivô central',
-    imagem: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1589859615073-6d26a6d78f9a?w=400&q=80&auto=format&fit=crop',
     categoria: 'INFRAESTRUTURA' as CategoriaServico,
   },
   {
@@ -267,7 +267,7 @@ export const SERVICOS = [
     label: 'Gestão Ambiental',
     icon: '🌳',
     descricao: 'CAR, licenciamento, área de reserva legal',
-    imagem: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&q=80&auto=format&fit=crop',
     categoria: 'OUTROS' as CategoriaServico,
   },
   {
@@ -275,7 +275,7 @@ export const SERVICOS = [
     label: 'Regularização Fundiária',
     icon: '📜',
     descricao: 'Regularização de imóvel rural, titulação e CCIR',
-    imagem: 'https://images.unsplash.com/photo-1455849318743-b2233052fcff?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&q=80&auto=format&fit=crop',
     categoria: 'OUTROS' as CategoriaServico,
   },
   {
@@ -283,7 +283,7 @@ export const SERVICOS = [
     label: 'Certificação Agrícola',
     icon: '🏆',
     descricao: 'Certificação orgânica, GlobalG.A.P., Rainforest',
-    imagem: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1542744095-fcf48d80b0fd?w=400&q=80&auto=format&fit=crop',
     categoria: 'OUTROS' as CategoriaServico,
   },
   {
@@ -291,7 +291,7 @@ export const SERVICOS = [
     label: 'Segurança Rural',
     icon: '🔒',
     descricao: 'Monitoramento, câmeras e vigilância patrimonial rural',
-    imagem: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?w=400&q=80&auto=format&fit=crop',
     categoria: 'OUTROS' as CategoriaServico,
   },
 
@@ -309,7 +309,7 @@ export const SERVICOS = [
     label: 'Manutenção de Colheitadeira',
     icon: '⚙️',
     descricao: 'Revisão, regulagem e reparo de colheitadeiras',
-    imagem: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1581092921461-eab10380ed66?w=400&q=80&auto=format&fit=crop',
     categoria: 'MANUTENCAO' as CategoriaServico,
   },
 
@@ -327,7 +327,7 @@ export const SERVICOS = [
     label: 'Transporte de Grãos',
     icon: '🌾',
     descricao: 'Frete de soja, milho, café e outros grãos a granel',
-    imagem: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=400&q=80&auto=format&fit=crop',
     categoria: 'LOGISTICA' as CategoriaServico,
   },
 
@@ -363,7 +363,7 @@ export const SERVICOS = [
     label: 'Outros Serviços',
     icon: '📋',
     descricao: 'Outros serviços rurais sob demanda',
-    imagem: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&q=80&auto=format&fit=crop',
+    imagem: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&q=80&auto=format&fit=crop',
     categoria: 'OUTROS' as CategoriaServico,
   },
 ] as const
