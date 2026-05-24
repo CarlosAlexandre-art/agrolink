@@ -224,6 +224,7 @@ export default function EquipeIAPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [addError, setAddError] = useState<string | null>(null)
+  const [userTipo, setUserTipo] = useState<'PRODUTOR' | 'PRESTADOR'>('PRODUTOR')
 
   const loadAgents = useCallback(async () => {
     try {
@@ -235,6 +236,12 @@ export default function EquipeIAPage() {
   }, [])
 
   useEffect(() => { loadAgents() }, [loadAgents])
+
+  useEffect(() => {
+    fetch('/api/perfil/me').then(r => r.ok ? r.json() : null).then(d => {
+      if (d?.tipo === 'PRESTADOR') setUserTipo('PRESTADOR')
+    }).catch(() => {})
+  }, [])
 
   async function addFromTemplate(tmpl: typeof TEMPLATES[0]) {
     setAddError(null)
@@ -413,7 +420,7 @@ export default function EquipeIAPage() {
         )}
       </div>
 
-      <BottomNav tipo="PRODUTOR" />
+      <BottomNav tipo={userTipo} />
       <div className="h-16"/>
 
       <ResultModal agent={running} onClose={async () => { setRunning(null); await loadAgents() }} />
