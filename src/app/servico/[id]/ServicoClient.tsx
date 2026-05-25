@@ -498,6 +498,18 @@ export default function ServicoClient({
           </button>
         )}
 
+        {/* Botão AgroNav — abre planejamento de campo para este serviço */}
+        {isPrestador && ['EM_ROTA', 'EXECUTANDO'].includes(service.status) && (
+          <a
+            href={`https://agroos.site/dashboard/agronav?serviceId=${serviceId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 w-full py-4 bg-slate-900 text-white font-bold text-base rounded-2xl hover:bg-slate-700 active:scale-95 transition shadow-lg"
+          >
+            🗺️ Planejar campo no AgroNav
+          </a>
+        )}
+
         {/* Botão Chat — aparece quando há prestador confirmado */}
         {matchAceito && !['CANCELADO'].includes(service.status) && (
           <Link
