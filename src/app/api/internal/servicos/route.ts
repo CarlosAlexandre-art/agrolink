@@ -11,11 +11,8 @@ import { SERVICOS } from '@/lib/constants'
  */
 export async function POST(req: Request) {
   const secret = req.headers.get('x-internal-secret')
-  const expectedSecret = process.env.AGROLINK_INTERNAL_SECRET
-  // TEMP DEBUG — remover após confirmar funcionamento
-  console.log('[internal/servicos] secret recebido:', secret?.slice(0, 4), '| esperado:', expectedSecret?.slice(0, 4))
-  if (!secret || !expectedSecret || secret !== expectedSecret) {
-    return NextResponse.json({ error: 'Não autorizado', _debug: { received: secret?.slice(0, 4), expected: expectedSecret?.slice(0, 4) } }, { status: 401 })
+  if (!secret || secret !== process.env.AGROLINK_INTERNAL_SECRET) {
+    return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
   }
 
   try {
