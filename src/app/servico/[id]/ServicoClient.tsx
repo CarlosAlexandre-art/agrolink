@@ -7,6 +7,24 @@ import { SERVICOS } from '@/lib/constants'
 import MapaServico from '@/components/MapaServicoLazy'
 import PopupInteligente, { type PopupTipo } from '@/components/PopupInteligente'
 
+const AGRONAV_TUT_STEPS = [
+  {
+    icon: '🗺️',
+    title: 'AgroNav — Planejamento de Campo',
+    desc: 'O AgroNav é a ferramenta de navegação agrícola do SmartAgroOS. Com ela você planeja o trajeto exato do maquinário antes de começar o serviço.',
+  },
+  {
+    icon: '🌍',
+    title: 'Visualize o Terreno em 3D',
+    desc: 'Veja o terreno real da fazenda em três dimensões, com relevo, ondulações e limites da área. Ideal para apresentar o planejamento ao produtor antes de iniciar.',
+  },
+  {
+    icon: '📋',
+    title: 'Operação Vinculada ao Serviço',
+    desc: 'Ao concluir o planejamento, a operação é salva automaticamente e vinculada a este serviço. Isso gera um registro completo com área, passadas, tempo e combustível.',
+  },
+]
+
 const STATUS_STEPS = [
   { key: 'PROCURANDO', label: 'Procurando prestador', icon: '🔍' },
   { key: 'AGUARDANDO_PROPOSTA', label: 'Proposta recebida', icon: '💰' },
@@ -47,6 +65,34 @@ export default function ServicoClient({
   const [loadingAvaliarProdutor, setLoadingAvaliarProdutor] = useState(false)
   const [uploadandoFoto, setUploadandoFoto] = useState(false)
   const [recuperando, setRecuperando] = useState<string | null>(null)
+  const [agroNavTutStep, setAgroNavTutStep] = useState<number | null>(null)
+
+  // Tutorial AgroNav — aparece só uma vez, só quando o prestador entra em EM_ROTA/EXECUTANDO
+  useEffect(() => {
+    if (
+      isPrestador &&
+      ['EM_ROTA', 'EXECUTANDO'].includes(service.status) &&
+      typeof window !== 'undefined' &&
+      !localStorage.getItem('agronav-prestador-tutorial-v1')
+    ) {
+      const t = setTimeout(() => setAgroNavTutStep(0), 600)
+      return () => clearTimeout(t)
+    }
+  }, [service.status, isPrestador])
+
+  function avancarAgroNavTut() {
+    if (agroNavTutStep === null) return
+    if (agroNavTutStep < AGRONAV_TUT_STEPS.length - 1) {
+      setAgroNavTutStep(agroNavTutStep + 1)
+    } else {
+      fecharAgroNavTut()
+    }
+  }
+
+  function fecharAgroNavTut() {
+    if (typeof window !== 'undefined') localStorage.setItem('agronav-prestador-tutorial-v1', '1')
+    setAgroNavTutStep(null)
+  }
   const [popup, setPopup] = useState<PopupTipo>(null)
   const [agradecimento, setAgradecimento] = useState<string | null>(
     searchParams.get('obrigado') === '1' ? 'confianca' : null
@@ -198,6 +244,70 @@ export default function ServicoClient({
 
   return (
     <div className="min-h-screen bg-gray-50 pb-8">
+
+      {/* ── Tutorial AgroNav para prestador — só uma vez ──────────────────── */}
+      {agroNavTutStep !== null && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(6px)' }}>
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden">
+            {/* Topo verde */}
+            <div className="bg-green-700 px-6 pt-8 pb-6 text-center relative">
+              <button
+                onClick={fecharAgroNavTut}
+                className="absolute top-4 right-4 w-7 h-7 rounded-full bg-white/20 text-white/70 text-sm flex items-center justify-center hover:bg-white/30"
+              >
+                ✕
+              </button>
+              <div className="text-5xl mb-3">{AGRONAV_TUT_STEPS[agroNavTutStep].icon}</div>
+              {/* Indicadores */}
+              <div className="flex gap-2 justify-center">
+                {AGRONAV_TUT_STEPS.map((_, i) => (
+                  <div key={i} className={`h-1.5 rounded-full transition-all ${
+                    i === agroNavTutStep ? 'w-6 bg-white' : i < agroNavTutStep ? 'w-3 bg-white/70' : 'w-3 bg-white/30'
+                  }`} />
+                ))}
+              </div>
+            </div>
+
+            {/* Conteúdo */}
+            <div className="px-6 py-6">
+              <h3 className="font-black text-gray-800 text-lg mb-3 leading-tight">
+                {AGRONAV_TUT_STEPS[agroNavTutStep].title}
+              </h3>
+              <p className="text-gray-500 text-sm leading-relaxed mb-6">
+                {AGRONAV_TUT_STEPS[agroNavTutStep].desc}
+              </p>
+
+              <div className="flex gap-3">
+                {agroNavTutStep > 0 && (
+                  <button
+                    onClick={() => setAgroNavTutStep(s => (s ?? 1) - 1)}
+                    className="flex-1 py-3 rounded-2xl border border-gray-200 text-gray-500 font-semibold text-sm hover:bg-gray-50"
+                  >
+                    ← Anterior
+                  </button>
+                )}
+                <button
+                  onClick={avancarAgroNavTut}
+                  className="flex-[2] py-3 rounded-2xl bg-green-700 text-white font-bold text-sm hover:bg-green-800 active:scale-95 transition shadow-md"
+                >
+                  {agroNavTutStep === AGRONAV_TUT_STEPS.length - 1 ? '✅ Entendi' : 'Próximo →'}
+                </button>
+              </div>
+
+              {agroNavTutStep < AGRONAV_TUT_STEPS.length - 1 && (
+                <button
+                  onClick={fecharAgroNavTut}
+                  className="block w-full text-center text-xs text-gray-400 mt-3 hover:text-gray-600"
+                >
+                  Pular tutorial
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       <header className="bg-green-700 text-white px-4 py-4">
         <div className="max-w-2xl mx-auto flex items-center gap-3">
           <Link href="/dashboard" className="text-white hover:text-green-200">← Voltar</Link>
