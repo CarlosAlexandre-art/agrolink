@@ -15,6 +15,7 @@ export default function MatchPage() {
   const [mensagem, setMensagem] = useState('')
   const [sugestaoPreco, setSugestaoPreco] = useState<{ minimo: number; sugerido: number; maximo: number; justificativa: string } | null>(null)
   const [buscandoPreco, setBuscandoPreco] = useState(false)
+  const [erroSugestao, setErroSugestao] = useState('')
 
   useEffect(() => {
     fetch(`/api/matches/${matchId}`)
@@ -25,6 +26,7 @@ export default function MatchPage() {
   async function buscarSugestaoPreco() {
     if (!match) return
     setBuscandoPreco(true)
+    setErroSugestao('')
     try {
       const res = await fetch('/api/ai/sugerir-preco', {
         method: 'POST',
@@ -36,7 +38,11 @@ export default function MatchPage() {
           endereco: match.service?.endereco,
         }),
       })
-      if (res.ok) setSugestaoPreco(await res.json())
+      const data = await res.json()
+      if (res.ok) setSugestaoPreco(data)
+      else setErroSugestao(data.error || 'Erro ao consultar IA')
+    } catch {
+      setErroSugestao('Erro de rede ao consultar IA')
     } finally {
       setBuscandoPreco(false)
     }
@@ -162,6 +168,10 @@ export default function MatchPage() {
               {buscandoPreco ? '🤖 Consultando IA...' : '🤖 Sugerir preço com IA'}
             </button>
 
+            {erroSugestao && (
+              <p className="mb-3 text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{erroSugestao}</p>
+            )}
+
             {sugestaoPreco && (
               <div className="mb-4 p-3 bg-white border border-green-200 rounded-xl text-sm">
                 <div className="font-semibold text-green-700 mb-2">💡 Sugestão da IA</div>
@@ -241,7 +251,7 @@ export default function MatchPage() {
             <button
               onClick={() => handleAcao('ACEITAR')}
               disabled={!!loading || !valorProposto || parseFloat(valorProposto) <= 0}
-              className="flex-[2] py-4 bg-[#22C55E] text-white font-bold text-lg rounded-2xl hover:bg-green-500 active:scale-95 transition disabled:opacity-50 shadow-lg"
+              className="flex-2 py-4 bg-[#22C55E] text-white font-bold text-lg rounded-2xl hover:bg-green-500 active:scale-95 transition disabled:opacity-50 shadow-lg"
             >
               {loading === 'ACEITAR' ? 'Enviando proposta...' : 'ENVIAR PROPOSTA'}
             </button>

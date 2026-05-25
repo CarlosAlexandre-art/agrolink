@@ -7,7 +7,7 @@ import { notificarAgroOS } from '@/lib/agros-webhook'
 import { z } from 'zod'
 
 const matchSchema = z.object({
-  matchId: z.string().uuid(),
+  matchId: z.string().min(1),
   acao: z.enum(['ACEITAR', 'RECUSAR']),
   valorProposto: z.number().positive().max(9_999_999).optional(),
   mensagemProposta: z.string().max(500).nullable().optional(),
