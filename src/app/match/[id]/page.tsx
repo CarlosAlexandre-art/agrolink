@@ -16,6 +16,8 @@ export default function MatchPage() {
   const [sugestaoPreco, setSugestaoPreco] = useState<{ minimo: number; sugerido: number; maximo: number; justificativa: string } | null>(null)
   const [buscandoPreco, setBuscandoPreco] = useState(false)
   const [erroSugestao, setErroSugestao] = useState('')
+  const [gerandoMensagem, setGerandoMensagem] = useState(false)
+  const [erroMensagem, setErroMensagem] = useState('')
 
   useEffect(() => {
     fetch(`/api/matches/${matchId}`)
@@ -45,6 +47,31 @@ export default function MatchPage() {
       setErroSugestao('Erro de rede ao consultar IA')
     } finally {
       setBuscandoPreco(false)
+    }
+  }
+
+  async function gerarMensagem() {
+    if (!match) return
+    setGerandoMensagem(true)
+    setErroMensagem('')
+    try {
+      const res = await fetch('/api/ai/sugerir-mensagem', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tipo: match.service?.tipo,
+          area: match.service?.area,
+          urgencia: match.service?.urgencia,
+          endereco: match.service?.endereco,
+        }),
+      })
+      const data = await res.json()
+      if (res.ok) setMensagem(data.mensagem)
+      else setErroMensagem(data.error || 'Erro ao gerar mensagem')
+    } catch {
+      setErroMensagem('Erro de rede ao consultar IA')
+    } finally {
+      setGerandoMensagem(false)
     }
   }
 
@@ -226,11 +253,24 @@ export default function MatchPage() {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Mensagem para o produtor (opcional)</label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-sm font-medium text-gray-700">Mensagem para o produtor (opcional)</label>
+                <button
+                  type="button"
+                  onClick={gerarMensagem}
+                  disabled={gerandoMensagem}
+                  className="text-xs text-green-700 font-semibold border border-green-300 bg-green-50 hover:bg-green-100 px-2.5 py-1 rounded-lg transition disabled:opacity-50"
+                >
+                  {gerandoMensagem ? '🤖 Gerando...' : '🤖 Sugerir com IA'}
+                </button>
+              </div>
+              {erroMensagem && (
+                <p className="mb-1 text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-1.5">{erroMensagem}</p>
+              )}
               <textarea
                 value={mensagem}
                 onChange={e => setMensagem(e.target.value)}
-                rows={2}
+                rows={3}
                 placeholder="Ex: Tenho experiência com esse tipo de serviço, uso equipamentos modernos..."
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 resize-none text-sm text-gray-900 bg-white"
               />

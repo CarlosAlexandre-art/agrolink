@@ -158,8 +158,8 @@ export default function RastrearClient({ serviceId, initialService, servicoLabel
           </div>
         </div>
 
-        {/* Card de proposta — só para o produtor quando há proposta pendente */}
-        {isProdutor && proposta && (
+        {/* Card de proposta — visível a qualquer um com o link */}
+        {proposta && (
           <div className="bg-white rounded-2xl p-5 shadow-sm border-2 border-purple-200 space-y-4">
             <div className="flex items-center gap-2">
               <span className="text-2xl">💰</span>
@@ -189,26 +189,36 @@ export default function RastrearClient({ serviceId, initialService, servicoLabel
               }`}>{msgProposta}</p>
             )}
 
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={() => responderProposta('RECUSAR')}
-                disabled={respondendo}
-                className="py-3 border-2 border-red-200 text-red-600 font-semibold rounded-xl hover:bg-red-50 transition disabled:opacity-50"
+            {isProdutor ? (
+              <>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => responderProposta('RECUSAR')}
+                    disabled={respondendo}
+                    className="py-3 border-2 border-red-200 text-red-600 font-semibold rounded-xl hover:bg-red-50 transition disabled:opacity-50"
+                  >
+                    {respondendo ? '...' : '❌ Recusar'}
+                  </button>
+                  <button
+                    onClick={() => responderProposta('ACEITAR')}
+                    disabled={respondendo}
+                    className="py-3 bg-green-700 text-white font-semibold rounded-xl hover:bg-green-800 transition disabled:opacity-50"
+                  >
+                    {respondendo ? '...' : '✅ Aceitar'}
+                  </button>
+                </div>
+                <p className="text-xs text-center text-gray-400">
+                  Ao aceitar, você será redirecionado para o pagamento no AgroCore.
+                </p>
+              </>
+            ) : (
+              <a
+                href={`/login?redirect=/rastrear/${serviceId}`}
+                className="block w-full text-center py-3 bg-green-700 text-white font-semibold rounded-xl hover:bg-green-800 transition text-sm"
               >
-                {respondendo ? '...' : '❌ Recusar'}
-              </button>
-              <button
-                onClick={() => responderProposta('ACEITAR')}
-                disabled={respondendo}
-                className="py-3 bg-green-700 text-white font-semibold rounded-xl hover:bg-green-800 transition disabled:opacity-50"
-              >
-                {respondendo ? '...' : '✅ Aceitar'}
-              </button>
-            </div>
-
-            <p className="text-xs text-center text-gray-400">
-              Ao aceitar, você será redirecionado para o pagamento no AgroCore.
-            </p>
+                🔐 Entrar no AgroCore para responder
+              </a>
+            )}
           </div>
         )}
 

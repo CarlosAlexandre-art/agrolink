@@ -43,7 +43,7 @@ export default async function RastrearPage({ params }: { params: Promise<{ id: s
     prestadorNome: string
   } | null = null
 
-  if (isProdutor && service.status === 'AGUARDANDO_PROPOSTA') {
+  if (service.status === 'AGUARDANDO_PROPOSTA') {
     const match = await prisma.match.findFirst({
       where: { serviceId: id, status: 'ACEITO' },
       include: { prestador: { include: { user: true } } }
