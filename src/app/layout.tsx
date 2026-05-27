@@ -5,6 +5,7 @@ import AgroBot from '@/components/AgroBot'
 import InstalarApp from '@/components/InstalarApp'
 import ThemeProvider from '@/components/ThemeProvider'
 import { I18nProvider } from '@/lib/i18n'
+import SplashScreen from '@/components/SplashScreen'
 
 const montserrat = Montserrat({ subsets: ['latin'], variable: '--font-montserrat' })
 
@@ -53,6 +54,7 @@ export default function RootLayout({
         }} />
       </head>
       <body className="font-sans min-h-full bg-gray-50 dark:bg-slate-900">
+        <SplashScreen />
         <I18nProvider>
           <ThemeProvider>
             {children}
