@@ -45,7 +45,6 @@ export default function DashboardPrestador({ user }: { user: any }) {
 
   useEffect(() => {
     garantirSubscription()
-    // Contar serviços disponíveis
     fetch('/api/servicos-disponiveis')
       .then(r => r.json())
       .then(d => setQtdServicos(Array.isArray(d) ? d.length : 0))
@@ -53,15 +52,12 @@ export default function DashboardPrestador({ user }: { user: any }) {
   }, [])
 
   const matches = user.prestador?.matches || []
-  // Propostas enviadas aguardando produtor aceitar
   const propostasEnviadas = matches.filter((m: any) =>
     m.status === 'ACEITO' && ['PROCURANDO', 'AGUARDANDO_PROPOSTA'].includes(m.service?.status)
   )
-  // Serviços em andamento (produtor aceitou a proposta)
   const emAndamento = matches.filter((m: any) =>
     m.status === 'ACEITO' && ['MATCH_ENCONTRADO', 'EM_ROTA', 'EXECUTANDO'].includes(m.service?.status)
   )
-  // Pendentes sem proposta enviada
   const pendentes = matches.filter((m: any) => m.status === 'PENDENTE')
 
   function getServicoLabel(tipo: string) {
@@ -100,73 +96,112 @@ export default function DashboardPrestador({ user }: { user: any }) {
     })
   }
 
+  const avaliacao = user.prestador?.avaliacao
+  const totalAvaliacoes = user.prestador?.totalAvaliacoes || 0
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-green-700 text-white px-4 py-4">
-        <div className="max-w-2xl mx-auto flex justify-between items-center">
-          <div>
-            <AgroCoreLogo size={28} />
-            <div className="text-green-200 text-sm">Olá, {user.nome.split(' ')[0]}!</div>
+
+      {/* Header */}
+      <header style={{ background: 'linear-gradient(135deg, #15803d 0%, #16a34a 60%, #22c55e 100%)' }} className="text-white px-4 pt-5 pb-14">
+        <div className="max-w-2xl mx-auto">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <AgroCoreLogo size={26} />
+              <div className="text-green-100 text-sm mt-1">Olá, {user.nome.split(' ')[0]}! 👋</div>
+            </div>
+            <Link href="/perfil" className="text-green-200 hover:text-white text-sm font-medium">
+              Perfil →
+            </Link>
           </div>
-          <Link href="/perfil" className="text-green-200 hover:text-white text-sm">Perfil →</Link>
+
+          {/* Toggle disponibilidade no header */}
+          <div
+            data-tour="disponivel"
+            className="flex items-center justify-between bg-white/10 backdrop-blur-sm rounded-2xl px-4 py-3 border border-white/20"
+          >
+            <div>
+              <div className="text-white font-semibold text-sm">Status de disponibilidade</div>
+              <div className="text-green-100 text-xs mt-0.5">
+                {disponivel ? '🟢 Disponível para receber chamados' : '⚫ Não aparece em novas buscas'}
+              </div>
+            </div>
+            <button
+              onClick={toggleDisponivel}
+              className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0 ${disponivel ? 'bg-green-400' : 'bg-white/30'}`}
+            >
+              <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${disponivel ? 'translate-x-6' : 'translate-x-0.5'}`} />
+            </button>
+          </div>
         </div>
       </header>
 
-      <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
+      {/* Cards de métricas flutuantes */}
+      <div className="max-w-2xl mx-auto px-4 -mt-8">
+        <div className="grid grid-cols-3 gap-3">
+          <div className="bg-white rounded-2xl px-3 py-3 shadow-md text-center border border-gray-100">
+            <div className="text-xl font-bold text-yellow-500">{propostasEnviadas.length}</div>
+            <div className="text-[10px] text-gray-400 mt-0.5 leading-tight">Propostas<br/>enviadas</div>
+          </div>
+          <div className="bg-white rounded-2xl px-3 py-3 shadow-md text-center border border-gray-100">
+            <div className="text-xl font-bold text-green-600">{emAndamento.length}</div>
+            <div className="text-[10px] text-gray-400 mt-0.5 leading-tight">Em<br/>andamento</div>
+          </div>
+          <div className="bg-white rounded-2xl px-3 py-3 shadow-md text-center border border-gray-100">
+            <div className="text-xl font-bold text-green-700">
+              {avaliacao ? avaliacao.toFixed(1) : '—'}
+            </div>
+            <div className="text-[10px] text-gray-400 mt-0.5 leading-tight">⭐ {totalAvaliacoes} avali{totalAvaliacoes === 1 ? 'ação' : 'ações'}</div>
+          </div>
+        </div>
+      </div>
 
-        {/* Banner serviços disponíveis */}
+      <div className="max-w-2xl mx-auto px-4 py-5 space-y-4">
+
+        {/* Banner: novos chamados disponíveis */}
         {qtdServicos > 0 && (
           <Link
             href="/servicos-disponiveis"
             className="flex items-center justify-between bg-green-700 text-white rounded-2xl px-5 py-4 shadow-lg hover:bg-green-800 transition active:scale-95"
           >
             <div className="flex items-center gap-3">
-              <span className="text-3xl">🔔</span>
+              <span className="text-2xl">🔔</span>
               <div>
-                <div className="font-bold text-lg">
-                  {qtdServicos} serviço{qtdServicos > 1 ? 's' : ''} disponível{qtdServicos > 1 ? 'is' : ''}!
+                <div className="font-bold">
+                  {qtdServicos} chamado{qtdServicos > 1 ? 's' : ''} disponível{qtdServicos > 1 ? 'is' : ''}
                 </div>
-                <div className="text-green-200 text-sm">Clique para ver e enviar proposta</div>
+                <div className="text-green-200 text-xs">Ver e enviar proposta →</div>
               </div>
             </div>
-            <span className="text-2xl">→</span>
+            <span className="bg-white/20 rounded-xl px-3 py-1 text-sm font-bold">Ver</span>
           </Link>
         )}
 
-        {/* Toggle disponibilidade */}
-        <div data-tour="disponivel" className="bg-white rounded-2xl p-5 shadow-sm flex items-center justify-between">
-          <div>
-            <div className="font-bold text-gray-800 text-lg">Status</div>
-            <div className={`text-sm font-medium ${disponivel ? 'text-green-600' : 'text-gray-400'}`}>
-              {disponivel ? '🟢 Disponível para serviços' : '⚫ Indisponível'}
-            </div>
-          </div>
-          <button
-            onClick={toggleDisponivel}
-            className={`relative w-14 h-7 rounded-full transition-colors ${disponivel ? 'bg-green-500' : 'bg-gray-300'}`}
-          >
-            <span className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-transform ${disponivel ? 'translate-x-8' : 'translate-x-1'}`} />
-          </button>
-        </div>
-
-        {/* Propostas enviadas aguardando produtor */}
+        {/* Propostas enviadas */}
         {propostasEnviadas.length > 0 && (
           <div>
-            <h2 className="font-bold text-gray-700 mb-3">⏳ Propostas enviadas ({propostasEnviadas.length})</h2>
-            <div className="space-y-3">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-sm font-bold text-gray-700">⏳ Propostas enviadas</span>
+              <span className="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-0.5 rounded-full">{propostasEnviadas.length}</span>
+            </div>
+            <div className="space-y-2">
               {propostasEnviadas.map((m: any) => {
                 const servico = getServicoLabel(m.service.tipo)
                 return (
-                  <div key={m.id} className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
-                    <div className="flex justify-between items-start">
+                  <div key={m.id} className="bg-white rounded-xl border border-yellow-100 shadow-sm overflow-hidden">
+                    <div className="flex items-center gap-1 px-4 pt-3 pb-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wide text-yellow-600 bg-yellow-50 px-2 py-0.5 rounded-full border border-yellow-100">
+                        Aguardando produtor
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center px-4 pb-3">
                       <div>
-                        <div className="font-semibold text-gray-800">{servico.icon} {servico.label}</div>
-                        <div className="text-sm text-gray-500">Cliente: {m.service.produtor.user.nome}</div>
-                        <div className="text-xs text-yellow-700 mt-1">Aguardando o produtor escolher a proposta</div>
+                        <div className="font-semibold text-gray-800 text-sm">{servico.icon} {servico.label}</div>
+                        <div className="text-xs text-gray-400 mt-0.5">Cliente: {m.service.produtor.user.nome}</div>
                       </div>
                       <div className="text-right">
                         <div className="font-bold text-green-700">R$ {m.valorProposto?.toFixed(2)}</div>
-                        <div className="text-xs text-gray-400">sua proposta</div>
+                        <div className="text-[10px] text-gray-400">sua proposta</div>
                       </div>
                     </div>
                   </div>
@@ -176,42 +211,43 @@ export default function DashboardPrestador({ user }: { user: any }) {
           </div>
         )}
 
-        {/* Chamados pendentes (sem proposta enviada) */}
+        {/* Chamados sem proposta */}
         {pendentes.length > 0 && (
           <div data-tour="chamados">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="font-bold text-gray-700">🔔 Chamados ({pendentes.length})</h2>
-              <Link href="/servicos-disponiveis" className="text-xs text-green-700 font-medium hover:underline">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold text-gray-700">🔔 Chamados recebidos</span>
+                <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">{pendentes.length}</span>
+              </div>
+              <Link href="/servicos-disponiveis" className="text-xs text-green-700 font-medium">
                 Ver todos →
               </Link>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-2">
               {pendentes.slice(0, 3).map((m: any) => {
                 const servico = getServicoLabel(m.service.tipo)
                 return (
                   <Link
                     key={m.id}
                     href={`/match/${m.id}`}
-                    className="block bg-white rounded-xl p-4 shadow-sm border-2 border-green-200 hover:border-green-400 transition"
+                    className="flex items-center justify-between bg-white rounded-xl p-4 shadow-sm border-2 border-green-200 hover:border-green-400 transition active:scale-95"
                   >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <div className="font-bold text-gray-800">{servico.icon} {servico.label}</div>
-                        <div className="text-sm text-gray-500">
-                          {m.service.area && `${m.service.area} ha · `}
-                          {m.distancia ? `${m.distancia.toFixed(1)} km` : m.service.urgencia}
-                        </div>
+                    <div>
+                      <div className="font-bold text-gray-800 text-sm">{servico.icon} {servico.label}</div>
+                      <div className="text-xs text-gray-400 mt-0.5">
+                        {m.service.area && `${m.service.area} ha · `}
+                        {m.distancia ? `${m.distancia.toFixed(1)} km` : m.service.urgencia}
                       </div>
-                      <span className="px-3 py-1.5 bg-green-700 text-white text-xs font-bold rounded-xl">
-                        Enviar proposta →
-                      </span>
                     </div>
+                    <span className="bg-green-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl shrink-0 ml-3">
+                      Proposta →
+                    </span>
                   </Link>
                 )
               })}
               {pendentes.length > 3 && (
                 <Link href="/servicos-disponiveis" className="block text-center text-sm text-green-700 font-medium py-2">
-                  + {pendentes.length - 3} mais disponíveis →
+                  + {pendentes.length - 3} mais →
                 </Link>
               )}
             </div>
@@ -221,22 +257,32 @@ export default function DashboardPrestador({ user }: { user: any }) {
         {/* Em andamento */}
         {emAndamento.length > 0 && (
           <div>
-            <h2 className="font-bold text-gray-700 mb-3">✅ Em andamento ({emAndamento.length})</h2>
-            <div className="space-y-3">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-sm font-bold text-gray-700">✅ Em andamento</span>
+              <span className="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded-full">{emAndamento.length}</span>
+            </div>
+            <div className="space-y-2">
               {emAndamento.map((m: any) => {
                 const servico = getServicoLabel(m.service.tipo)
+                const statusLabel: Record<string, { text: string; cls: string }> = {
+                  MATCH_ENCONTRADO: { text: 'Confirmado', cls: 'bg-blue-50 text-blue-600 border-blue-100' },
+                  EM_ROTA:          { text: 'Em rota 🚗',  cls: 'bg-indigo-50 text-indigo-600 border-indigo-100' },
+                  EXECUTANDO:       { text: 'Executando', cls: 'bg-orange-50 text-orange-600 border-orange-100' },
+                }
+                const st = statusLabel[m.service.status] ?? { text: m.service.status, cls: 'bg-gray-50 text-gray-500 border-gray-100' }
                 return (
                   <Link
                     key={m.id}
                     href={`/servico/${m.service.id}`}
-                    className="block bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:border-green-300 transition"
+                    className="flex items-center justify-between bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:border-green-300 transition"
                   >
-                    <div className="flex justify-between">
-                      <div>
-                        <div className="font-semibold text-gray-800">{servico.icon} {servico.label}</div>
-                        <div className="text-sm text-gray-500">Cliente: {m.service.produtor.user.nome}</div>
-                      </div>
+                    <div>
+                      <div className="font-semibold text-gray-800 text-sm">{servico.icon} {servico.label}</div>
+                      <div className="text-xs text-gray-400 mt-0.5">Cliente: {m.service.produtor.user.nome}</div>
+                    </div>
+                    <div className="text-right flex-shrink-0 ml-3">
                       <div className="font-bold text-green-700 text-sm">R$ {m.valorProposto?.toFixed(2)}</div>
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${st.cls}`}>{st.text}</span>
                     </div>
                   </Link>
                 )
@@ -245,12 +291,12 @@ export default function DashboardPrestador({ user }: { user: any }) {
           </div>
         )}
 
-        {/* Rota do Dia — aparece quando há 2+ serviços em andamento */}
+        {/* Rota do Dia */}
         {emAndamento.length >= 2 && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="flex items-center justify-between px-5 py-4 border-b border-gray-50">
               <div>
-                <div className="font-bold text-gray-800">🗺️ Rota do Dia</div>
+                <div className="font-bold text-gray-800 text-sm">🗺️ Rota do Dia</div>
                 <div className="text-xs text-gray-400">Ordem otimizada para {emAndamento.length} visitas</div>
               </div>
               <button
@@ -265,7 +311,7 @@ export default function DashboardPrestador({ user }: { user: any }) {
               <div className="px-5 py-3 space-y-2">
                 <div className="flex gap-4 text-xs text-gray-500 pb-2 border-b border-gray-50">
                   <span>📍 {rota.otimizacao.paradas} paradas</span>
-                  <span>🚗 {rota.totalKm} km total</span>
+                  <span>🚗 {rota.totalKm} km</span>
                   <span>⏱️ ~{rota.totalMin} min</span>
                   {rota.otimizacao.reducaoPercent > 0 && (
                     <span className="text-green-600 font-semibold">↓ {rota.otimizacao.reducaoPercent}% menor</span>
@@ -286,17 +332,16 @@ export default function DashboardPrestador({ user }: { user: any }) {
                     </div>
                   </div>
                 ))}
-                <div className="text-[10px] text-gray-300 text-center pt-1">{rota.otimizacao.algoritmo}</div>
               </div>
             )}
           </div>
         )}
 
-        {/* Previsão de Demanda — ML + NIM */}
+        {/* Previsão de Demanda */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-50">
             <div>
-              <div className="font-bold text-gray-800">📈 Previsão de Demanda</div>
+              <div className="font-bold text-gray-800 text-sm">📈 Previsão de Demanda</div>
               <div className="text-xs text-gray-400">Tendência de chamados na sua região</div>
             </div>
             <button
@@ -310,7 +355,7 @@ export default function DashboardPrestador({ user }: { user: any }) {
 
           {!previsao && !loadingPrevisao && (
             <div className="px-5 py-4 text-sm text-gray-400">
-              Clique em Analisar para ver quais serviços estão com maior demanda nos próximos 30 dias.
+              Clique em <span className="font-semibold text-indigo-500">Analisar</span> para ver quais serviços têm maior demanda nos próximos 30 dias.
             </div>
           )}
 
@@ -332,16 +377,14 @@ export default function DashboardPrestador({ user }: { user: any }) {
                     <span className="text-xl w-6 text-center">{t.icon}</span>
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-semibold text-gray-800 truncate">{t.label}</div>
-                      <div className="text-xs text-gray-400">{t.lastMonth} chamados/mês atual</div>
+                      <div className="text-xs text-gray-400">{t.lastMonth} chamados/mês</div>
                     </div>
-                    <div className="text-right flex-shrink-0">
-                      <div className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                        t.tendencia === 'crescendo' ? 'bg-green-100 text-green-700' :
-                        t.tendencia === 'caindo'    ? 'bg-red-100 text-red-600' :
-                        'bg-gray-100 text-gray-500'
-                      }`}>
-                        {t.tendencia === 'crescendo' ? '⬆' : t.tendencia === 'caindo' ? '⬇' : '→'} proj. {t.proj30}
-                      </div>
+                    <div className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                      t.tendencia === 'crescendo' ? 'bg-green-100 text-green-700' :
+                      t.tendencia === 'caindo'    ? 'bg-red-100 text-red-600' :
+                      'bg-gray-100 text-gray-500'
+                    }`}>
+                      {t.tendencia === 'crescendo' ? '⬆' : t.tendencia === 'caindo' ? '⬇' : '→'} {t.proj30}
                     </div>
                   </div>
                 ))}
@@ -355,46 +398,47 @@ export default function DashboardPrestador({ user }: { user: any }) {
           )}
         </div>
 
-        {/* Resumo */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white rounded-xl p-4 shadow-sm text-center">
-            <div className="text-2xl font-bold text-green-700">{user.prestador?.avaliacao?.toFixed(1) || '—'}</div>
-            <div className="text-sm text-gray-500 mt-1">⭐ Avaliação</div>
-          </div>
-          <div className="bg-white rounded-xl p-4 shadow-sm text-center">
-            <div className="text-2xl font-bold text-green-700">{user.prestador?.totalAvaliacoes || 0}</div>
-            <div className="text-sm text-gray-500 mt-1">Serviços feitos</div>
-          </div>
-        </div>
-
+        {/* Estado vazio */}
         {qtdServicos === 0 && pendentes.length === 0 && emAndamento.length === 0 && propostasEnviadas.length === 0 && (
-          <div className="text-center py-12 text-gray-400">
-            <div className="text-5xl mb-4">🔧</div>
-            <p className="text-lg">Nenhum chamado no momento.</p>
-            <p className="text-sm">Fique disponível para receber novos pedidos.</p>
+          <div className="text-center py-10 text-gray-400 bg-white rounded-2xl shadow-sm border border-gray-100">
+            <div className="text-5xl mb-3">🔧</div>
+            <p className="text-base font-medium text-gray-600">Nenhum chamado no momento.</p>
+            <p className="text-sm mt-1">Fique disponível para receber novos pedidos.</p>
           </div>
         )}
 
-        {/* Relatório IA */}
-        <Link
-          href="/relatorio"
-          className="flex items-center gap-3 bg-white rounded-2xl px-5 py-4 shadow-sm border border-gray-100 hover:border-green-300 transition"
-        >
-          <span className="text-2xl">📊</span>
-          <div className="flex-1">
-            <div className="font-semibold text-gray-800">Relatório Mensal IA</div>
-            <div className="text-xs text-gray-400">Análise inteligente dos seus últimos 30 dias</div>
-          </div>
-          <span className="text-gray-300">→</span>
-        </Link>
+        {/* Ações rápidas */}
+        <div className="grid grid-cols-2 gap-3">
+          <Link
+            href="/relatorio"
+            className="flex items-center gap-3 bg-white rounded-2xl px-4 py-4 shadow-sm border border-gray-100 hover:border-green-300 transition"
+          >
+            <span className="text-xl">📊</span>
+            <div>
+              <div className="font-semibold text-gray-800 text-sm">Relatório IA</div>
+              <div className="text-[10px] text-gray-400">Últimos 30 dias</div>
+            </div>
+          </Link>
+          <Link
+            href="/ganhos"
+            className="flex items-center gap-3 bg-white rounded-2xl px-4 py-4 shadow-sm border border-gray-100 hover:border-green-300 transition"
+          >
+            <span className="text-xl">💰</span>
+            <div>
+              <div className="font-semibold text-gray-800 text-sm">Meus Ganhos</div>
+              <div className="text-[10px] text-gray-400">Histórico e saldo</div>
+            </div>
+          </Link>
+        </div>
 
         {/* Assinatura */}
         {user.plan === 'free' || !user.plan ? (
           <Link
             href="/planos"
-            className="flex items-center gap-4 bg-gradient-to-r from-green-700 to-green-600 text-white rounded-2xl px-5 py-4 shadow-sm hover:opacity-90 transition active:scale-95"
+            style={{ background: 'linear-gradient(135deg, #15803d 0%, #16a34a 100%)' }}
+            className="flex items-center gap-4 text-white rounded-2xl px-5 py-4 shadow-sm hover:opacity-90 transition active:scale-95"
           >
-            <span className="text-3xl">⭐</span>
+            <span className="text-2xl">⭐</span>
             <div className="flex-1">
               <div className="font-bold text-base">Assine o Pro Prestador</div>
               <div className="text-xs text-green-200">R$79/mês · Destaque na busca, banner e mais oportunidades</div>
@@ -406,7 +450,7 @@ export default function DashboardPrestador({ user }: { user: any }) {
             href="/planos"
             className="flex items-center gap-4 bg-white border border-gray-100 rounded-2xl px-5 py-4 shadow-sm hover:border-green-300 transition"
           >
-            <span className="text-3xl">✅</span>
+            <span className="text-2xl">✅</span>
             <div className="flex-1">
               <div className="font-bold text-gray-800">Plano Pro ativo</div>
               <div className="text-xs text-gray-400">Gerenciar assinatura</div>
@@ -418,16 +462,36 @@ export default function DashboardPrestador({ user }: { user: any }) {
         {/* Ecossistema */}
         <div>
           <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Ecossistema</div>
-          <a href="https://agro-rate.vercel.app/dashboard" target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-4 bg-gradient-to-r from-emerald-600 to-green-700 text-white rounded-2xl px-5 py-4 shadow-sm hover:opacity-90 transition">
-            <div className="text-3xl">💳</div>
-            <div>
-              <div className="font-bold">AgroRate</div>
-              <div className="text-xs text-green-200">Consulte seu score de crédito rural e acesse linhas de financiamento</div>
-            </div>
-            <span className="ml-auto text-green-200">→</span>
-          </a>
+          <div className="grid grid-cols-2 gap-3">
+            <a
+              href="https://agrorate.app/dashboard"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col gap-2 text-white rounded-2xl p-4 shadow-sm hover:opacity-90 transition"
+              style={{ background: 'linear-gradient(135deg, #059669 0%, #16a34a 100%)' }}
+            >
+              <div className="text-2xl">💳</div>
+              <div>
+                <div className="font-bold text-sm">AgroRate</div>
+                <div className="text-xs text-green-200">Score de crédito rural</div>
+              </div>
+            </a>
+            <a
+              href="https://agroos.site/dashboard"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col gap-2 text-white rounded-2xl p-4 shadow-sm hover:opacity-90 transition"
+              style={{ background: 'linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%)' }}
+            >
+              <div className="text-2xl">🌾</div>
+              <div>
+                <div className="font-bold text-sm">SmartAgroOS</div>
+                <div className="text-xs text-blue-200">Gestão da fazenda</div>
+              </div>
+            </a>
+          </div>
         </div>
+
       </div>
 
       <BottomNav tipo="PRESTADOR" badgeCount={qtdServicos} />

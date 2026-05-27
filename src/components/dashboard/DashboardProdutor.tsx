@@ -205,7 +205,7 @@ export default function DashboardProdutor({ user }: { user: any }) {
         <div>
           <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Ecossistema</div>
           <div className="grid grid-cols-2 gap-3">
-            <a href="https://agro-rate.vercel.app/dashboard" target="_blank" rel="noopener noreferrer"
+            <a href="https://agrorate.app/dashboard" target="_blank" rel="noopener noreferrer"
               className="flex flex-col gap-2 bg-gradient-to-br from-emerald-600 to-green-700 text-white rounded-2xl p-4 shadow-sm hover:opacity-90 transition">
               <div className="text-2xl">💳</div>
               <div>
@@ -213,7 +213,7 @@ export default function DashboardProdutor({ user }: { user: any }) {
                 <div className="text-xs text-green-200">Score de crédito rural</div>
               </div>
             </a>
-            <a href="https://agroos.com.br/dashboard" target="_blank" rel="noopener noreferrer"
+            <a href="https://agroos.site/dashboard" target="_blank" rel="noopener noreferrer"
               className="flex flex-col gap-2 bg-gradient-to-br from-slate-700 to-slate-800 text-white rounded-2xl p-4 shadow-sm hover:opacity-90 transition">
               <div className="text-2xl">🌾</div>
               <div>
