@@ -68,7 +68,9 @@ export default function MapaServico({ latitude, longitude, endereco, nomeFazenda
           {tiles.map(({ tx, ty, dx, dy }) => (
             <img
               key={`${dx},${dy}`}
-              src={`https://tile.openstreetmap.org/${zoom}/${tx}/${ty}.png`}
+              src={`https://a.tile.openstreetmap.org/${zoom}/${tx}/${ty}.png`}
+              crossOrigin="anonymous"
+              referrerPolicy="no-referrer"
               alt=""
               width={256}
               height={256}

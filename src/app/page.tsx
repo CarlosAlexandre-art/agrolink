@@ -47,19 +47,19 @@ export default function Home() {
     <div className="min-h-screen bg-white">
       {/* Header */}
       <header className="bg-green-700 text-white relative z-[60]">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <AgroCoreLogo size={36} showSubtitle subtitleColor="text-green-300" />
-          <div className="flex items-center gap-2">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-2">
+          <AgroCoreLogo size={32} showSubtitle subtitleColor="text-green-300" />
+          <div className="flex items-center gap-1.5 flex-shrink-0">
             <LanguageSwitcher />
             <Link
               href="/login"
-              className="px-3 py-1.5 text-sm text-white border border-white/60 rounded-lg hover:bg-green-600 transition"
+              className="px-2.5 py-1.5 text-xs sm:text-sm text-white border border-white/60 rounded-lg hover:bg-green-600 transition whitespace-nowrap"
             >
               {t('nav.login')}
             </Link>
             <Link
               href="/cadastro"
-              className="px-3 py-1.5 text-sm bg-white text-green-700 font-semibold rounded-lg hover:bg-green-50 transition"
+              className="px-2.5 py-1.5 text-xs sm:text-sm bg-white text-green-700 font-semibold rounded-lg hover:bg-green-50 transition whitespace-nowrap"
             >
               {t('nav.register')}
             </Link>

@@ -129,6 +129,7 @@ export default function EditarPerfilPage() {
             ref={fileRef}
             type="file"
             accept="image/*"
+            capture="environment"
             className="hidden"
             onChange={handleAvatarChange}
           />
