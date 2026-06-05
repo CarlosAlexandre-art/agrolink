@@ -123,11 +123,11 @@ export default function PropostasPage() {
           const menorPrecoId = !hasSmartScore ? ordenados[0]?.id : null
 
           return (
-            <div key={serviceId} className="bg-white rounded-2xl shadow-sm overflow-hidden">
-              <div className="bg-green-50 px-5 py-4 border-b border-green-100">
-                <div className="font-bold text-gray-800 text-lg">{servicoIcon} {servicoLabel}</div>
-                {service.endereco && <div className="text-sm text-gray-500 mt-0.5">📍 {service.endereco}</div>}
-                <div className="text-xs text-gray-400 mt-1">{ordenados.length} proposta{ordenados.length > 1 ? 's' : ''} recebida{ordenados.length > 1 ? 's' : ''}</div>
+            <div key={serviceId} className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden">
+              <div className="bg-green-50 dark:bg-green-900/30 px-5 py-4 border-b border-green-100 dark:border-green-800">
+                <div className="font-bold text-gray-800 dark:text-gray-100 text-lg">{servicoIcon} {servicoLabel}</div>
+                {service.endereco && <div className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">📍 {service.endereco}</div>}
+                <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">{ordenados.length} proposta{ordenados.length > 1 ? 's' : ''} recebida{ordenados.length > 1 ? 's' : ''}</div>
               </div>
 
               {/* Análise IA */}
@@ -162,17 +162,17 @@ export default function PropostasPage() {
                   })
 
                   return (
-                    <div key={m.id} className={`p-5 space-y-3 ${analiseIA[serviceId]?.melhorId === m.id ? 'bg-blue-50/50' : isMenorPreco ? 'bg-emerald-50/40' : ''}`}>
+                    <div key={m.id} className={`p-5 space-y-3 ${analiseIA[serviceId]?.melhorId === m.id ? 'bg-blue-50/50 dark:bg-blue-900/20' : isMenorPreco ? 'bg-emerald-50/40 dark:bg-emerald-900/20' : ''}`}>
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3 min-w-0">
                           <Link href={`/prestador/${m.prestadorId}`}>
-                            <div className="w-11 h-11 bg-green-100 rounded-full flex items-center justify-center font-bold text-green-700 text-lg flex-shrink-0 hover:ring-2 hover:ring-green-400 transition">
+                            <div className="w-11 h-11 bg-green-100 dark:bg-green-900/40 rounded-full flex items-center justify-center font-bold text-green-700 dark:text-green-400 text-lg flex-shrink-0 hover:ring-2 hover:ring-green-400 transition">
                               {m.prestador.user.nome[0]}
                             </div>
                           </Link>
                           <div className="min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <Link href={`/prestador/${m.prestadorId}`} className="font-semibold text-gray-800 hover:text-green-700 transition truncate">
+                              <Link href={`/prestador/${m.prestadorId}`} className="font-semibold text-gray-800 dark:text-gray-100 hover:text-green-700 transition truncate">
                                 {m.prestador.user.nome}
                               </Link>
                               {m.prestador.user.plan === 'pro' && (
@@ -183,13 +183,13 @@ export default function PropostasPage() {
                               )}
                             </div>
                             {m.prestador.user.cidade && (
-                              <div className="text-xs text-gray-400">{m.prestador.user.cidade}, {m.prestador.user.estado}</div>
+                              <div className="text-xs text-gray-400 dark:text-gray-500">{m.prestador.user.cidade}, {m.prestador.user.estado}</div>
                             )}
                             {m.prestador.avaliacao > 0 && (
                               <div className="text-xs text-yellow-600 flex items-center gap-1">
                                 <span>{'★'.repeat(Math.round(m.prestador.avaliacao))}</span>
-                                <span className="font-medium text-gray-600">{m.prestador.avaliacao.toFixed(1)}</span>
-                                <span className="text-gray-400">· {m.prestador.totalAvaliacoes} avaliações</span>
+                                <span className="font-medium text-gray-600 dark:text-gray-300">{m.prestador.avaliacao.toFixed(1)}</span>
+                                <span className="text-gray-400 dark:text-gray-500">· {m.prestador.totalAvaliacoes} avaliações</span>
                               </div>
                             )}
                           </div>
@@ -218,7 +218,7 @@ export default function PropostasPage() {
                       )}
 
                       {m.mensagemProposta && (
-                        <p className="text-sm text-gray-600 bg-gray-50 rounded-xl px-4 py-3 italic">
+                        <p className="text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 rounded-xl px-4 py-3 italic">
                           "{m.mensagemProposta}"
                         </p>
                       )}

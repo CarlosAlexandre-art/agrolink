@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import AgroCoreLogo from '@/components/AgroCoreLogo'
 
-const AGRORATE_URL = 'https://agro-rate.vercel.app'
+const AGRORATE_URL = 'https://agrorate.app'
 
 type CreditType = {
   id: string

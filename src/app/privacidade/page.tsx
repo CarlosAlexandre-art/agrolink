@@ -92,7 +92,7 @@ export default function PrivacidadePage() {
             <li>Solicitar a portabilidade dos dados</li>
           </ul>
           <p className="text-sm leading-relaxed mt-3">
-            Para exercer esses direitos, entre em contato: <strong>privacidade@agrocore.com.br</strong>
+            Para exercer esses direitos, entre em contato: <strong>suporte@oryonag.com.br</strong>
           </p>
         </section>
 
@@ -120,7 +120,7 @@ export default function PrivacidadePage() {
         <section>
           <h2 className="text-xl font-bold text-gray-800 mb-3">10. Contato</h2>
           <p className="text-sm leading-relaxed">
-            Dúvidas sobre privacidade: <strong>privacidade@agrocore.com.br</strong><br />
+            Dúvidas sobre privacidade: <strong>suporte@oryonag.com.br</strong><br />
             Encarregado de Dados (DPO): disponível mediante solicitação.
           </p>
         </section>

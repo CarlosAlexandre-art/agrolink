@@ -156,17 +156,24 @@ function addClsAll(q: string, c: string) {
 
 export default function SplashScreen() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [gone, setGone] = useState(false)
   const [variant] = useState(() => {
-    // Sorteio com variação: pega variante diferente da última
     try {
-      const last = sessionStorage.getItem('agc_splash_last') ?? ''
+      const last = localStorage.getItem('agc_splash_last') ?? ''
       const pool = VARIANTS.filter(v => v.id !== last)
       const pick = pool[Math.floor(Math.random() * pool.length)]
-      sessionStorage.setItem('agc_splash_last', pick.id)
+      localStorage.setItem('agc_splash_last', pick.id)
       return pick
     } catch {
       return VARIANTS[0]
+    }
+  })
+
+  // Mostrar splash apenas uma vez por sessão de login
+  const [gone, setGone] = useState(() => {
+    try {
+      return localStorage.getItem('agc_splash_shown') === '1'
+    } catch {
+      return false
     }
   })
 
@@ -223,7 +230,10 @@ export default function SplashScreen() {
       setTimeout(() => addCls('agc-sub', 'in'), 3060),
       setTimeout(() => {
         addCls('agc-splash', 'sp-exit')
-        setTimeout(() => setGone(true), 950)
+        setTimeout(() => {
+          try { localStorage.setItem('agc_splash_shown', '1') } catch {}
+          setGone(true)
+        }, 950)
       }, 4200),
     ]
 

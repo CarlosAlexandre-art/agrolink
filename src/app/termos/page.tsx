@@ -109,7 +109,7 @@ export default function TermosPage() {
         <section>
           <h2 className="text-xl font-bold text-gray-800 mb-3">11. Contato</h2>
           <p className="text-sm leading-relaxed">
-            Para dúvidas sobre estes Termos, entre em contato pelo e-mail: <strong>contato@agrocore.com.br</strong>
+            Para dúvidas sobre estes Termos, entre em contato pelo e-mail: <strong>suporte@oryonag.com.br</strong>
           </p>
         </section>
 
