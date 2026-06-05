@@ -3,9 +3,9 @@ import { prisma } from '@/lib/prisma'
 import { rateLimit, getClientIp } from '@/lib/rate-limit'
 
 export async function GET(req: Request) {
-  // 10 verificações por minuto por IP — previne enumeração em massa
+  // 60 verificações por minuto por IP — limite aumentado pois app mobile compartilha IP
   const ip = getClientIp(req)
-  const { allowed } = rateLimit(`email-check:${ip}`, 10, 60_000)
+  const { allowed } = rateLimit(`email-check:${ip}`, 60, 60_000)
   if (!allowed) {
     return NextResponse.json({ error: 'Muitas tentativas. Aguarde um momento.' }, { status: 429 })
   }

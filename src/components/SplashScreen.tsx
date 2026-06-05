@@ -231,7 +231,11 @@ export default function SplashScreen() {
       setTimeout(() => {
         addCls('agc-splash', 'sp-exit')
         setTimeout(() => {
-          try { localStorage.setItem('agc_splash_shown', '1') } catch {}
+          try {
+            localStorage.setItem('agc_splash_shown', '1')
+            document.getElementById('agc-hide')?.remove()
+            document.documentElement.style.background = ''
+          } catch {}
           setGone(true)
         }, 950)
       }, 4200),

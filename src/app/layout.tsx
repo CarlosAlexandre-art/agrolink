@@ -48,6 +48,10 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{
           __html: `(function(){var t=localStorage.getItem('agrocore_tema')||'auto';var d=t==='escuro'||(t==='auto'&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');})()`
         }} />
+        {/* Anti-flash: esconde conteúdo até splash terminar ou usuário já ter visto */}
+        <script dangerouslySetInnerHTML={{
+          __html: `(function(){if(!localStorage.getItem('agc_splash_shown')){document.documentElement.style.background='#000';var s=document.createElement('style');s.id='agc-hide';s.textContent='body>*:not(#agc-splash){visibility:hidden!important}';document.head.appendChild(s);}})()`
+        }} />
         {/* Captura beforeinstallprompt ANTES do React hidratar para evitar race condition */}
         <script dangerouslySetInnerHTML={{
           __html: `window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.__bip=e;});`
