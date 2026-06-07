@@ -154,6 +154,27 @@ export default async function PerfilPage() {
           </>
         )}
 
+        {/* Exportar dados */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm">
+          <h2 className="font-bold text-gray-700 dark:text-gray-200 mb-1">📤 Exportar meus dados</h2>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">Baixe todo o seu histórico de serviços e movimentações</p>
+          <div className="grid grid-cols-2 gap-3">
+            <a
+              href="/api/exportar?formato=csv"
+              className="flex items-center justify-center gap-2 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 font-semibold rounded-xl hover:border-green-600 hover:text-green-700 transition text-sm"
+            >
+              📊 Excel / CSV
+            </a>
+            <a
+              href="/api/exportar?formato=html"
+              target="_blank"
+              className="flex items-center justify-center gap-2 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 font-semibold rounded-xl hover:border-green-600 hover:text-green-700 transition text-sm"
+            >
+              🖨️ PDF / Imprimir
+            </a>
+          </div>
+        </div>
+
         {/* Edit profile link */}
         <Link
           href="/perfil/editar"
