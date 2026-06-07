@@ -6,6 +6,8 @@ import { SERVICOS } from '@/lib/constants'
 import LogoutButton from '@/components/LogoutButton'
 import ConnectStripeButton from '@/components/ConnectStripeButton'
 import BottomNav from '@/components/BottomNav'
+import OryonID from '@/components/OryonID'
+import SeloVerificado from '@/components/SeloVerificado'
 
 export default async function PerfilPage() {
   const supabase = await createClient()
@@ -50,7 +52,7 @@ export default async function PerfilPage() {
           </div>
           <div className="font-bold text-gray-800 text-xl">{dbUser.nome}</div>
           <div className="text-sm text-gray-500 mt-1">{dbUser.email}</div>
-          <div className="mt-2">
+          <div className="mt-2 flex items-center justify-center gap-2 flex-wrap">
             <span className={`text-xs px-3 py-1 rounded-full font-semibold ${
               dbUser.tipo === 'PRODUTOR'
                 ? 'bg-green-100 text-green-700'
@@ -58,6 +60,11 @@ export default async function PerfilPage() {
             }`}>
               {dbUser.tipo === 'PRODUTOR' ? '🌾 Produtor Rural' : '🔧 Prestador de Serviço'}
             </span>
+            <SeloVerificado
+              verificado={!!(dbUser.produtor?.verificado || dbUser.prestador?.verificado)}
+              tipo={dbUser.tipo as 'PRODUTOR' | 'PRESTADOR'}
+              size="sm"
+            />
           </div>
         </div>
 
@@ -107,6 +114,9 @@ export default async function PerfilPage() {
             </div>
           </div>
         </div>
+
+        {/* ORYON ID — Histórico Operacional */}
+        <OryonID />
 
         {/* Prestador stats */}
         {dbUser.prestador && (
