@@ -36,18 +36,26 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Serviço não encontrado ou não concluído' }, { status: 404 })
     }
 
+    // Peso baseado no histórico do prestador avaliador
+    const totalServicosPrestador = await prisma.match.count({
+      where: { prestadorId: dbUser.prestador.id, service: { status: 'CONCLUIDO' } }
+    })
+    const peso = totalServicosPrestador >= 31 ? 3.0
+                : totalServicosPrestador >= 11 ? 2.0
+                : totalServicosPrestador >= 4  ? 1.5
+                : 1.0
+
     const avaliacao = await prisma.avaliacaoProdutor.create({
-      data: {
-        serviceId,
-        produtorId,
-        nota,
-        comentario: comentario || null,
-      }
+      data: { serviceId, produtorId, nota, peso, comentario: comentario || null }
     })
 
-    // Recalcular média do produtor
-    const todas = await prisma.avaliacaoProdutor.findMany({ where: { produtorId } })
-    const media = todas.reduce((acc, a) => acc + a.nota, 0) / todas.length
+    // Recalcular média ponderada do produtor
+    const todas = await prisma.avaliacaoProdutor.findMany({
+      where: { produtorId },
+      select: { nota: true, peso: true }
+    })
+    const somaPesos = todas.reduce((acc, a) => acc + (a.peso ?? 1), 0)
+    const media = todas.reduce((acc, a) => acc + a.nota * (a.peso ?? 1), 0) / somaPesos
 
     await prisma.produtor.update({
       where: { id: produtorId },

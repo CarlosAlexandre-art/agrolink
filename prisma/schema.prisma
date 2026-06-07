@@ -285,9 +285,10 @@ model Avaliacao {
   prestadorId String
   prestador   Prestador @relation(fields: [prestadorId], references: [id])
   nota        Int
+  peso        Float     @default(1.0)
   comentario  String?
   contestacao        String?
-  contestacaoStatus  String?  // PENDENTE | APROVADA | REJEITADA
+  contestacaoStatus  String?
   contestacaoEm      DateTime?
   createdAt   DateTime  @default(now())
 }
@@ -299,6 +300,7 @@ model AvaliacaoProdutor {
   produtorId String
   produtor   Produtor @relation(fields: [produtorId], references: [id])
   nota       Int
+  peso       Float    @default(1.0)
   comentario String?
   contestacao        String?
   contestacaoStatus  String?

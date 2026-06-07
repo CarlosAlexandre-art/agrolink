@@ -6,6 +6,23 @@ import { SERVICOS } from '@/lib/constants'
 import { notificarAgroRate } from '@/lib/agrorate-webhook'
 import { z } from 'zod'
 
+// Peso da avaliação baseado no histórico do avaliador
+// Quanto mais experiência, mais relevante é sua opinião
+function calcularPeso(totalServicos: number): number {
+  if (totalServicos >= 31) return 3.0  // Usuário experiente — peso máximo
+  if (totalServicos >= 11) return 2.0  // Usuário ativo
+  if (totalServicos >= 4)  return 1.5  // Usuário intermediário
+  return 1.0                           // Usuário novo
+}
+
+// Média ponderada das avaliações
+function mediasPonderada(avaliacoes: { nota: number; peso: number }[]): number {
+  if (avaliacoes.length === 0) return 0
+  const somaPesos = avaliacoes.reduce((acc, a) => acc + a.peso, 0)
+  const somaNotasPeso = avaliacoes.reduce((acc, a) => acc + a.nota * a.peso, 0)
+  return somaNotasPeso / somaPesos
+}
+
 const avaliacaoSchema = z.object({
   serviceId: z.string().uuid(),
   prestadorId: z.string().uuid(),
@@ -61,12 +78,21 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Serviço não encontrado ou não concluído' }, { status: 404 })
     }
 
+    // Calcula peso baseado no histórico do produtor avaliador
+    const totalServicosProdutor = await prisma.service.count({
+      where: { produtorId: dbUser.produtor.id, status: 'CONCLUIDO' }
+    })
+    const peso = calcularPeso(totalServicosProdutor)
+
     const avaliacao = await prisma.avaliacao.create({
-      data: { serviceId, prestadorId, nota, comentario: comentario ?? null }
+      data: { serviceId, prestadorId, nota, peso, comentario: comentario ?? null }
     })
 
-    const todasAvaliacoes = await prisma.avaliacao.findMany({ where: { prestadorId } })
-    const media = todasAvaliacoes.reduce((acc: number, a: { nota: number }) => acc + a.nota, 0) / todasAvaliacoes.length
+    const todasAvaliacoes = await prisma.avaliacao.findMany({
+      where: { prestadorId },
+      select: { nota: true, peso: true }
+    })
+    const media = mediasPonderada(todasAvaliacoes)
 
     const prestadorAtualizado = await prisma.prestador.update({
       where: { id: prestadorId },
