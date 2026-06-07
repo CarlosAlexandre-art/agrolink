@@ -7,10 +7,15 @@ import { SERVICOS } from '@/lib/constants'
 import PwaPrompt from '@/components/PwaPrompt'
 import Tour from '@/components/Tour'
 import AgroCoreLogo from '@/components/AgroCoreLogo'
+import ModoSimples from '@/components/ModoSimples'
 
 export default function DashboardProdutor({ user }: { user: any }) {
   const services = user.produtor?.services || []
   const [qtdPropostas, setQtdPropostas] = useState(0)
+  const [modoSimples, setModoSimples] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return localStorage.getItem('agrocore_modo_simples') === '1'
+  })
 
   const emAndamento = services.filter((s: any) =>
     ['PROCURANDO', 'AGUARDANDO_PROPOSTA', 'MATCH_ENCONTRADO', 'EM_ROTA', 'EXECUTANDO'].includes(s.status)
@@ -44,6 +49,26 @@ export default function DashboardProdutor({ user }: { user: any }) {
   const avaliacao = user.produtor?.avaliacao
   const temPropostas = qtdPropostas > 0
 
+  function toggleModo() {
+    const novo = !modoSimples
+    setModoSimples(novo)
+    localStorage.setItem('agrocore_modo_simples', novo ? '1' : '0')
+  }
+
+  if (modoSimples) return (
+    <div>
+      <ModoSimples tipo="PRODUTOR" nome={user.nome} />
+      <div className="fixed bottom-20 right-4 z-50">
+        <button
+          onClick={toggleModo}
+          className="bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 rounded-full px-4 py-2 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-50 transition"
+        >
+          ⚙️ Modo completo
+        </button>
+      </div>
+    </div>
+  )
+
   return (
     <div className="min-h-screen bg-gray-50">
 
@@ -58,9 +83,17 @@ export default function DashboardProdutor({ user }: { user: any }) {
               <AgroCoreLogo size={26} />
               <div className="text-green-100 text-sm mt-1">Olá, {user.nome.split(' ')[0]}! 👋</div>
             </div>
-            <Link href="/perfil" className="text-green-200 hover:text-white text-sm font-medium">
-              Perfil →
-            </Link>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={toggleModo}
+                className="text-green-200 hover:text-white text-xs font-medium border border-green-400/40 rounded-full px-3 py-1 hover:bg-green-600/30 transition"
+              >
+                Modo simples
+              </button>
+              <Link href="/perfil" className="text-green-200 hover:text-white text-sm font-medium">
+                Perfil →
+              </Link>
+            </div>
           </div>
 
           {/* CTA principal dentro do header */}
