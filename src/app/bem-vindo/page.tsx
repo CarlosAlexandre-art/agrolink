@@ -9,27 +9,37 @@ const SLIDES_PRODUTOR = [
   {
     icon: '🌾',
     titulo: 'Bem-vindo ao AgroCore!',
-    texto: 'Aqui você encontra prestadores de serviço rurais confiáveis, perto de você, de forma rápida e segura.',
+    texto: 'O jeito mais seguro de contratar serviços rurais no Brasil. Prestadores verificados, contratos digitais e suporte completo.',
   },
   {
     icon: '📋',
-    titulo: 'Como solicitar um serviço',
-    texto: 'Clique em "Solicitar Serviço", escolha o tipo de serviço que precisa, informe sua localização e confirme. Leva menos de 1 minuto.',
+    titulo: 'Contrate em menos de 1 minuto',
+    texto: 'Clique em "Contratar Serviço", escolha o tipo de serviço, informe sua localização e confirme. Prestadores próximos são notificados automaticamente.',
+    dica: '💡 +18 tipos de serviço: pulverização, colheita, tratoração, drones e muito mais.',
   },
   {
-    icon: '🤝',
-    titulo: 'Receba propostas',
-    texto: 'O sistema encontra automaticamente prestadores disponíveis próximos a você. Você verá o prestador alocado em instantes.',
+    icon: '✅',
+    titulo: 'Prestadores verificados',
+    texto: 'Todos os prestadores têm histórico real na plataforma. Veja avaliações de outros produtores, serviços concluídos e região de atuação antes de contratar.',
+    dica: '🛡️ Selos de verificação garantem que o prestador passou por validação de documentos.',
+  },
+  {
+    icon: '📄',
+    titulo: 'Contrato digital automático',
+    texto: 'Ao aceitar uma proposta, o sistema gera um contrato digital automaticamente com todos os dados do serviço. Você recebe por e-mail e WhatsApp.',
+    dica: '⚖️ O contrato tem validade jurídica conforme a Lei nº 14.063/2020.',
   },
   {
     icon: '💳',
-    titulo: 'Pagamento seguro',
-    texto: 'Você paga antes do serviço. O dinheiro fica retido e só é liberado ao prestador após a conclusão. Sem risco.',
+    titulo: 'Pagamento protegido',
+    texto: 'Você paga antes do serviço. O dinheiro fica em custódia segura e só é liberado ao prestador após a conclusão. Seu dinheiro nunca fica em risco.',
+    dica: '🔒 Nunca pague fora da plataforma.',
   },
   {
     icon: '⭐',
-    titulo: 'Avalie o serviço',
-    texto: 'Após a conclusão, avalie o prestador. Isso ajuda a manter a qualidade da plataforma para todos.',
+    titulo: 'Avalie e construa histórico',
+    texto: 'Após a conclusão, avalie o serviço. Seu ORYON ID registra toda sua trajetória na plataforma — serviços contratados, valor movimentado e reputação.',
+    dica: '🚀 Quanto mais você usa, mais forte fica seu perfil na comunidade.',
   },
 ]
 
@@ -37,27 +47,37 @@ const SLIDES_PRESTADOR = [
   {
     icon: '🔧',
     titulo: 'Bem-vindo ao AgroCore!',
-    texto: 'Aqui você recebe chamados de produtores rurais que precisam dos seus serviços, direto no seu celular.',
+    texto: 'Aqui você recebe chamados de produtores rurais que precisam dos seus serviços — sem precisar prospectar ou depender de indicações.',
   },
   {
     icon: '🟢',
-    titulo: 'Fique disponível',
-    texto: 'No seu painel, mantenha o status "Disponível" ativado para receber chamados. Você pode desativar quando quiser.',
+    titulo: 'Fique disponível para receber chamados',
+    texto: 'No seu painel, mantenha o status "Disponível" ativado. Quando um produtor solicitar um serviço da sua área, você é notificado na hora.',
+    dica: '📍 Mantenha sua localização e raio de atendimento atualizados no perfil.',
   },
   {
-    icon: '🔔',
-    titulo: 'Receba chamados',
-    texto: 'Quando um produtor solicitar um serviço que você oferece, você recebe uma notificação. Aceite ou recuse — a escolha é sua.',
+    icon: '📄',
+    titulo: 'Contrato digital automático',
+    texto: 'Quando o produtor aceitar sua proposta, o sistema gera um contrato digital com todos os dados. Você recebe uma cópia por e-mail e WhatsApp.',
+    dica: '⚖️ Proteção jurídica automática em cada serviço.',
   },
   {
     icon: '✅',
-    titulo: 'Execute e conclua',
-    texto: 'Após aceitar, atualize o status do serviço: "A caminho" → "Executando" → "Concluído". O produtor acompanha tudo em tempo real.',
+    titulo: 'Execute e atualize o status',
+    texto: 'Atualize o status conforme avança: "A caminho" → "Executando" → "Concluído". O produtor acompanha em tempo real e fica tranquilo.',
+    dica: '📸 Envie foto de comprovação ao concluir — aumenta sua credibilidade.',
+  },
+  {
+    icon: '🏆',
+    titulo: 'Construa seu ORYON ID',
+    texto: 'Cada serviço concluído fortalece seu histórico operacional — avaliação, pontualidade e valor movimentado. Isso aumenta sua visibilidade para novos clientes.',
+    dica: '⭐ Prestadores com mais histórico aparecem primeiro nas buscas.',
   },
   {
     icon: '💰',
-    titulo: 'Receba seu pagamento',
-    texto: 'O pagamento é garantido. Após concluir o serviço, o valor é liberado para você automaticamente. AgroCore retém apenas 5% de comissão para manutenção e segurança da plataforma.',
+    titulo: 'Receba com segurança',
+    texto: 'O pagamento é garantido e liberado automaticamente após a conclusão. AgroCore retém apenas 5% de comissão para manutenção da plataforma.',
+    dica: '🎯 Sem inadimplência. Sem atraso. Sem risco.',
   },
 ]
 
@@ -91,7 +111,12 @@ function BemVindoContent() {
       <div className="flex-1 flex flex-col items-center justify-center text-center max-w-sm w-full">
         <div className="text-8xl mb-8">{atual.icon}</div>
         <h2 className="text-2xl font-bold text-white mb-4">{atual.titulo}</h2>
-        <p className="text-green-100 text-lg leading-relaxed">{atual.texto}</p>
+        <p className="text-green-100 text-lg leading-relaxed mb-5">{atual.texto}</p>
+        {(atual as any).dica && (
+          <div className="bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-sm text-green-100 text-left w-full">
+            {(atual as any).dica}
+          </div>
+        )}
       </div>
 
       {/* Dots */}
