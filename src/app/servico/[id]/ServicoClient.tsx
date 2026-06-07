@@ -862,6 +862,19 @@ export default function ServicoClient({
           </div>
         )}
 
+        {/* Botão de disputa — disponível quando serviço está em andamento ou concluído */}
+        {['MATCH_ENCONTRADO', 'EM_ROTA', 'EXECUTANDO', 'CONCLUIDO'].includes(service.status) && (
+          <div className="border border-red-200 rounded-2xl p-4">
+            <p className="text-xs text-gray-500 mb-3 text-center">Teve algum problema com este serviço?</p>
+            <a
+              href={`/disputa/${serviceId}`}
+              className="flex items-center justify-center gap-2 w-full py-3 border-2 border-red-500 text-red-600 font-semibold rounded-xl hover:bg-red-50 transition text-sm"
+            >
+              ⚖️ Abrir Disputa Formal
+            </a>
+          </div>
+        )}
+
       </div>
 
       <PopupInteligente tipo={popup} onFechar={() => setPopup(null)} />

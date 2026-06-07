@@ -214,6 +214,7 @@ model Service {
   contratoAceitoEm    DateTime?
   contratoIpProdutor  String?
   contratoIpPrestador String?
+  disputa           Disputa?
   matches           Match[]
   payment           Payment?
   avaliacao         Avaliacao?
@@ -239,6 +240,28 @@ model Match {
   updatedAt      DateTime    @updatedAt
 
   @@unique([serviceId, prestadorId])
+}
+
+model Disputa {
+  id          String        @id @default(cuid())
+  serviceId   String        @unique
+  service     Service       @relation(fields: [serviceId], references: [id])
+  abertaPor   String        // userId de quem abriu
+  motivo      String
+  descricao   String
+  status      DisputaStatus @default(ABERTA)
+  resolucao   String?
+  evidencias  String[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+enum DisputaStatus {
+  ABERTA
+  EM_ANALISE
+  RESOLVIDA_PRODUTOR
+  RESOLVIDA_PRESTADOR
+  ENCERRADA
 }
 
 model Payment {
