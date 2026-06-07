@@ -100,11 +100,11 @@ export default function BottomNav({ tipo, badgeCount }: BottomNavProps) {
             </span>
             <span>Solicitar</span>
           </Link>
-          <NavItem href="/equipe-ia" label="Equipe IA"><BotIcon /></NavItem>
+          <NavItem href="/equipe-ia" label="Assistente"><BotIcon /></NavItem>
         </>
       ) : (
         <>
-          <NavItem href="/equipe-ia" label="Equipe IA"><BotIcon /></NavItem>
+          <NavItem href="/equipe-ia" label="Assistente"><BotIcon /></NavItem>
           <NavItem href="/servicos-disponiveis" label="Pedidos" badge={badgeCount}><BellIcon /></NavItem>
           <NavItem href="/historico" label="Histórico"><ClockIcon /></NavItem>
           <NavItem href="/ganhos" label="Ganhos" data-tour="nav-ganhos"><WalletIcon /></NavItem>

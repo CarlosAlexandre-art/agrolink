@@ -25,10 +25,9 @@ export default async function EquipeIALayout({ children }: { children: React.Rea
           </svg>
         </div>
         <div>
-          <h1 className="text-xl font-bold text-gray-900 mb-2">Equipe IA — Plano Pro</h1>
+          <h1 className="text-xl font-bold text-gray-900 mb-2">Assistente Inteligente — Plano Pro</h1>
           <p className="text-gray-500 text-sm max-w-sm">
-            Agentes autônomos de marketplace estão disponíveis a partir do plano <strong>Pro</strong>.
-            Automatize busca de oportunidades, propostas e monitoramento de contratos.
+            Agentes com IA para ajudar você a encontrar oportunidades, enviar propostas e acompanhar contratos — disponível a partir do plano <strong>Pro</strong>.
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3">
@@ -42,7 +41,7 @@ export default async function EquipeIALayout({ children }: { children: React.Rea
             href="/dashboard"
             className="border border-gray-200 text-gray-600 font-semibold px-6 py-3 rounded-xl hover:bg-gray-50 transition-colors"
           >
-            Voltar ao Dashboard
+            ← Voltar
           </Link>
         </div>
       </div>
