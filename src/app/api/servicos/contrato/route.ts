@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
         id: serviceId,
         OR: [
           { produtorId: dbUser?.produtor?.id ?? '' },
-          { matches: { some: { prestadorId: dbUser?.prestador?.id ?? '', status: { in: ['ACEITO', 'CONCLUIDO'] } } } }
+          { matches: { some: { prestadorId: dbUser?.prestador?.id ?? '', status: { in: ['ACEITO', 'RECUSADO', 'CANCELADO'] } } } }
         ]
       },
       select: { contratoUrl: true, contratoAceitoEm: true }

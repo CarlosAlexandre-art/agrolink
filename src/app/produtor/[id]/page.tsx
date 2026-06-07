@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { SERVICOS } from '@/lib/constants'
 import { getBadgesProdutor } from '@/lib/badges'
+import SeloVerificado from '@/components/SeloVerificado'
 import BadgeChip from '@/components/BadgeChip'
 
 function Estrelas({ nota, total }: { nota: number; total: number }) {
@@ -94,7 +95,10 @@ export default async function PerfilProdutorPage({ params }: { params: Promise<{
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <h1 className="font-bold text-gray-800 text-xl">{p.user.nome}</h1>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="font-bold text-gray-800 text-xl">{p.user.nome}</h1>
+                <SeloVerificado verificado={produtor.verificado} tipo="PRODUTOR" size="sm" />
+              </div>
               {p.nomeFazenda && (
                 <p className="text-sm text-green-700 font-medium mt-0.5">🌾 {p.nomeFazenda}</p>
               )}

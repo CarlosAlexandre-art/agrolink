@@ -98,6 +98,7 @@ model User {
   nome       String
   email      String   @unique
   telefone   String?
+  cpf        String?
   tipo       UserType
   avatarUrl  String?
   estado     String?
@@ -160,6 +161,11 @@ model Produtor {
   areaTotal          Float?
   avaliacao          Float     @default(0)
   totalAvaliacoes    Int       @default(0)
+  verificado         Boolean   @default(false)
+  verificadoEm       DateTime?
+  cpfVerificado      Boolean   @default(false)
+  docVerificado      Boolean   @default(false)
+  telefoneVerificado Boolean   @default(false)
   services           Service[]
   avaliacoesRecebidas AvaliacaoProdutor[]
   createdAt          DateTime  @default(now())
@@ -176,6 +182,10 @@ model Prestador {
   raioAtendamento    Int           @default(50)
   stripeAccountId    String?
   verificado         Boolean       @default(false)
+  verificadoEm       DateTime?
+  cpfVerificado      Boolean       @default(false)
+  docVerificado      Boolean       @default(false)
+  telefoneVerificado Boolean       @default(false)
   servicosOferecidos ServiceType[]
   matches            Match[]
   avaliacoes         Avaliacao[]
