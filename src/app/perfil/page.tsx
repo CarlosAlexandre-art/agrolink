@@ -175,36 +175,41 @@ export default async function PerfilPage() {
           </div>
         </div>
 
-        {/* Edit profile link */}
-        <Link
-          href="/perfil/editar"
-          className="block w-full py-4 border-2 border-green-700 text-green-700 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700 text-center font-bold rounded-2xl hover:bg-green-50 transition"
-        >
-          ✏️ Editar perfil
-        </Link>
-
-        {/* Configurações */}
-        <Link
-          href="/configuracoes"
-          className="flex items-center justify-between w-full px-5 py-4 bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition"
-        >
-          <div className="flex items-center gap-3">
-            <span className="text-xl">⚙️</span>
-            <div>
-              <div className="font-semibold text-gray-800 dark:text-gray-100 text-sm">Configurações</div>
-              <div className="text-xs text-gray-400 dark:text-gray-500">Tema, AgroBot, GPS, notificações</div>
+        {/* Ações do perfil */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden divide-y divide-gray-50 dark:divide-gray-700">
+          <Link href="/perfil/editar" className="flex items-center justify-between px-5 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+            <div className="flex items-center gap-3">
+              <span className="text-xl">✏️</span>
+              <div>
+                <div className="font-semibold text-gray-800 dark:text-gray-100 text-sm">Editar perfil</div>
+                <div className="text-xs text-gray-400 dark:text-gray-500">Nome, foto, telefone, localização</div>
+              </div>
             </div>
-          </div>
-          <span className="text-gray-400">›</span>
-        </Link>
+            <span className="text-gray-400">›</span>
+          </Link>
 
-        {/* Help center */}
-        <Link
-          href="/ajuda"
-          className="block w-full py-4 border-2 border-blue-600 text-blue-600 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700 text-center font-bold rounded-2xl hover:bg-blue-50 transition"
-        >
-          ❓ Central de Ajuda
-        </Link>
+          <Link href="/configuracoes" className="flex items-center justify-between px-5 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+            <div className="flex items-center gap-3">
+              <span className="text-xl">⚙️</span>
+              <div>
+                <div className="font-semibold text-gray-800 dark:text-gray-100 text-sm">Configurações</div>
+                <div className="text-xs text-gray-400 dark:text-gray-500">Tema, AgroBot, GPS, notificações</div>
+              </div>
+            </div>
+            <span className="text-gray-400">›</span>
+          </Link>
+
+          <Link href="/ajuda" className="flex items-center justify-between px-5 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+            <div className="flex items-center gap-3">
+              <span className="text-xl">❓</span>
+              <div>
+                <div className="font-semibold text-gray-800 dark:text-gray-100 text-sm">Central de Ajuda</div>
+                <div className="text-xs text-gray-400 dark:text-gray-500">Dúvidas, suporte e tutoriais</div>
+              </div>
+            </div>
+            <span className="text-gray-400">›</span>
+          </Link>
+        </div>
 
         {/* Logout */}
         <LogoutButton />
