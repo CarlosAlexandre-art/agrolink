@@ -4,6 +4,8 @@ import { prisma } from '@/lib/prisma'
 import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
 import { SERVICOS } from '@/lib/constants'
 import { notificarAgroOS } from '@/lib/agros-webhook'
+import { gerarHtmlContrato, salvarContrato } from '@/lib/contrato'
+import { emails } from '@/lib/email'
 
 export async function PATCH(req: Request) {
   try {
@@ -30,7 +32,7 @@ export async function PATCH(req: Request) {
       },
       include: {
         service: true,
-        prestador: { include: { user: true } }
+        prestador: { include: { user: true } },
       }
     })
 
@@ -55,12 +57,69 @@ export async function PATCH(req: Request) {
         }),
       ])
 
-      // Notificar AgroOS que proposta foi aceita
-      notificarAgroOS(match.serviceId, 'MATCH_ENCONTRADO', { prestadorNome: match.prestador.user.nome }).catch(() => {})
-
-      // Notificar prestador via WhatsApp
       const prestadorUser = match.prestador.user
       const servicoLabel = SERVICOS.find(s => s.value === match.service.tipo)?.label ?? match.service.tipo
+      const ip = (req.headers as Headers).get('x-forwarded-for')?.split(',')[0].trim() ?? undefined
+
+      // Gerar contrato digital automaticamente (não bloqueia o fluxo)
+      ;(async () => {
+        try {
+          const html = gerarHtmlContrato({
+            serviceId: match.serviceId,
+            tipo: servicoLabel,
+            descricao: match.service.descricao,
+            valor: match.valorProposto ?? 0,
+            endereco: match.service.endereco,
+            agendadoPara: match.service.agendadoPara,
+            produtor: {
+              nome: dbUser.nome,
+              email: dbUser.email,
+              telefone: dbUser.telefone,
+              cidade: dbUser.cidade,
+              estado: dbUser.estado,
+            },
+            prestador: {
+              nome: prestadorUser.nome,
+              email: prestadorUser.email,
+              telefone: prestadorUser.telefone,
+              cidade: prestadorUser.cidade,
+              estado: prestadorUser.estado,
+            },
+            ipProdutor: ip,
+            dataAceite: new Date(),
+          })
+
+          const contratoUrl = await salvarContrato(match.serviceId, html)
+
+          if (contratoUrl) {
+            // Salva URL no banco
+            await prisma.service.update({
+              where: { id: match.serviceId },
+              data: {
+                contratoUrl,
+                contratoAceitoEm: new Date(),
+                contratoIpProdutor: ip,
+              }
+            })
+
+            // Envia por email para ambas as partes
+            emails.contratoGerado(dbUser.email, dbUser.nome, servicoLabel, match.valorProposto ?? 0, contratoUrl).catch(() => {})
+            emails.contratoGerado(prestadorUser.email, prestadorUser.nome, servicoLabel, match.valorProposto ?? 0, contratoUrl).catch(() => {})
+
+            // Envia link do contrato por WhatsApp para ambas as partes
+            const msgContrato = (nome: string) => `📄 *Contrato AgroCore gerado*\n\nOlá ${nome.split(' ')[0]}! O contrato referente ao serviço de *${servicoLabel}* está disponível:\n\n${contratoUrl}\n\n_Válido juridicamente conforme Lei nº 14.063/2020_`
+            if (dbUser.telefone) enviarWhatsApp(dbUser.telefone, msgContrato(dbUser.nome)).catch(() => {})
+            if (prestadorUser.telefone) enviarWhatsApp(prestadorUser.telefone, msgContrato(prestadorUser.nome)).catch(() => {})
+          }
+        } catch (e) {
+          console.error('Erro ao gerar contrato:', e)
+        }
+      })()
+
+      // Notificar AgroOS que proposta foi aceita
+      notificarAgroOS(match.serviceId, 'MATCH_ENCONTRADO', { prestadorNome: prestadorUser.nome }).catch(() => {})
+
+      // Notificar prestador via WhatsApp
       if (prestadorUser.telefone && match.valorProposto) {
         enviarWhatsApp(
           prestadorUser.telefone,

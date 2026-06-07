@@ -200,6 +200,10 @@ model Service {
   fotoProva     String?
   gpsLat        Float?
   gpsLng        Float?
+  contratoUrl         String?
+  contratoAceitoEm    DateTime?
+  contratoIpProdutor  String?
+  contratoIpPrestador String?
   matches           Match[]
   payment           Payment?
   avaliacao         Avaliacao?

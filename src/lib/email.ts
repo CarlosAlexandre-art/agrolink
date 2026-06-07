@@ -124,4 +124,26 @@ export const emails = {
     `
     return resend.emails.send({ from: FROM, to, subject: '🚀 AgroOS está chegando — seja o primeiro a saber!', html: baseTemplate(conteudo) })
   },
+
+  async contratoGerado(to: string, nome: string, tipoServico: string, valor: number, contratoUrl: string) {
+    const valorFmt = valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+    const conteudo = `
+      <h2 style="color:#1f2937;margin-top:0">📄 Seu contrato está pronto</h2>
+      <p style="color:#4b5563;line-height:1.6">Olá, ${nome.split(' ')[0]}! O contrato referente ao serviço de <strong>${tipoServico}</strong> foi gerado com sucesso.</p>
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:20px;margin:20px 0">
+        <p style="margin:0 0 4px;color:#15803d;font-weight:bold">Resumo do contrato</p>
+        <p style="margin:4px 0;color:#374151">✓ Serviço: <strong>${tipoServico}</strong></p>
+        <p style="margin:4px 0;color:#374151">✓ Valor: <strong>${valorFmt}</strong></p>
+        <p style="margin:4px 0;color:#374151">✓ Aceite eletrônico registrado</p>
+        <p style="margin:4px 0;color:#374151">✓ Válido conforme Lei nº 14.063/2020</p>
+      </div>
+      <div style="text-align:center;margin:28px 0">
+        <a href="${contratoUrl}" style="background:#15803d;color:#fff;padding:14px 32px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:16px">
+          📄 Ver Contrato
+        </a>
+      </div>
+      <p style="color:#6b7280;font-size:12px;text-align:center">O contrato também está disponível no seu painel em <a href="${APP_URL}/servicos" style="color:#15803d">agrocore.live/servicos</a></p>
+    `
+    return resend.emails.send({ from: FROM, to, subject: `📄 Contrato gerado — ${tipoServico}`, html: baseTemplate(conteudo) })
+  },
 }

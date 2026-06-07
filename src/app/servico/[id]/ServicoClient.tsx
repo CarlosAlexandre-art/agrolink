@@ -762,6 +762,25 @@ export default function ServicoClient({
           </div>
         )}
 
+        {/* Contrato Digital — visível para produtor e prestador */}
+        {service.contratoUrl && (
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-green-100">
+            <h2 className="font-bold text-gray-700 mb-1">📄 Contrato Digital</h2>
+            <p className="text-xs text-gray-400 mb-3">
+              Gerado automaticamente · Válido juridicamente (Lei nº 14.063/2020)
+              {service.contratoAceitoEm && ` · Aceito em ${new Date(service.contratoAceitoEm).toLocaleDateString('pt-BR')}`}
+            </p>
+            <a
+              href={service.contratoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full py-3 bg-green-700 text-white rounded-xl font-semibold hover:bg-green-800 transition text-sm"
+            >
+              📄 Visualizar Contrato
+            </a>
+          </div>
+        )}
+
         {/* Foto de comprovação — visualização pelo produtor */}
         {isProdutor && service.fotoProva && (
           <div className="bg-white rounded-2xl p-5 shadow-sm">
