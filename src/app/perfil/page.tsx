@@ -154,21 +154,6 @@ export default async function PerfilPage() {
           </>
         )}
 
-        {/* Configurações */}
-        <Link
-          href="/configuracoes"
-          className="flex items-center justify-between w-full px-5 py-4 bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition"
-        >
-          <div className="flex items-center gap-3">
-            <span className="text-xl">⚙️</span>
-            <div>
-              <div className="font-semibold text-gray-800 dark:text-gray-100 text-sm">Configurações</div>
-              <div className="text-xs text-gray-400 dark:text-gray-500">Tema, AgroBot, GPS, notificações</div>
-            </div>
-          </div>
-          <span className="text-gray-400">›</span>
-        </Link>
-
         {/* Exportar dados */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm">
           <h2 className="font-bold text-gray-700 dark:text-gray-200 mb-1">📤 Exportar meus dados</h2>
@@ -196,6 +181,21 @@ export default async function PerfilPage() {
           className="block w-full py-4 border-2 border-green-700 text-green-700 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700 text-center font-bold rounded-2xl hover:bg-green-50 transition"
         >
           ✏️ Editar perfil
+        </Link>
+
+        {/* Configurações */}
+        <Link
+          href="/configuracoes"
+          className="flex items-center justify-between w-full px-5 py-4 bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-xl">⚙️</span>
+            <div>
+              <div className="font-semibold text-gray-800 dark:text-gray-100 text-sm">Configurações</div>
+              <div className="text-xs text-gray-400 dark:text-gray-500">Tema, AgroBot, GPS, notificações</div>
+            </div>
+          </div>
+          <span className="text-gray-400">›</span>
         </Link>
 
         {/* Help center */}
