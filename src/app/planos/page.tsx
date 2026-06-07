@@ -354,7 +354,7 @@ export default function PlanosPage() {
           })}
         </div>
 
-        {planoAtual && planoAtual !== 'free' && (
+        {planoAtual && planoAtual !== 'free' && planoAtual !== 'admin' && (
           <div className="space-y-3 max-w-2xl mx-auto">
 
             {/* Upgrade para anual — só aparece se estiver no mensal */}
