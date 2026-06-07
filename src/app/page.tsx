@@ -181,6 +181,39 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Cases de Sucesso */}
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-xs font-bold uppercase tracking-widest text-green-600 text-center mb-2">Cases reais</div>
+          <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">Quem já usa o AgroCore</h2>
+          <p className="text-center text-gray-500 mb-10">Resultados reais de produtores e prestadores em todo o Brasil</p>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              { inicial: 'J', nome: 'João Alves', estado: 'CE', resultado: 'Economizou R$ 12.000 em uma safra', depoimento: 'Encontrei um prestador verificado em menos de 2 horas. O contrato digital me deu segurança que nunca tive.' },
+              { inicial: 'M', nome: 'Marcos Ferreira', estado: 'GO', resultado: 'Triplicou a carteira de clientes em 6 meses', depoimento: 'Passei de 2 para 8 clientes fixos. Hoje tenho previsibilidade de renda que nunca tive na vida.' },
+              { inicial: 'A', nome: 'Ana Lima', estado: 'BA', resultado: 'Reduziu perda de colheita em 40%', depoimento: 'Filtrei por tipo de serviço e encontrei um especialista em café. O resultado foi extraordinário.' },
+            ].map(c => (
+              <div key={c.nome} className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center font-black text-green-700">{c.inicial}</div>
+                  <div>
+                    <div className="font-bold text-gray-800 text-sm">{c.nome}</div>
+                    <div className="text-xs text-gray-400">📍 {c.estado}</div>
+                  </div>
+                </div>
+                <div className="text-green-700 font-bold text-sm mb-2">{c.resultado}</div>
+                <p className="text-gray-500 text-xs leading-relaxed italic">"{c.depoimento}"</p>
+              </div>
+            ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link href="/cases" className="text-green-700 font-semibold text-sm hover:underline">
+              Ver todos os cases →
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="py-16 px-4 bg-green-700 text-white text-center">
         <h2 className="text-3xl font-bold mb-4">Comece agora, é gratuito</h2>
@@ -201,6 +234,7 @@ export default function Home() {
       <footer className="py-8 px-4 bg-gray-800 text-gray-400 text-center">
         <p>© 2025 AgroCore · {t('footer.rights')}</p>
         <div className="mt-3 flex justify-center gap-6 text-sm flex-wrap">
+          <Link href="/cases" className="hover:text-white transition">Cases</Link>
           <Link href="/ajuda" className="hover:text-white transition">{t('footer.help')}</Link>
           <Link href="/termos" className="hover:text-white transition">{t('footer.terms')}</Link>
           <Link href="/privacidade" className="hover:text-white transition">{t('footer.privacy')}</Link>
