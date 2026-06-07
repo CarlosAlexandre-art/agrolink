@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import GarantiaOryon from '@/components/GarantiaOryon'
 import { useRouter } from 'next/navigation'
 import { SERVICOS } from '@/lib/constants'
 import { useI18n } from '@/lib/i18n'
@@ -211,6 +212,13 @@ export default function Home() {
               Ver todos os cases →
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Garantia ORYON */}
+      <section className="py-16 px-4 bg-gray-50">
+        <div className="max-w-3xl mx-auto">
+          <GarantiaOryon variant="banner" />
         </div>
       </section>
 

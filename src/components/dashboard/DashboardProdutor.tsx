@@ -8,6 +8,7 @@ import PwaPrompt from '@/components/PwaPrompt'
 import Tour from '@/components/Tour'
 import AgroCoreLogo from '@/components/AgroCoreLogo'
 import ModoSimples from '@/components/ModoSimples'
+import GarantiaOryon from '@/components/GarantiaOryon'
 
 export default function DashboardProdutor({ user }: { user: any }) {
   const services = user.produtor?.services || []
@@ -293,6 +294,12 @@ export default function DashboardProdutor({ user }: { user: any }) {
         </div>
 
       </div>
+
+      {concluidos.length === 0 && (
+        <div className="max-w-2xl mx-auto px-4 pb-4">
+          <GarantiaOryon variant="card" />
+        </div>
+      )}
 
       <BottomNav tipo="PRODUTOR" badgeCount={qtdPropostas} />
       <div className="h-16" />

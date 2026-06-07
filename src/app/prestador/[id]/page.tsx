@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { SERVICOS } from '@/lib/constants'
 import { getBadgesPrestador } from '@/lib/badges'
+import GarantiaOryon from '@/components/GarantiaOryon'
 import SeloVerificado from '@/components/SeloVerificado'
 import ContestarAvaliacao from '@/components/ContestarAvaliacao'
 import BadgeChip from '@/components/BadgeChip'
@@ -235,6 +236,8 @@ export default async function PerfilPrestadorPage({ params }: { params: Promise<
             <p className="text-sm">Ainda sem avaliações.</p>
           </div>
         )}
+
+        <GarantiaOryon variant="inline" />
 
       </div>
     </div>
