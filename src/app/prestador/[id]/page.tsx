@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { SERVICOS } from '@/lib/constants'
 import { getBadgesPrestador } from '@/lib/badges'
 import SeloVerificado from '@/components/SeloVerificado'
+import ContestarAvaliacao from '@/components/ContestarAvaliacao'
 import BadgeChip from '@/components/BadgeChip'
 
 function Estrelas({ nota, total }: { nota: number; total: number }) {
@@ -213,6 +214,14 @@ export default async function PerfilPrestadorPage({ params }: { params: Promise<
                     {av.comentario && (
                       <p className="text-sm text-gray-600 mt-1 leading-relaxed">"{av.comentario}"</p>
                     )}
+                    <ContestarAvaliacao
+                      avaliacaoId={av.id}
+                      tipo="PRESTADOR"
+                      nota={av.nota}
+                      comentario={av.comentario}
+                      contestacao={(av as any).contestacao}
+                      contestacaoStatus={(av as any).contestacaoStatus}
+                    />
                   </div>
                 )
               })}
