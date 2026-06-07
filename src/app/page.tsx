@@ -235,6 +235,7 @@ export default function Home() {
         <p>© 2025 AgroCore · {t('footer.rights')}</p>
         <div className="mt-3 flex justify-center gap-6 text-sm flex-wrap">
           <Link href="/cases" className="hover:text-white transition">Cases</Link>
+          <Link href="/transparencia" className="hover:text-white transition">Preços</Link>
           <Link href="/ajuda" className="hover:text-white transition">{t('footer.help')}</Link>
           <Link href="/termos" className="hover:text-white transition">{t('footer.terms')}</Link>
           <Link href="/privacidade" className="hover:text-white transition">{t('footer.privacy')}</Link>
