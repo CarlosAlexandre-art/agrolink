@@ -86,7 +86,7 @@ export default function ConfiguracoesPage() {
               {TEMAS.map(t => (
                 <button
                   key={t.value}
-                  onClick={() => setTema(t.value)}
+                  onClick={() => setTema(t.value as 'auto' | 'claro' | 'escuro')}
                   className={`flex flex-col items-center gap-1 p-3 rounded-xl border-2 transition ${
                     tema === t.value
                       ? 'border-green-600 bg-green-50 dark:bg-green-900/30'
