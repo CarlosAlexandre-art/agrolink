@@ -670,6 +670,15 @@ export default function ServicoClient({
           </div>
         )}
 
+        {/* Aviso de avaliação bloqueada — serviço ainda não concluído */}
+        {isProdutor && !['CONCLUIDO', 'CANCELADO'].includes(service.status) && matchAceito && (
+          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-4 border border-gray-200 dark:border-gray-700 text-center">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              🔒 A avaliação será liberada após a conclusão do serviço
+            </p>
+          </div>
+        )}
+
         {/* Avaliação — só produtor, só após conclusão */}
         {isProdutor && service.status === 'CONCLUIDO' && !service.avaliacao && matchAceito && (
           <div className="bg-yellow-50 rounded-2xl p-5 shadow-sm border border-yellow-200">
