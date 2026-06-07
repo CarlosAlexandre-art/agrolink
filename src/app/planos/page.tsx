@@ -355,18 +355,59 @@ export default function PlanosPage() {
         </div>
 
         {planoAtual && planoAtual !== 'free' && planoAtual !== 'admin' && (
-          <div className="bg-white border border-gray-200 rounded-2xl p-5 flex items-center justify-between gap-4 max-w-2xl mx-auto">
-            <div>
-              <div className="font-semibold text-gray-900">Gerenciar assinatura</div>
-              <div className="text-sm text-gray-500">Altere método de pagamento, veja faturas ou cancele.</div>
+          <div className="space-y-3 max-w-2xl mx-auto">
+
+            {/* Upgrade para anual — só aparece se estiver no mensal */}
+            {periodo === 'mensal' && (
+              <div className="bg-green-50 border border-green-200 rounded-2xl p-5 flex items-center justify-between gap-4">
+                <div>
+                  <div className="font-semibold text-green-800">💰 Economize com o plano anual</div>
+                  <div className="text-sm text-green-700 mt-0.5">
+                    Troque para anual e ganhe 2 meses grátis. Sem burocracia.
+                  </div>
+                </div>
+                <button
+                  onClick={() => setPeriodo('anual')}
+                  className="flex-shrink-0 px-4 py-2.5 bg-green-700 text-white text-sm font-semibold rounded-xl hover:bg-green-800 transition"
+                >
+                  Ver plano anual →
+                </button>
+              </div>
+            )}
+
+            {/* Gerenciar / Cancelar */}
+            <div className="bg-white border border-gray-200 rounded-2xl p-5">
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div>
+                  <div className="font-semibold text-gray-900">Gerenciar assinatura</div>
+                  <div className="text-sm text-gray-500 mt-0.5">
+                    Altere forma de pagamento, veja faturas ou cancele a qualquer momento — sem multa.
+                  </div>
+                </div>
+                <button
+                  onClick={handlePortal}
+                  disabled={loadingPortal}
+                  className="flex-shrink-0 px-4 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-xl hover:bg-gray-800 transition disabled:opacity-50"
+                >
+                  {loadingPortal ? 'Abrindo...' : 'Abrir portal →'}
+                </button>
+              </div>
+              <div className="mt-4 pt-4 border-t border-gray-100 space-y-3">
+                <div className="text-sm text-gray-500">
+                  ❓ <strong>Quer cancelar?</strong> Clique em "Abrir portal" → "Cancelar assinatura". Você mantém acesso até o fim do período pago, sem cobrança adicional.
+                </div>
+                <div className="text-sm text-gray-500">
+                  🔄 <strong>Quer mudar do anual para mensal?</strong> No portal, cancele a renovação automática. Ao fim dos 12 meses, você passa automaticamente para o plano mensal — sem perder acesso.
+                </div>
+                <button
+                  onClick={handlePortal}
+                  disabled={loadingPortal}
+                  className="text-sm text-red-500 hover:text-red-700 font-medium hover:underline transition"
+                >
+                  Cancelar ou alterar assinatura →
+                </button>
+              </div>
             </div>
-            <button
-              onClick={handlePortal}
-              disabled={loadingPortal}
-              className="flex-shrink-0 px-4 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-xl hover:bg-gray-800 transition disabled:opacity-50"
-            >
-              {loadingPortal ? 'Abrindo...' : 'Abrir portal →'}
-            </button>
           </div>
         )}
 
