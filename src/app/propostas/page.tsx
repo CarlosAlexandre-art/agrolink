@@ -139,11 +139,11 @@ export default function PropostasPage() {
                       disabled={analisando === serviceId}
                       className="w-full py-2 text-sm font-semibold text-green-700 border border-green-300 bg-white rounded-xl hover:bg-green-50 transition disabled:opacity-50"
                     >
-                      {analisando === serviceId ? '🤖 Analisando propostas...' : '🤖 Analisar com IA — qual é a melhor?'}
+                      {analisando === serviceId ? '🤖 Analisando propostas...' : '🤖 Pedir sugestão da IA — qual pode ser a melhor?'}
                     </button>
                   ) : (
                     <div className="text-sm">
-                      <div className="font-semibold text-green-700 mb-1">🤖 Recomendação da IA</div>
+                      <div className="font-semibold text-green-700 mb-1">🤖 Sugestão da IA — baseada nos dados</div>
                       <p className="text-gray-700">{analiseIA[serviceId]!.resumo}</p>
                       <p className="text-gray-500 text-xs mt-1 italic">💡 {analiseIA[serviceId]!.dica}</p>
                     </div>

@@ -15,11 +15,12 @@ export async function POST(req: NextRequest) {
     }
 
     const system = `Você é um consultor especialista em contratação de serviços agrícolas no Brasil.
-Analise as propostas e recomende a melhor opção considerando: preço, avaliação do prestador, badges, mensagem da proposta.
+Analise as propostas e sugira qual pode ser a melhor opção com base nos dados disponíveis: preço, avaliação, badges e mensagem.
+A decisão final é sempre do produtor — sua função é orientar, não decidir.
 Responda com JSON: { "melhorId": string, "resumo": string, "dica": string }
-- melhorId: ID da proposta recomendada
-- resumo: 1 frase explicando por que é a melhor escolha
-- dica: 1 dica prática para o produtor ao contratar este serviço`
+- melhorId: ID da proposta sugerida
+- resumo: 1 frase explicando por que esta proposta pode ser interessante (use "sugiro", "pode ser uma boa opção", "com base nos dados")
+- dica: 1 dica prática para o produtor avaliar antes de contratar`
 
     const listagem = propostas.map((p: any, i: number) =>
       `[${i + 1}] ID: ${p.id} | Prestador: ${p.nomePrestador} | Valor: R$ ${p.valor} | Avaliação: ${p.avaliacao > 0 ? p.avaliacao.toFixed(1) + '★ (' + p.totalAvaliacoes + ' avals)' : 'Novo'} | Badges: ${p.badges?.join(', ') || 'nenhum'} | Mensagem: "${p.mensagem || 'sem mensagem'}"`

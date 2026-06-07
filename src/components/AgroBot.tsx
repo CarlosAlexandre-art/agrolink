@@ -37,7 +37,7 @@ export default function AgroBot() {
       if (messages.length === 0) {
         setMessages([{
           role: 'assistant',
-          content: 'Olá! Sou o AgroBot 🌿 Posso te ajudar com dúvidas sobre a plataforma, sugestões de preços e muito mais. Como posso te ajudar?'
+          content: 'Olá! Sou o AgroBot 🌿 Estou aqui para sugerir e orientar — não decido por você, mas ajudo a tomar a melhor decisão com base nos dados. O que precisa?'
         }])
       }
       setTimeout(() => inputRef.current?.focus(), 100)
