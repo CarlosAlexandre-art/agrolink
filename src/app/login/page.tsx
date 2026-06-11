@@ -5,8 +5,6 @@ import Link from 'next/link'
 import AgroCoreLogo from '@/components/AgroCoreLogo'
 import { createClient } from '@/lib/supabase/client'
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
@@ -33,7 +31,7 @@ export default function LoginPage() {
     const supabase = createClient()
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${APP_URL}/api/auth/callback?next=/dashboard` },
+      options: { redirectTo: `${window.location.origin}/api/auth/callback?next=/dashboard` },
     })
   }
 

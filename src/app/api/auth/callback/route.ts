@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createServerClient } from '@supabase/ssr'
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { prisma } from '@/lib/prisma'
 
@@ -8,9 +8,16 @@ export async function GET(request: Request) {
   const code = searchParams.get('code')
   const token_hash = searchParams.get('token_hash')
   const type = searchParams.get('type')
-  const next = searchParams.get('next') ?? '/dashboard'
+  const nextParam = searchParams.get('next') ?? '/dashboard'
+  // Apenas caminhos relativos, para evitar open redirect
+  const next = nextParam.startsWith('/') ? nextParam : '/dashboard'
 
   const cookieStore = await cookies()
+
+  // Os cookies de sessão chegam antes de sabermos o destino do redirect,
+  // então acumulamos aqui e copiamos para a resposta final
+  const cookiesDaSessao: { name: string; value: string; options: CookieOptions }[] = []
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
@@ -18,6 +25,7 @@ export async function GET(request: Request) {
       cookies: {
         getAll() { return cookieStore.getAll() },
         setAll(cookiesToSet) {
+          cookiesToSet.forEach(c => cookiesDaSessao.push(c))
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
@@ -28,11 +36,19 @@ export async function GET(request: Request) {
     }
   )
 
+  function redirect(path: string) {
+    const response = NextResponse.redirect(`${origin}${path}`)
+    cookiesDaSessao.forEach(({ name, value, options }) =>
+      response.cookies.set(name, value, options)
+    )
+    return response
+  }
+
   // Recovery (reset de senha) — vem com token_hash + type=recovery
   if (token_hash && type === 'recovery') {
     const { error } = await supabase.auth.verifyOtp({ token_hash, type: 'recovery' })
     if (!error) {
-      return NextResponse.redirect(`${origin}/nova-senha`)
+      return redirect('/nova-senha')
     }
   }
 
@@ -43,8 +59,20 @@ export async function GET(request: Request) {
       const u = data.user
 
       // Criar usuário no banco se ainda não existe (primeiro login OAuth)
-      const exists = await prisma.user.findUnique({ where: { supabaseId: u.id } })
-      if (!exists) {
+      let dbUser = await prisma.user.findUnique({ where: { supabaseId: u.id } })
+
+      if (!dbUser && u.email) {
+        // Conta criada antes por email/senha: vincula ao login OAuth
+        const porEmail = await prisma.user.findUnique({ where: { email: u.email } })
+        if (porEmail) {
+          dbUser = await prisma.user.update({
+            where: { id: porEmail.id },
+            data: { supabaseId: u.id },
+          })
+        }
+      }
+
+      if (!dbUser) {
         const nome = u.user_metadata?.full_name || u.user_metadata?.name || u.email?.split('@')[0] || 'Usuário'
         const avatarUrl = u.user_metadata?.avatar_url || u.user_metadata?.picture || null
 
@@ -62,12 +90,12 @@ export async function GET(request: Request) {
         await prisma.produtor.create({ data: { userId: novoUser.id } })
 
         // Redirecionar para completar perfil
-        return NextResponse.redirect(`${origin}/perfil/completar`)
+        return redirect('/perfil/completar')
       }
 
-      return NextResponse.redirect(`${origin}${next}`)
+      return redirect(next)
     }
   }
 
-  return NextResponse.redirect(`${origin}/login?error=auth`)
+  return redirect('/login?error=auth')
 }

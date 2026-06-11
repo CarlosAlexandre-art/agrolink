@@ -6,8 +6,6 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import AgroCoreLogo from '@/components/AgroCoreLogo'
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-
 function AgroSEntrarContent() {
   const params = useSearchParams()
   const router = useRouter()
@@ -29,7 +27,7 @@ function AgroSEntrarContent() {
     const next = serviceId ? `/rastrear/${serviceId}` : '/dashboard'
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${APP_URL}/api/auth/callback?next=${next}` },
+      options: { redirectTo: `${window.location.origin}/api/auth/callback?next=${next}` },
     })
   }
 

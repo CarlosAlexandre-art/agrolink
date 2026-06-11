@@ -7,8 +7,6 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { SERVICOS } from '@/lib/constants'
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-
 function CadastroForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -32,7 +30,7 @@ function CadastroForm() {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${APP_URL}/api/auth/callback?next=/perfil/completar`,
+        redirectTo: `${window.location.origin}/api/auth/callback?next=/perfil/completar`,
       },
     })
   }

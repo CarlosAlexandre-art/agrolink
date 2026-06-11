@@ -20,6 +20,13 @@ export default function Home() {
 
   // Se já está logado, vai direto pro dashboard
   useEffect(() => {
+    // Fallback: se o Supabase redirecionou o OAuth para a home (redirect URL
+    // fora da allowlist), encaminha o code para o callback completar o login
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('code')) {
+      window.location.replace(`/api/auth/callback?${params.toString()}`)
+      return
+    }
     const supabase = createClient()
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) router.replace('/dashboard')

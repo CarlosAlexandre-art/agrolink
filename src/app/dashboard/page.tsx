@@ -35,7 +35,8 @@ export default async function DashboardPage() {
     }
   })
 
-  if (!dbUser) redirect('/login')
+  // Sessão válida mas sem cadastro no banco (ex.: OAuth interrompido) — completar perfil
+  if (!dbUser) redirect('/perfil/completar')
 
   if (dbUser.tipo === 'PRODUTOR' && dbUser.produtor) {
     return <DashboardProdutor user={dbUser} />
