@@ -1,18 +1,22 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import Link from 'next/link'
 import AgroCoreLogo from '@/components/AgroCoreLogo'
+import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+function LoginForm() {
+  const searchParams = useSearchParams()
+  const motivoAuth = searchParams.get('error') === 'auth'
+    ? `Não foi possível completar o login.${searchParams.get('motivo') ? ` Detalhe: ${searchParams.get('motivo')}` : ''}`
+    : ''
 
-export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [loading, setLoading] = useState(false)
   const [loadingSocial, setLoadingSocial] = useState<'google' | null>(null)
-  const [erro, setErro] = useState('')
+  const [erro, setErro] = useState(motivoAuth)
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
@@ -33,7 +37,7 @@ export default function LoginPage() {
     const supabase = createClient()
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${APP_URL}/api/auth/callback?next=/dashboard` },
+      options: { redirectTo: `${window.location.origin}/api/auth/callback?next=/dashboard` },
     })
   }
 
@@ -122,5 +126,13 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-green-50 flex items-center justify-center"><div className="text-green-700 font-semibold">Carregando...</div></div>}>
+      <LoginForm />
+    </Suspense>
   )
 }

@@ -1,14 +1,22 @@
 import webpush from 'web-push'
 import { prisma } from '@/lib/prisma'
 
-webpush.setVapidDetails(
-  'mailto:suporte@agrocore.com.br',
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
-)
+// Configurado sob demanda — setVapidDetails lança erro sem as chaves,
+// o que quebraria o build na coleta de page data
+let vapidConfigurado = false
+function configurarVapid() {
+  if (vapidConfigurado) return
+  webpush.setVapidDetails(
+    'mailto:suporte@agrocore.com.br',
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+    process.env.VAPID_PRIVATE_KEY!
+  )
+  vapidConfigurado = true
+}
 
 export async function notificarUsuario(userId: string, titulo: string, corpo: string, url: string) {
   try {
+    configurarVapid()
     const subscriptions = await prisma.pushSubscription.findMany({
       where: { userId }
     })

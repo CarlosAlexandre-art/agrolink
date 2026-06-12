@@ -21,10 +21,30 @@ export async function POST(req: Request) {
 
     const { tipo, telefone } = parsed.data
 
-    const dbUser = await prisma.user.findUnique({
+    let dbUser = await prisma.user.findUnique({
       where: { supabaseId: user.id },
       include: { produtor: true, prestador: true }
     })
+
+    // Cadastro OAuth interrompido antes de criar o registro — cria/vincula agora
+    if (!dbUser && user.email) {
+      const porEmail = await prisma.user.findUnique({
+        where: { email: user.email },
+        include: { produtor: true, prestador: true }
+      })
+      if (porEmail) {
+        await prisma.user.update({ where: { id: porEmail.id }, data: { supabaseId: user.id } })
+        dbUser = porEmail
+      } else {
+        const nome = user.user_metadata?.full_name || user.user_metadata?.name || user.email.split('@')[0] || 'Usuário'
+        const avatarUrl = user.user_metadata?.avatar_url || user.user_metadata?.picture || null
+        const novo = await prisma.user.create({
+          data: { supabaseId: user.id, nome, email: user.email, tipo, avatarUrl }
+        })
+        dbUser = { ...novo, produtor: null, prestador: null }
+      }
+    }
+
     if (!dbUser) return NextResponse.json({ error: 'Usuário não encontrado' }, { status: 404 })
 
     await prisma.user.update({
