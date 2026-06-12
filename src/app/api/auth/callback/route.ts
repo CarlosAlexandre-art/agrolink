@@ -53,8 +53,13 @@ export async function GET(request: Request) {
   }
 
   // Login com magic link, OAuth (Google/LinkedIn) ou confirmação de email
+  let motivo = searchParams.get('error_description') || searchParams.get('error') || ''
   if (code) {
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
+    if (error) {
+      console.error('[auth/callback] exchangeCodeForSession falhou:', error.code, error.message)
+      motivo = error.message
+    }
     if (!error && data.user) {
       const u = data.user
 
@@ -97,5 +102,9 @@ export async function GET(request: Request) {
     }
   }
 
+  if (motivo) {
+    console.error('[auth/callback] falha de autenticação:', motivo)
+    return redirect(`/login?error=auth&motivo=${encodeURIComponent(motivo)}`)
+  }
   return redirect('/login?error=auth')
 }

@@ -23,7 +23,7 @@ export default function Home() {
     // Fallback: se o Supabase redirecionou o OAuth para a home (redirect URL
     // fora da allowlist), encaminha o code para o callback completar o login
     const params = new URLSearchParams(window.location.search)
-    if (params.get('code')) {
+    if (params.get('code') || params.get('error')) {
       window.location.replace(`/api/auth/callback?${params.toString()}`)
       return
     }
