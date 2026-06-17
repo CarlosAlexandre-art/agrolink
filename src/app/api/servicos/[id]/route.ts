@@ -6,6 +6,7 @@ import { enviarWhatsApp, wpp } from '@/lib/whatsapp'
 import { SERVICOS } from '@/lib/constants'
 import { notificarAgroOS } from '@/lib/agros-webhook'
 import { notificarAgroRate } from '@/lib/agrorate-webhook'
+import { auditLog } from '@/lib/audit-log'
 
 const STATUS_FLOW: Record<string, string> = {
   MATCH_ENCONTRADO: 'EM_ROTA',
@@ -158,6 +159,13 @@ export async function PATCH(_req: Request, { params }: { params: Promise<{ id: s
     if (novoStatus === 'CONCLUIDO' && service.produtor.user.supabaseId) {
       notificarAgroRate(service.produtor.user.supabaseId, 'servico_concluido').catch(() => {})
     }
+
+    await auditLog({
+      type: 'SERVICE_STATUS_CHANGED',
+      severity: novoStatus === 'CONCLUIDO' ? 'HIGH' : 'LOW',
+      userId: dbUser.id,
+      details: { serviceId: id, statusAnterior: service.status, novoStatus },
+    })
 
     return NextResponse.json(updated)
   } catch (error) {

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { Resend } from 'resend'
+import { auditLog } from '@/lib/audit-log'
 import { z } from 'zod'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -58,6 +59,13 @@ export async function POST(req: Request) {
         `,
       })
     }
+
+    await auditLog({
+      type: 'DENUNCIA_SUBMITTED',
+      severity: 'HIGH',
+      userId: dbUser?.id,
+      details: { motivo, emailDenunciado: emailDenunciado || null },
+    })
 
     return NextResponse.json({ ok: true })
   } catch (error) {

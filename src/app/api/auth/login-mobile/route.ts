@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { prisma } from '@/lib/prisma'
 import { rateLimit, getClientIp } from '@/lib/rate-limit'
+import { auditLog } from '@/lib/audit-log'
 import { z } from 'zod'
 
 const loginSchema = z.object({
@@ -15,6 +16,7 @@ export async function POST(request: NextRequest) {
     const ip = getClientIp(request)
     const { allowed } = rateLimit(`login-mobile:${ip}`, 10, 15 * 60_000)
     if (!allowed) {
+      await auditLog({ type: 'RATE_LIMIT_HIT', severity: 'MEDIUM', ip, details: { rota: 'login-mobile' } })
       return NextResponse.json({ error: 'Muitas tentativas. Aguarde 15 minutos.' }, { status: 429 })
     }
 
@@ -33,6 +35,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error || !data.session) {
+      await auditLog({ type: 'LOGIN_FAILED', severity: 'MEDIUM', ip, details: { email: parsed.data.email } })
       return NextResponse.json({ error: 'E-mail ou senha incorretos' }, { status: 401 })
     }
 
