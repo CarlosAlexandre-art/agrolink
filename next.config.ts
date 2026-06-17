@@ -5,6 +5,7 @@ const securityHeaders = [
   { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains' },
   { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(self)' },
   {
     key: 'Content-Security-Policy',
@@ -22,6 +23,8 @@ const securityHeaders = [
 ]
 
 const nextConfig: NextConfig = {
+  // Source Maps desativados em produção — evita engenharia reversa da arquitetura
+  productionBrowserSourceMaps: false,
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
@@ -34,6 +37,15 @@ const nextConfig: NextConfig = {
       {
         source: '/(.*)',
         headers: securityHeaders,
+      },
+      {
+        // CORS para API — permite apenas origem própria + app mobile (sem origin = Flutter/mobile)
+        source: '/api/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: 'https://agrocore.live' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET, POST, PUT, PATCH, DELETE, OPTIONS' },
+          { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization' },
+        ],
       },
       {
         source: '/sw.js',
