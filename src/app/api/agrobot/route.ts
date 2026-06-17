@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { chatGroq } from '@/lib/groq'
+import { rateLimit } from '@/lib/rate-limit'
 
 const STATUS_LABEL: Record<string, string> = {
   AGUARDANDO: 'aguardando prestadores',
@@ -97,14 +98,20 @@ REGRAS:
 
 export async function POST(req: NextRequest) {
   try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
+
+    const { allowed } = rateLimit(`agrobot:${user.id}`, 30, 3600_000)
+    if (!allowed) return NextResponse.json({ error: 'Limite de mensagens atingido. Tente em 1 hora.' }, { status: 429 })
+
     const { messages } = await req.json()
     if (!Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json({ error: 'Mensagens inválidas' }, { status: 400 })
     }
 
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
+    const dbUser = await prisma.user.findUnique({
+      where: { supabaseId: user.id },
 
     const dbUser = await prisma.user.findUnique({
       where: { supabaseId: user.id },

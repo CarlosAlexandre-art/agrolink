@@ -1,15 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { prisma } from '@/lib/prisma'
+import { rateLimit, getClientIp } from '@/lib/rate-limit'
+import { z } from 'zod'
+
+const loginSchema = z.object({
+  email: z.string().email('E-mail inválido').max(254),
+  password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres').max(128),
+})
 
 // Rota exclusiva para o app mobile Flutter — retorna JWT em vez de cookies
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json()
-
-    if (!email || !password) {
-      return NextResponse.json({ error: 'E-mail e senha são obrigatórios' }, { status: 400 })
+    const ip = getClientIp(request)
+    const { allowed } = rateLimit(`login-mobile:${ip}`, 10, 15 * 60_000)
+    if (!allowed) {
+      return NextResponse.json({ error: 'Muitas tentativas. Aguarde 15 minutos.' }, { status: 429 })
     }
+
+    const body = await request.json()
+    const parsed = loginSchema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 })
+    }
+    const { email, password } = parsed.data
 
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,

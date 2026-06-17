@@ -2,8 +2,17 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { Resend } from 'resend'
+import { z } from 'zod'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
+
+const MOTIVOS_VALIDOS = ['FRAUDE', 'COMPORTAMENTO_INADEQUADO', 'SERVICO_NAO_PRESTADO', 'DADO_FALSO', 'OUTRO'] as const
+
+const denunciaSchema = z.object({
+  motivo: z.enum(MOTIVOS_VALIDOS, { errorMap: () => ({ message: 'Motivo inválido' }) }),
+  descricao: z.string().min(20, 'Descrição muito curta').max(1000, 'Descrição muito longa'),
+  emailDenunciado: z.string().email('E-mail inválido').max(254).optional().or(z.literal('')),
+})
 
 export async function POST(req: Request) {
   try {
@@ -11,11 +20,12 @@ export async function POST(req: Request) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
 
-    const { motivo, descricao, emailDenunciado } = await req.json()
-
-    if (!motivo || !descricao) {
-      return NextResponse.json({ error: 'Preencha todos os campos obrigatórios' }, { status: 400 })
+    const body = await req.json()
+    const parsed = denunciaSchema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 })
     }
+    const { motivo, descricao, emailDenunciado } = parsed.data
 
     const dbUser = await prisma.user.findUnique({ where: { supabaseId: user.id } })
 
