@@ -4,6 +4,28 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useTheme } from '@/components/ThemeProvider'
 
+async function solicitarExclusaoDados() {
+  const res = await fetch('/api/lgpd/solicitar-exclusao', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) })
+  return res.ok
+}
+
+function ExclusaoBtn() {
+  const [status, setStatus] = useState<'idle' | 'loading' | 'ok' | 'err'>('idle')
+  async function handleClick() {
+    if (!confirm('Confirmar solicitação de exclusão de dados? Você receberá uma resposta em até 30 dias.')) return
+    setStatus('loading')
+    const ok = await solicitarExclusaoDados()
+    setStatus(ok ? 'ok' : 'err')
+  }
+  if (status === 'ok') return <span className="text-xs text-green-700 font-medium">✓ Solicitação enviada</span>
+  if (status === 'err') return <span className="text-xs text-red-600">Erro — tente novamente</span>
+  return (
+    <button onClick={handleClick} disabled={status === 'loading'} className="text-xs text-red-600 font-semibold hover:underline disabled:opacity-50">
+      {status === 'loading' ? 'Enviando...' : 'Solicitar →'}
+    </button>
+  )
+}
+
 const TEMAS = [
   { value: 'auto',   icon: '🌗', label: 'Automático', desc: 'Segue o sistema' },
   { value: 'claro',  icon: '☀️', label: 'Claro',      desc: 'Fundo branco' },
@@ -176,6 +198,9 @@ export default function ConfiguracoesPage() {
             <Link href="/privacidade" className="text-xs text-green-700 font-semibold hover:underline">
               Ver →
             </Link>
+          </Item>
+          <Item icon="🗑️" label="Solicitar exclusão de dados" desc="Seu pedido será processado em até 30 dias (LGPD Art. 18)">
+            <ExclusaoBtn />
           </Item>
           <Item icon="💳" label="Plano e assinatura" desc="Gerencie ou cancele sua assinatura">
             <Link href="/planos" className="text-xs text-green-700 font-semibold hover:underline">
