@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
 
     const dbUser = await prisma.user.findUnique({
       where: { supabaseId: data.user.id },
-      select: { id: true, nome: true, email: true, tipo: true, avatar: true }
+      select: { id: true, nome: true, email: true, tipo: true, avatarUrl: true }
     })
 
     return NextResponse.json({
