@@ -178,6 +178,9 @@ export default function SplashScreen() {
   })
 
   useEffect(() => {
+    // Marca como visto imediatamente para que recarregamentos durante a animação não bloqueiem
+    try { localStorage.setItem('agc_splash_shown', '1') } catch {}
+
     /* ── star field ── */
     const canvas = canvasRef.current
     if (!canvas) return
@@ -245,6 +248,11 @@ export default function SplashScreen() {
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', resize)
       T.forEach(clearTimeout)
+      // Remove o bloqueio de visibilidade mesmo se a animação foi interrompida
+      try {
+        document.getElementById('agc-hide')?.remove()
+        document.documentElement.style.background = ''
+      } catch {}
     }
   }, [variant])
 
