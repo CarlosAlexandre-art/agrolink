@@ -72,8 +72,21 @@ function CadastroForm() {
         return
       }
 
-      setEmailEnviado(true)
-      setLoading(false)
+      if (body.confirmacao === 'email') {
+        // Email de confirmação enviado — usuário deve clicar no link
+        setEmailEnviado(true)
+        setLoading(false)
+        return
+      }
+
+      // Fallback auto-confirm: faz login direto
+      const supabase = createClient()
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password: senha })
+      if (signInError) {
+        window.location.href = '/login'
+        return
+      }
+      window.location.href = `/bem-vindo?tipo=${tipo}`
     } catch {
       setErro('Erro de conexão. Verifique sua internet e tente novamente.')
       setLoading(false)
