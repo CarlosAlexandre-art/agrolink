@@ -24,7 +24,7 @@ export async function POST(req: Request) {
     const body = await req.json()
     const parsed = denunciaSchema.safeParse(body)
     if (!parsed.success) {
-      return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 })
+      return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 })
     }
     const { motivo, descricao, emailDenunciado } = parsed.data
 
