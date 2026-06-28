@@ -112,9 +112,6 @@ export async function POST(req: NextRequest) {
 
     const dbUser = await prisma.user.findUnique({
       where: { supabaseId: user.id },
-
-    const dbUser = await prisma.user.findUnique({
-      where: { supabaseId: user.id },
       include: {
         produtor: {
           include: {
