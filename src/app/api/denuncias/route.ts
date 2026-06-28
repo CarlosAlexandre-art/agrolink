@@ -10,7 +10,7 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 const MOTIVOS_VALIDOS = ['FRAUDE', 'COMPORTAMENTO_INADEQUADO', 'SERVICO_NAO_PRESTADO', 'DADO_FALSO', 'OUTRO'] as const
 
 const denunciaSchema = z.object({
-  motivo: z.enum(MOTIVOS_VALIDOS, { errorMap: () => ({ message: 'Motivo inválido' }) }),
+  motivo: z.enum(MOTIVOS_VALIDOS, { error: 'Motivo inválido' }),
   descricao: z.string().min(20, 'Descrição muito curta').max(1000, 'Descrição muito longa'),
   emailDenunciado: z.string().email('E-mail inválido').max(254).optional().or(z.literal('')),
 })
