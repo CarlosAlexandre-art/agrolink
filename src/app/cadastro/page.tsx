@@ -25,25 +25,6 @@ function CadastroForm() {
   const [loading, setLoading] = useState(false)
   const [loadingGoogle, setLoadingGoogle] = useState(false)
   const [erro, setErro] = useState('')
-  const [emailEnviado, setEmailEnviado] = useState(false)
-  const [reenvioLoading, setReenvioLoading] = useState(false)
-  const [reenvioOk, setReenvioOk] = useState(false)
-
-  async function reenviarEmail() {
-    setReenvioLoading(true)
-    setReenvioOk(false)
-    try {
-      await fetch('/api/auth/reenviar-confirmacao', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      })
-      setReenvioOk(true)
-    } finally {
-      setReenvioLoading(false)
-    }
-  }
-
   async function cadastrarGoogle() {
     setLoadingGoogle(true)
     const supabase = createClient()
@@ -89,8 +70,17 @@ function CadastroForm() {
         return
       }
 
-      setEmailEnviado(true)
-      setLoading(false)
+      // Conta criada — faz login automático
+      const supabase = createClient()
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password: senha })
+
+      if (signInError) {
+        // Login falhou mas conta foi criada — manda pro login
+        window.location.href = '/login'
+        return
+      }
+
+      window.location.href = `/bem-vindo?tipo=${tipo}`
     } catch {
       setErro('Erro de conexão. Verifique sua internet e tente novamente.')
       setLoading(false)
@@ -148,34 +138,8 @@ function CadastroForm() {
           </div>
         )}
 
-        {/* Confirmação de email enviada */}
-        {emailEnviado && (
-          <div className="text-center space-y-4 py-4">
-            <div className="text-6xl">📧</div>
-            <h2 className="text-xl font-bold text-gray-800">Confirme seu e-mail</h2>
-            <p className="text-gray-600">
-              Enviamos um link de confirmação para{' '}
-              <strong className="text-green-700">{email}</strong>.
-            </p>
-            <p className="text-sm text-gray-500">
-              Clique no link do e-mail para ativar sua conta. Verifique também a caixa de spam.
-            </p>
-            {reenvioOk ? (
-              <p className="text-sm text-green-700 font-medium">✅ E-mail reenviado! Verifique sua caixa de entrada.</p>
-            ) : (
-              <button
-                onClick={reenviarEmail}
-                disabled={reenvioLoading}
-                className="text-sm text-green-700 underline underline-offset-2 disabled:opacity-50"
-              >
-                {reenvioLoading ? 'Reenviando...' : 'Não recebi o e-mail → Reenviar'}
-              </button>
-            )}
-          </div>
-        )}
-
         {/* Step 2 — dados */}
-        {!emailEnviado && step === 2 && (
+        {step === 2 && (
           <form onSubmit={handleCadastro} className="space-y-4">
             <div className="flex items-center gap-2 mb-4 p-3 bg-green-50 rounded-lg">
               <span className="text-xl">{tipo === 'PRODUTOR' ? '🌾' : '🔧'}</span>
