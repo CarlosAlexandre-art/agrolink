@@ -5,8 +5,6 @@ import { Resend } from 'resend'
 import { auditLog } from '@/lib/audit-log'
 import { z } from 'zod'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 const MOTIVOS_VALIDOS = ['FRAUDE', 'COMPORTAMENTO_INADEQUADO', 'SERVICO_NAO_PRESTADO', 'DADO_FALSO', 'OUTRO'] as const
 
 const denunciaSchema = z.object({
@@ -17,6 +15,7 @@ const denunciaSchema = z.object({
 
 export async function POST(req: Request) {
   try {
+    const resend = new Resend(process.env.RESEND_API_KEY)
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
