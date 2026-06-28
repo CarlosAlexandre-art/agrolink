@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { createClient } from '@supabase/supabase-js'
 import { rateLimit, getClientIp } from '@/lib/rate-limit'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { emails } from '@/lib/email'
@@ -50,11 +51,30 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Erro ao criar conta. Tente novamente.' }, { status: 500 })
   }
 
+  // Tenta enviar via Resend com template customizado
+  let emailEnviado = false
   try {
     await emails.confirmarCadastro(email, nome, tipo, data.properties.action_link)
+    emailEnviado = true
   } catch (emailErr) {
-    console.error('[cadastrar] email send error:', emailErr)
-    // Não falha o cadastro se o email falhar — link gerado com sucesso
+    console.error('[cadastrar] Resend falhou, usando fallback Supabase:', emailErr)
+  }
+
+  // Fallback: Supabase envia o email de confirmação padrão
+  if (!emailEnviado) {
+    try {
+      const anonClient = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!
+      )
+      await anonClient.auth.resend({
+        type: 'signup',
+        email,
+        options: { emailRedirectTo: `${APP_URL}/api/auth/callback` },
+      })
+    } catch (fallbackErr) {
+      console.error('[cadastrar] fallback Supabase também falhou:', fallbackErr)
+    }
   }
 
   return NextResponse.json({ ok: true })

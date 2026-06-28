@@ -26,6 +26,23 @@ function CadastroForm() {
   const [loadingGoogle, setLoadingGoogle] = useState(false)
   const [erro, setErro] = useState('')
   const [emailEnviado, setEmailEnviado] = useState(false)
+  const [reenvioLoading, setReenvioLoading] = useState(false)
+  const [reenvioOk, setReenvioOk] = useState(false)
+
+  async function reenviarEmail() {
+    setReenvioLoading(true)
+    setReenvioOk(false)
+    try {
+      await fetch('/api/auth/reenviar-confirmacao', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      setReenvioOk(true)
+    } finally {
+      setReenvioLoading(false)
+    }
+  }
 
   async function cadastrarGoogle() {
     setLoadingGoogle(true)
@@ -143,6 +160,17 @@ function CadastroForm() {
             <p className="text-sm text-gray-500">
               Clique no link do e-mail para ativar sua conta. Verifique também a caixa de spam.
             </p>
+            {reenvioOk ? (
+              <p className="text-sm text-green-700 font-medium">✅ E-mail reenviado! Verifique sua caixa de entrada.</p>
+            ) : (
+              <button
+                onClick={reenviarEmail}
+                disabled={reenvioLoading}
+                className="text-sm text-green-700 underline underline-offset-2 disabled:opacity-50"
+              >
+                {reenvioLoading ? 'Reenviando...' : 'Não recebi o e-mail → Reenviar'}
+              </button>
+            )}
           </div>
         )}
 
