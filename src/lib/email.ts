@@ -4,33 +4,176 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://agrocore.live'
 const FROM = 'AgroCore <noreply@parceirosdeproposito.com>'
 
+const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" width="40" height="40" style="display:block">
+  <circle cx="24" cy="24" r="21" stroke="rgba(255,255,255,0.7)" stroke-width="2.5"/>
+  <path d="M10 32 C10 16 18 8 24 8 C21 14 17 21 17 28 C17 32 14 36 10 36 Z" fill="white"/>
+  <rect x="24" y="27" width="4" height="9" rx="1.5" fill="white"/>
+  <rect x="30" y="22" width="4" height="14" rx="1.5" fill="white"/>
+  <rect x="36" y="16" width="4" height="20" rx="1.5" fill="rgba(255,255,255,0.85)"/>
+  <path d="M38 14 L38 10 M36 12 L38 9 L40 12" stroke="rgba(255,255,255,0.85)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`
+
 function baseTemplate(conteudo: string) {
-  return `
-    <!DOCTYPE html>
-    <html lang="pt-BR">
-    <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-    <body style="margin:0;padding:0;background:#f3f4f6;font-family:sans-serif">
-      <div style="max-width:560px;margin:32px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08)">
-        <div style="background:#104e27;padding:24px 32px;text-align:center">
-          <div style="color:#fff;font-size:22px;font-weight:bold;letter-spacing:-0.5px">AgroCore</div>
-          <div style="color:rgba(255,255,255,0.5);font-size:11px;margin-top:4px;letter-spacing:2px;text-transform:uppercase">Soluções Sustentáveis do Campo</div>
-        </div>
-        <div style="padding:32px">
-          ${conteudo}
-        </div>
-        <div style="background:#f9fafb;padding:16px 32px;text-align:center;border-top:1px solid #e5e7eb">
-          <p style="color:#9ca3af;font-size:12px;margin:0">
-            Você está recebendo este email porque tem uma conta no AgroCore.<br>
-            <a href="${APP_URL}/perfil" style="color:#15803d">Gerenciar preferências</a>
-          </p>
-        </div>
-      </div>
-    </body>
-    </html>
-  `
+  return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+</head>
+<body style="margin:0;padding:0;background:#f0f4f0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f4f0;padding:32px 16px">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 4px 24px rgba(16,78,39,0.10)">
+
+        <!-- Header -->
+        <tr>
+          <td style="background:linear-gradient(135deg,#104e27 0%,#1a7a3f 60%,#679d3f 100%);padding:28px 40px;text-align:center">
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td align="center" style="padding-bottom:10px">${LOGO_SVG}</td>
+              </tr>
+              <tr>
+                <td align="center">
+                  <span style="color:#ffffff;font-size:24px;font-weight:700;letter-spacing:-0.5px">AgroCore</span>
+                </td>
+              </tr>
+              <tr>
+                <td align="center">
+                  <span style="color:rgba(255,255,255,0.55);font-size:10px;letter-spacing:2.5px;text-transform:uppercase">Soluções Sustentáveis do Campo</span>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Content -->
+        <tr>
+          <td style="padding:36px 40px">
+            ${conteudo}
+          </td>
+        </tr>
+
+        <!-- Divider -->
+        <tr>
+          <td style="padding:0 40px">
+            <div style="height:1px;background:linear-gradient(90deg,transparent,#d1fae5,transparent)"></div>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td style="background:#f8fdf9;padding:20px 40px;text-align:center;border-top:1px solid #ecfdf5">
+            <p style="color:#9ca3af;font-size:12px;margin:0 0 6px">
+              Você recebe este e-mail por ter uma conta no AgroCore.
+            </p>
+            <p style="margin:0">
+              <a href="${APP_URL}/perfil" style="color:#15803d;font-size:12px;text-decoration:none">Gerenciar preferências</a>
+              &nbsp;·&nbsp;
+              <a href="${APP_URL}" style="color:#15803d;font-size:12px;text-decoration:none">agrocore.live</a>
+            </p>
+          </td>
+        </tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`
 }
 
 export const emails = {
+
+  // Confirmação de cadastro
+  async confirmarCadastro(to: string, nome: string, tipo: 'PRODUTOR' | 'PRESTADOR', confirmLink: string) {
+    const isProd = tipo === 'PRODUTOR'
+    const primeiroNome = nome.split(' ')[0]
+    const tipoLabel = isProd ? 'Produtor Rural' : 'Prestador de Serviço'
+    const tipoIcon = isProd ? '🌾' : '🔧'
+    const tipoDescricao = isProd
+      ? 'contratar os melhores prestadores de serviço para sua propriedade'
+      : 'receber chamados de produtores rurais e expandir seus negócios'
+
+    const conteudo = `
+      <!-- Hero -->
+      <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px">
+        <tr>
+          <td align="center" style="padding-bottom:12px">
+            <div style="display:inline-block;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #bbf7d0;border-radius:20px;padding:18px 24px;text-align:center">
+              <div style="font-size:48px;line-height:1;margin-bottom:8px">${tipoIcon}</div>
+              <div style="color:#15803d;font-size:13px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase">${tipoLabel}</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td align="center">
+            <h1 style="color:#111827;font-size:22px;font-weight:700;margin:0 0 8px;line-height:1.3">
+              Olá, ${primeiroNome}! Quase lá 🎉
+            </h1>
+            <p style="color:#6b7280;font-size:15px;margin:0;line-height:1.5">
+              Confirme seu e-mail para começar a<br>${tipoDescricao}.
+            </p>
+          </td>
+        </tr>
+      </table>
+
+      <!-- CTA principal -->
+      <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px">
+        <tr>
+          <td align="center">
+            <a href="${confirmLink}"
+               style="display:inline-block;background:linear-gradient(135deg,#15803d,#679d3f);color:#ffffff;font-size:16px;font-weight:700;text-decoration:none;padding:16px 44px;border-radius:14px;letter-spacing:0.3px;box-shadow:0 4px 16px rgba(21,128,61,0.35)">
+              ✅ &nbsp;Confirmar meu e-mail
+            </a>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Info box -->
+      <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px">
+        <tr>
+          <td style="background:#f8fdf9;border:1px solid #d1fae5;border-radius:14px;padding:20px 24px">
+            <p style="color:#15803d;font-size:13px;font-weight:600;margin:0 0 12px">O que te espera no AgroCore:</p>
+            ${isProd ? `
+            <p style="color:#374151;font-size:13px;margin:4px 0;line-height:1.5">🚜 &nbsp;+18 tipos de serviço rural</p>
+            <p style="color:#374151;font-size:13px;margin:4px 0;line-height:1.5">🛡️ &nbsp;Prestadores verificados e avaliados</p>
+            <p style="color:#374151;font-size:13px;margin:4px 0;line-height:1.5">📄 &nbsp;Contratos digitais automáticos</p>
+            <p style="color:#374151;font-size:13px;margin:4px 0;line-height:1.5">💳 &nbsp;Pagamento seguro em custódia</p>
+            ` : `
+            <p style="color:#374151;font-size:13px;margin:4px 0;line-height:1.5">🔔 &nbsp;Receba chamados de produtores próximos</p>
+            <p style="color:#374151;font-size:13px;margin:4px 0;line-height:1.5">📄 &nbsp;Contratos digitais em cada serviço</p>
+            <p style="color:#374151;font-size:13px;margin:4px 0;line-height:1.5">💰 &nbsp;Pagamento garantido, sem inadimplência</p>
+            <p style="color:#374151;font-size:13px;margin:4px 0;line-height:1.5">⭐ &nbsp;Construa seu ORYON ID e cresça</p>
+            `}
+          </td>
+        </tr>
+      </table>
+
+      <!-- Fallback link -->
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td style="border-top:1px dashed #e5e7eb;padding-top:20px">
+            <p style="color:#9ca3af;font-size:12px;text-align:center;margin:0 0 8px">
+              Se o botão não funcionar, copie e cole este link no navegador:
+            </p>
+            <p style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:10px 14px;font-size:11px;color:#6b7280;word-break:break-all;text-align:center;margin:0 0 14px">
+              ${confirmLink}
+            </p>
+            <p style="color:#d1d5db;font-size:11px;text-align:center;margin:0">
+              ⏱️ &nbsp;Este link expira em 24 horas &nbsp;·&nbsp; Ignore se não foi você
+            </p>
+          </td>
+        </tr>
+      </table>
+    `
+
+    return resend.emails.send({
+      from: FROM,
+      to,
+      subject: `✅ Confirme seu e-mail — AgroCore`,
+      html: baseTemplate(conteudo),
+    })
+  },
 
   // Usuário inativo
   async inativo(to: string, nome: string, tipo: 'PRODUTOR' | 'PRESTADOR') {

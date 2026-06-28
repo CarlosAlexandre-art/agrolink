@@ -4,7 +4,6 @@ import { useState, Suspense } from 'react'
 import Link from 'next/link'
 import AgroCoreLogo from '@/components/AgroCoreLogo'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import { SERVICOS } from '@/lib/constants'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
@@ -50,57 +49,30 @@ function CadastroForm() {
     setErro('')
 
     try {
-      const supabase = createClient()
-
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password: senha,
-        options: {
-          data: {
-            nome,
-            telefone,
-            tipo,
-            nomeFazenda: tipo === 'PRODUTOR' ? nomeFazenda : undefined,
-            servicosOferecidos: tipo === 'PRESTADOR' ? servicosSelecionados : undefined,
-          }
-        }
-      })
-
-      if (error) {
-        setErro(error.message)
-        setLoading(false)
-        return
-      }
-
-      // Confirmação de email necessária — perfil será criado ao confirmar
-      if (!data.session) {
-        setEmailEnviado(true)
-        setLoading(false)
-        return
-      }
-
-      // Sessão disponível — criar perfil imediatamente
-      const res = await fetch('/api/usuarios', {
+      const res = await fetch('/api/auth/cadastrar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          supabaseId: data.user?.id,
           nome,
           email,
           telefone,
+          senha,
           tipo,
           nomeFazenda: tipo === 'PRODUTOR' ? nomeFazenda : undefined,
           servicosOferecidos: tipo === 'PRESTADOR' ? servicosSelecionados : undefined,
         })
       })
 
+      const body = await res.json()
+
       if (!res.ok) {
-        setErro('Erro ao criar perfil. Tente novamente.')
+        setErro(body.error || 'Erro ao criar conta. Tente novamente.')
         setLoading(false)
         return
       }
 
-      window.location.href = `/bem-vindo?tipo=${tipo}`
+      setEmailEnviado(true)
+      setLoading(false)
     } catch {
       setErro('Erro de conexão. Verifique sua internet e tente novamente.')
       setLoading(false)
