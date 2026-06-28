@@ -25,6 +25,7 @@ function CadastroForm() {
   const [loading, setLoading] = useState(false)
   const [loadingGoogle, setLoadingGoogle] = useState(false)
   const [erro, setErro] = useState('')
+  const [emailEnviado, setEmailEnviado] = useState(false)
 
   async function cadastrarGoogle() {
     setLoadingGoogle(true)
@@ -48,44 +49,62 @@ function CadastroForm() {
     setLoading(true)
     setErro('')
 
-    const supabase = createClient()
+    try {
+      const supabase = createClient()
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password: senha,
-      options: {
-        data: { nome, telefone, tipo }
-      }
-    })
-
-    if (error) {
-      setErro(error.message)
-      setLoading(false)
-      return
-    }
-
-    // Criar perfil via API
-    const res = await fetch('/api/usuarios', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        supabaseId: data.user?.id,
-        nome,
+      const { data, error } = await supabase.auth.signUp({
         email,
-        telefone,
-        tipo,
-        nomeFazenda: tipo === 'PRODUTOR' ? nomeFazenda : undefined,
-        servicosOferecidos: tipo === 'PRESTADOR' ? servicosSelecionados : undefined,
+        password: senha,
+        options: {
+          data: {
+            nome,
+            telefone,
+            tipo,
+            nomeFazenda: tipo === 'PRODUTOR' ? nomeFazenda : undefined,
+            servicosOferecidos: tipo === 'PRESTADOR' ? servicosSelecionados : undefined,
+          }
+        }
       })
-    })
 
-    if (!res.ok) {
-      setErro('Erro ao criar perfil. Tente novamente.')
+      if (error) {
+        setErro(error.message)
+        setLoading(false)
+        return
+      }
+
+      // Confirmação de email necessária — perfil será criado ao confirmar
+      if (!data.session) {
+        setEmailEnviado(true)
+        setLoading(false)
+        return
+      }
+
+      // Sessão disponível — criar perfil imediatamente
+      const res = await fetch('/api/usuarios', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          supabaseId: data.user?.id,
+          nome,
+          email,
+          telefone,
+          tipo,
+          nomeFazenda: tipo === 'PRODUTOR' ? nomeFazenda : undefined,
+          servicosOferecidos: tipo === 'PRESTADOR' ? servicosSelecionados : undefined,
+        })
+      })
+
+      if (!res.ok) {
+        setErro('Erro ao criar perfil. Tente novamente.')
+        setLoading(false)
+        return
+      }
+
+      window.location.href = `/bem-vindo?tipo=${tipo}`
+    } catch {
+      setErro('Erro de conexão. Verifique sua internet e tente novamente.')
       setLoading(false)
-      return
     }
-
-    window.location.href = `/bem-vindo?tipo=${tipo}`
   }
 
   return (
@@ -139,8 +158,23 @@ function CadastroForm() {
           </div>
         )}
 
+        {/* Confirmação de email enviada */}
+        {emailEnviado && (
+          <div className="text-center space-y-4 py-4">
+            <div className="text-6xl">📧</div>
+            <h2 className="text-xl font-bold text-gray-800">Confirme seu e-mail</h2>
+            <p className="text-gray-600">
+              Enviamos um link de confirmação para{' '}
+              <strong className="text-green-700">{email}</strong>.
+            </p>
+            <p className="text-sm text-gray-500">
+              Clique no link do e-mail para ativar sua conta. Verifique também a caixa de spam.
+            </p>
+          </div>
+        )}
+
         {/* Step 2 — dados */}
-        {step === 2 && (
+        {!emailEnviado && step === 2 && (
           <form onSubmit={handleCadastro} className="space-y-4">
             <div className="flex items-center gap-2 mb-4 p-3 bg-green-50 rounded-lg">
               <span className="text-xl">{tipo === 'PRODUTOR' ? '🌾' : '🔧'}</span>

@@ -42,26 +42,39 @@ export async function GET(request: Request) {
     if (!error && data.user) {
       const u = data.user
 
-      // Criar usuário no banco se ainda não existe (primeiro login OAuth)
+      // Criar usuário no banco se ainda não existe
       const exists = await prisma.user.findUnique({ where: { supabaseId: u.id } })
       if (!exists) {
-        const nome = u.user_metadata?.full_name || u.user_metadata?.name || u.email?.split('@')[0] || 'Usuário'
+        const nome = u.user_metadata?.full_name || u.user_metadata?.nome || u.user_metadata?.name || u.email?.split('@')[0] || 'Usuário'
         const avatarUrl = u.user_metadata?.avatar_url || u.user_metadata?.picture || null
+        // Lê tipo da metadata (cadastro por email) ou usa PRODUTOR como padrão (OAuth)
+        const tipo = (u.user_metadata?.tipo as 'PRODUTOR' | 'PRESTADOR') || 'PRODUTOR'
+        const telefone = u.user_metadata?.telefone || null
+        const nomeFazenda = u.user_metadata?.nomeFazenda || null
+        const servicosOferecidos = (u.user_metadata?.servicosOferecidos as string[]) || []
 
-        // OAuth não tem tipo definido — redirecionar para completar cadastro
-        const novoUser = await prisma.user.create({
+        await prisma.user.create({
           data: {
             supabaseId: u.id,
             nome,
             email: u.email!,
-            tipo: 'PRODUTOR', // padrão; usuário pode alterar depois
+            tipo,
             avatarUrl,
+            telefone,
+            ...(tipo === 'PRODUTOR' ? {
+              produtor: { create: { nomeFazenda: nomeFazenda ?? null } }
+            } : {
+              prestador: { create: { servicosOferecidos: servicosOferecidos as import('@prisma/client').ServiceType[] } }
+            })
           }
         })
 
-        await prisma.produtor.create({ data: { userId: novoUser.id } })
+        // Registro por email com tipo definido → bem-vindo
+        if (u.user_metadata?.tipo) {
+          return NextResponse.redirect(`${origin}/bem-vindo?tipo=${tipo}`)
+        }
 
-        // Redirecionar para completar perfil
+        // OAuth sem tipo → completar perfil
         return NextResponse.redirect(`${origin}/perfil/completar`)
       }
 
