@@ -38,6 +38,7 @@ async function garantirSubscription() {
 
 export default function DashboardPrestador({ user }: { user: any }) {
   const [disponivel, setDisponivel] = useState(user.prestador?.disponivel ?? true)
+  const [loadingDisponivel, setLoadingDisponivel] = useState(false)
   const [qtdServicos, setQtdServicos] = useState(0)
   const [rota, setRota] = useState<any>(null)
   const [loadingRota, setLoadingRota] = useState(false)
@@ -98,13 +99,22 @@ export default function DashboardPrestador({ user }: { user: any }) {
   }
 
   async function toggleDisponivel() {
+    if (loadingDisponivel) return
+    setLoadingDisponivel(true)
     const novo = !disponivel
     setDisponivel(novo)
-    await fetch('/api/prestador/disponibilidade', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ disponivel: novo })
-    })
+    try {
+      const res = await fetch('/api/prestador/disponibilidade', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ disponivel: novo }),
+      })
+      if (!res.ok) setDisponivel(!novo)
+    } catch {
+      setDisponivel(!novo)
+    } finally {
+      setLoadingDisponivel(false)
+    }
   }
 
   const avaliacao = user.prestador?.avaliacao
@@ -149,23 +159,53 @@ export default function DashboardPrestador({ user }: { user: any }) {
           </div>
 
           {/* Toggle disponibilidade no header */}
-          <div
+          <button
             data-tour="disponivel"
-            className="flex items-center justify-between bg-white/10 backdrop-blur-sm rounded-2xl px-4 py-3 border border-white/20"
+            onClick={toggleDisponivel}
+            disabled={loadingDisponivel}
+            className={`w-full flex items-center justify-between rounded-2xl px-4 py-3.5 border transition-all duration-300 active:scale-[0.98] ${
+              disponivel
+                ? 'bg-white/15 border-white/30 hover:bg-white/20'
+                : 'bg-black/20 border-white/10 hover:bg-black/25'
+            }`}
           >
-            <div>
-              <div className="text-white font-semibold text-sm">Status de disponibilidade</div>
-              <div className="text-green-100 text-xs mt-0.5">
-                {disponivel ? '🟢 Disponível para receber chamados' : '⚫ Não aparece em novas buscas'}
+            <div className="flex items-center gap-3">
+              {/* Ponto de status animado */}
+              <div className="relative flex-shrink-0 w-3 h-3">
+                <div className={`w-3 h-3 rounded-full ${disponivel ? 'bg-green-400' : 'bg-white/40'}`} />
+                {disponivel && (
+                  <div className="absolute inset-0 w-3 h-3 rounded-full bg-green-400 animate-ping opacity-60" />
+                )}
+              </div>
+              <div className="text-left">
+                <div className="text-white font-bold text-sm leading-tight">
+                  {disponivel ? 'Disponível' : 'Indisponível'}
+                </div>
+                <div className="text-white/70 text-xs mt-0.5">
+                  {disponivel ? 'Recebendo chamados agora' : 'Oculto para novos chamados'}
+                </div>
               </div>
             </div>
-            <button
-              onClick={toggleDisponivel}
-              className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0 ${disponivel ? 'bg-green-400' : 'bg-white/30'}`}
-            >
-              <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${disponivel ? 'translate-x-6' : 'translate-x-0.5'}`} />
-            </button>
-          </div>
+
+            {/* Toggle switch */}
+            <div className={`relative w-14 h-7 rounded-full transition-all duration-300 flex-shrink-0 ${
+              disponivel ? 'bg-green-400 shadow-lg shadow-green-500/50' : 'bg-white/20'
+            }`}>
+              {loadingDisponivel ? (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-4 h-4 border-2 border-white/50 border-t-white rounded-full animate-spin" />
+                </div>
+              ) : (
+                <span className={`absolute top-0.5 w-6 h-6 bg-white rounded-full shadow-md transition-transform duration-300 flex items-center justify-center ${
+                  disponivel ? 'translate-x-7' : 'translate-x-0.5'
+                }`}>
+                  <span className={`text-[10px] font-black transition-colors ${disponivel ? 'text-green-600' : 'text-gray-400'}`}>
+                    {disponivel ? '✓' : '✕'}
+                  </span>
+                </span>
+              )}
+            </div>
+          </button>
         </div>
       </header>
 
