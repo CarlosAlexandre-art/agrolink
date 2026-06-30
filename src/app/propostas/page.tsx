@@ -132,20 +132,20 @@ export default function PropostasPage() {
 
               {/* Análise IA */}
               {ordenados.length > 1 && (
-                <div className="px-5 py-3 border-b border-green-100 bg-green-50/50">
+                <div className="px-5 py-3 border-b border-green-100 dark:border-green-800 bg-green-50/50 dark:bg-green-900/20">
                   {!analiseIA[serviceId] ? (
                     <button
                       onClick={() => analisarComIA(serviceId, ordenados, servicoLabel)}
                       disabled={analisando === serviceId}
-                      className="w-full py-2 text-sm font-semibold text-green-700 border border-green-300 bg-white rounded-xl hover:bg-green-50 transition disabled:opacity-50"
+                      className="w-full py-2 text-sm font-semibold text-green-700 dark:text-green-400 border border-green-300 dark:border-green-700 bg-white dark:bg-gray-700 rounded-xl hover:bg-green-50 dark:hover:bg-gray-600 transition disabled:opacity-50"
                     >
                       {analisando === serviceId ? '🤖 Analisando propostas...' : '🤖 Pedir sugestão da IA — qual pode ser a melhor?'}
                     </button>
                   ) : (
                     <div className="text-sm">
-                      <div className="font-semibold text-green-700 mb-1">🤖 Sugestão da IA — baseada nos dados</div>
-                      <p className="text-gray-700">{analiseIA[serviceId]!.resumo}</p>
-                      <p className="text-gray-500 text-xs mt-1 italic">💡 {analiseIA[serviceId]!.dica}</p>
+                      <div className="font-semibold text-green-700 dark:text-green-400 mb-1">🤖 Sugestão da IA — baseada nos dados</div>
+                      <p className="text-gray-700 dark:text-gray-300">{analiseIA[serviceId]!.resumo}</p>
+                      <p className="text-gray-500 dark:text-gray-400 text-xs mt-1 italic">💡 {analiseIA[serviceId]!.dica}</p>
                     </div>
                   )}
                 </div>
