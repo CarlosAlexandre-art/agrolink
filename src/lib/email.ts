@@ -2,7 +2,7 @@ import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://agrocore.live'
-const FROM = 'AgroCore <noreply@parceirosdeproposito.com>'
+const FROM = process.env.RESEND_FROM ?? 'AgroCore <noreply@oryonag.com.br>'
 
 const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" width="40" height="40" style="display:block">
   <circle cx="24" cy="24" r="21" stroke="rgba(255,255,255,0.7)" stroke-width="2.5"/>
