@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
         prestador: {
           select: {
             id: true,
-            user: { select: { name: true, plan: true } },
+            user: { select: { nome: true, plan: true } },
             avaliacao: true,
             totalAvaliacoes: true,
             verificado: true,
@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
         distancia: m!.distancia,
         prestador: {
           id: m!.prestador.id,
-          nome: m!.prestador.user.name,
+          nome: m!.prestador.user.nome,
           avaliacao: m!.prestador.avaliacao,
           totalAvaliacoes: m!.prestador.totalAvaliacoes,
           verificado: m!.prestador.verificado,
