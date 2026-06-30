@@ -45,16 +45,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: `Erro ao fazer upload: ${uploadError.message}` }, { status: 500 })
     }
 
-    const { data: signed, error: signErr } = await adminClient.storage
+    const { data: { publicUrl } } = adminClient.storage
       .from('avatars')
-      .createSignedUrl(path, 60 * 60 * 24 * 365 * 10)
+      .getPublicUrl(path)
 
-    if (signErr || !signed?.signedUrl) {
-      console.error('Signed URL error:', signErr)
-      return NextResponse.json({ error: 'Não foi possível gerar URL da imagem' }, { status: 500 })
-    }
-
-    return NextResponse.json({ url: signed.signedUrl })
+    // cache-bust so the browser fetches the new image instead of the old one
+    return NextResponse.json({ url: `${publicUrl}?t=${Date.now()}` })
   } catch (error) {
     console.error(error)
     return NextResponse.json({ error: 'Erro ao processar imagem' }, { status: 500 })
