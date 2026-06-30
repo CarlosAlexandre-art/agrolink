@@ -8,6 +8,7 @@ import ConnectStripeButton from '@/components/ConnectStripeButton'
 import BottomNav from '@/components/BottomNav'
 import OryonID from '@/components/OryonID'
 import SeloVerificado from '@/components/SeloVerificado'
+import AvatarImage from '@/components/AvatarImage'
 
 export default async function PerfilPage() {
   const supabase = await createClient()
@@ -39,11 +40,7 @@ export default async function PerfilPage() {
         <div className="bg-white rounded-2xl p-6 shadow-sm text-center">
           <div className="w-20 h-20 mx-auto mb-3">
             {dbUser.avatarUrl ? (
-              <img
-                src={dbUser.avatarUrl}
-                alt="Foto de perfil"
-                className="w-20 h-20 rounded-full object-cover border-4 border-green-100"
-              />
+              <AvatarImage src={dbUser.avatarUrl} nome={dbUser.nome} size="md" />
             ) : (
               <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-3xl font-bold text-green-700">
                 {dbUser.nome[0].toUpperCase()}

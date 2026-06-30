@@ -111,6 +111,10 @@ export default function EditarPerfilPage() {
                 src={avatarUrl}
                 alt="Foto de perfil"
                 className="w-24 h-24 rounded-full object-cover mx-auto border-4 border-green-100"
+                onError={(e) => {
+                  setAvatarUrl('')
+                  ;(e.target as HTMLImageElement).style.display = 'none'
+                }}
               />
             ) : (
               <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center text-4xl font-bold text-green-700 mx-auto">
