@@ -292,14 +292,14 @@ export default function DashboardPrestador({ user }: { user: any }) {
           <div>
             <div className="flex items-center gap-2 mb-3">
               <span className="text-sm font-bold text-gray-700">✅ Em andamento</span>
-              <span className="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded-full">{emAndamento.length}</span>
+              <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">{emAndamento.length}</span>
             </div>
             <div className="space-y-2">
               {emAndamento.map((m: any) => {
                 const servico = getServicoLabel(m.service.tipo)
                 const statusLabel: Record<string, { text: string; cls: string }> = {
-                  MATCH_ENCONTRADO: { text: 'Confirmado', cls: 'bg-blue-50 text-blue-600 border-blue-100' },
-                  EM_ROTA:          { text: 'Em rota 🚗',  cls: 'bg-indigo-50 text-indigo-600 border-indigo-100' },
+                  MATCH_ENCONTRADO: { text: 'Confirmado', cls: 'bg-green-50 text-green-700 border-green-100' },
+                  EM_ROTA:          { text: 'Em rota 🚗',  cls: 'bg-green-100 text-green-700 border-green-200' },
                   EXECUTANDO:       { text: 'Executando', cls: 'bg-orange-50 text-orange-600 border-orange-100' },
                 }
                 const st = statusLabel[m.service.status] ?? { text: m.service.status, cls: 'bg-gray-50 text-gray-500 border-gray-100' }
@@ -335,7 +335,7 @@ export default function DashboardPrestador({ user }: { user: any }) {
               <button
                 onClick={otimizarRota}
                 disabled={loadingRota}
-                className="text-xs font-bold bg-blue-600 text-white px-3 py-1.5 rounded-xl hover:bg-blue-700 transition disabled:opacity-50"
+                className="text-xs font-bold bg-green-700 text-white px-3 py-1.5 rounded-xl hover:bg-green-800 transition disabled:opacity-50"
               >
                 {loadingRota ? '⏳ Calculando...' : '⚡ Otimizar'}
               </button>
@@ -352,7 +352,7 @@ export default function DashboardPrestador({ user }: { user: any }) {
                 </div>
                 {rota.stops.map((stop: any) => (
                   <div key={stop.id} className="flex items-start gap-3 py-1">
-                    <div className="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <div className="w-6 h-6 rounded-full bg-green-700 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
                       {stop.ordem}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -360,7 +360,7 @@ export default function DashboardPrestador({ user }: { user: any }) {
                       {stop.endereco && <div className="text-xs text-gray-400 truncate">{stop.endereco}</div>}
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <div className="text-xs font-semibold text-blue-600">{stop.distanciaKm} km</div>
+                      <div className="text-xs font-semibold text-green-700">{stop.distanciaKm} km</div>
                       <div className="text-[10px] text-gray-400">{stop.tempoMin} min</div>
                     </div>
                   </div>
@@ -380,7 +380,7 @@ export default function DashboardPrestador({ user }: { user: any }) {
             <button
               onClick={carregarPrevisao}
               disabled={loadingPrevisao}
-              className="text-xs font-bold bg-indigo-600 text-white px-3 py-1.5 rounded-xl hover:bg-indigo-700 transition disabled:opacity-50"
+              className="text-xs font-bold bg-green-700 text-white px-3 py-1.5 rounded-xl hover:bg-green-800 transition disabled:opacity-50"
             >
               {loadingPrevisao ? '⏳ Analisando...' : '⚡ Analisar'}
             </button>
@@ -388,12 +388,12 @@ export default function DashboardPrestador({ user }: { user: any }) {
 
           {!previsao && !loadingPrevisao && (
             <div className="px-5 py-4 text-sm text-gray-400">
-              Clique em <span className="font-semibold text-indigo-500">Analisar</span> para ver quais serviços têm maior demanda nos próximos 30 dias.
+              Clique em <span className="font-semibold text-green-600">Analisar</span> para ver quais serviços têm maior demanda nos próximos 30 dias.
             </div>
           )}
 
           {loadingPrevisao && (
-            <div className="px-5 py-4 flex items-center gap-2 text-sm text-indigo-600">
+            <div className="px-5 py-4 flex items-center gap-2 text-sm text-green-700">
               <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
@@ -422,8 +422,8 @@ export default function DashboardPrestador({ user }: { user: any }) {
                   </div>
                 ))}
               </div>
-              <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-3">
-                <div className="text-xs font-semibold text-indigo-600 mb-1 uppercase tracking-wide">Insight IA</div>
+              <div className="bg-green-50 border border-green-100 rounded-xl p-3">
+                <div className="text-xs font-semibold text-green-700 mb-1 uppercase tracking-wide">Insight IA</div>
                 <p className="text-xs text-slate-700 whitespace-pre-wrap leading-relaxed">{previsao.insightIA}</p>
               </div>
               <p className="text-[10px] text-gray-300 text-right">{previsao.raioKm} km · {previsao.totalServicos} serviços · {previsao.modelo}</p>

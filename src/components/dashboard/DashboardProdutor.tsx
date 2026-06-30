@@ -145,7 +145,7 @@ export default function DashboardProdutor({ user }: { user: any }) {
         {temPropostas && (
           <Link
             href="/propostas"
-            className="flex items-center justify-between bg-purple-600 text-white rounded-2xl px-5 py-4 shadow-lg hover:bg-purple-700 transition active:scale-95"
+            className="flex items-center justify-between bg-purple-600 dark:bg-purple-700 text-white rounded-2xl px-5 py-4 shadow-lg hover:bg-purple-700 dark:hover:bg-purple-800 transition active:scale-95"
           >
             <div className="flex items-center gap-3">
               <span className="text-2xl">💰</span>

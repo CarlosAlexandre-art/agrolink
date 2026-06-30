@@ -514,7 +514,7 @@ export default function ServicoClient({
 
         {/* Botão de pagamento — só para produtor quando prestador foi encontrado e pagamento não confirmado */}
         {isProdutor && service.status === 'MATCH_ENCONTRADO' && service.payment?.status !== 'RESERVADO' && (
-          <div className="bg-blue-50 rounded-2xl p-5 border border-blue-200">
+          <div className="bg-green-50 rounded-2xl p-5 border border-green-200">
             <h2 className="font-bold text-gray-700 mb-2">💳 Confirmar pagamento</h2>
             <p className="text-sm text-gray-600 mb-4">
               O prestador foi encontrado. Realize o pagamento para liberar o serviço.
@@ -547,7 +547,7 @@ export default function ServicoClient({
             <button
               onClick={pagarServico}
               disabled={loadingAvancar}
-              className="w-full py-4 bg-blue-600 text-white font-bold text-lg rounded-2xl hover:bg-blue-700 active:scale-95 transition disabled:opacity-50 shadow-lg"
+              className="w-full py-4 bg-green-700 text-white font-bold text-lg rounded-2xl hover:bg-green-800 active:scale-95 transition disabled:opacity-50 shadow-lg"
             >
               {loadingAvancar ? 'Redirecionando...' : '💳 PAGAR AGORA'}
             </button>
@@ -568,11 +568,11 @@ export default function ServicoClient({
 
         {/* Pagamento confirmado — prestador */}
         {isPrestador && service.payment?.status === 'RESERVADO' && (
-          <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
+          <div className="bg-green-50 rounded-xl p-4 border border-green-200">
             <div className="flex items-center gap-3">
               <div className="text-3xl">💰</div>
               <div>
-                <div className="font-bold text-blue-700">Pagamento recebido!</div>
+                <div className="font-bold text-green-700">Pagamento recebido!</div>
                 <div className="text-sm text-gray-600">
                   O produtor pagou <strong>R$ {service.payment.valor?.toFixed(2)}</strong> pelo serviço.
                 </div>
@@ -833,7 +833,7 @@ export default function ServicoClient({
 
         {/* Prestador avalia o produtor */}
         {isPrestador && service.status === 'CONCLUIDO' && !service.avaliacaoProdutor && (
-          <div className="bg-blue-50 rounded-2xl p-5 shadow-sm border border-blue-200">
+          <div className="bg-green-50 rounded-2xl p-5 shadow-sm border border-green-200">
             <h2 className="font-bold text-gray-700 mb-1">Como foi trabalhar com este produtor?</h2>
             <p className="text-xs text-gray-500 mb-3">Sua avaliação ajuda a comunidade a identificar bons clientes</p>
             <div className="flex gap-2 justify-center mb-4">
@@ -852,12 +852,12 @@ export default function ServicoClient({
               onChange={e => setComentarioProdutor(e.target.value)}
               rows={2}
               placeholder="Comentário opcional..."
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-sm mb-3 text-gray-900 bg-white"
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 resize-none text-sm mb-3 text-gray-900 bg-white"
             />
             <button
               onClick={enviarAvaliacaoProdutor}
               disabled={!notaProdutor || loadingAvaliarProdutor}
-              className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition disabled:opacity-50"
+              className="w-full py-3 bg-green-700 text-white font-bold rounded-xl hover:bg-green-800 transition disabled:opacity-50"
             >
               {loadingAvaliarProdutor ? 'Enviando...' : 'Avaliar produtor'}
             </button>
@@ -865,9 +865,9 @@ export default function ServicoClient({
         )}
 
         {service.avaliacaoProdutor && isPrestador && (
-          <div className="bg-blue-50 rounded-2xl p-5 text-center border border-blue-100">
+          <div className="bg-green-50 rounded-2xl p-5 text-center border border-green-100">
             <div className="text-3xl mb-1">{'⭐'.repeat(service.avaliacaoProdutor.nota)}</div>
-            <div className="font-bold text-blue-700">Avaliação do produtor enviada!</div>
+            <div className="font-bold text-green-700">Avaliação do produtor enviada!</div>
           </div>
         )}
 

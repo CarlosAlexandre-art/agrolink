@@ -186,7 +186,7 @@ export default function SolicitarPage() {
               </label>
               {/* Status do GPS */}
               {geoStatus === 'loading' && (
-                <div className="flex items-center gap-2 text-sm text-blue-600 mb-2 bg-blue-50 px-3 py-2 rounded-xl">
+                <div className="flex items-center gap-2 text-sm text-green-700 mb-2 bg-green-50 px-3 py-2 rounded-xl">
                   <span className="animate-spin">⏳</span> Obtendo sua localização GPS…
                 </div>
               )}
