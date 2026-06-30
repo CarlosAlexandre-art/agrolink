@@ -1,6 +1,8 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResend() {
+  return new Resend(process.env.RESEND_API_KEY)
+}
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://agrocore.live'
 const FROM = process.env.RESEND_FROM ?? 'AgroCore <noreply@oryonag.com.br>'
 
@@ -167,7 +169,7 @@ export const emails = {
       </table>
     `
 
-    return resend.emails.send({
+    return getResend().emails.send({
       from: FROM,
       to,
       subject: `✅ Confirme seu e-mail — AgroCore`,
@@ -193,7 +195,7 @@ export const emails = {
       </div>
       <p style="color:#6b7280;font-size:13px">O AgroCore conecta produtores rurais com os melhores prestadores de serviço do Brasil.</p>
     `
-    return resend.emails.send({ from: FROM, to, subject: `${nome.split(' ')[0]}, sentimos sua falta no AgroCore!`, html: baseTemplate(conteudo) })
+    return getResend().emails.send({ from: FROM, to, subject: `${nome.split(' ')[0]}, sentimos sua falta no AgroCore!`, html: baseTemplate(conteudo) })
   },
 
   // Novo prestador na região
@@ -209,7 +211,7 @@ export const emails = {
         </a>
       </div>
     `
-    return resend.emails.send({ from: FROM, to, subject: `Novo prestador de ${servicoLabel} na sua região! 🌱`, html: baseTemplate(conteudo) })
+    return getResend().emails.send({ from: FROM, to, subject: `Novo prestador de ${servicoLabel} na sua região! 🌱`, html: baseTemplate(conteudo) })
   },
 
   // Serviço sem proposta há 48h
@@ -227,7 +229,7 @@ export const emails = {
       </div>
       <p style="color:#6b7280;font-size:13px">Dica: tente ampliar a descrição do serviço para atrair mais prestadores.</p>
     `
-    return resend.emails.send({ from: FROM, to, subject: `Seu pedido de ${servicoLabel} ainda aguarda prestador`, html: baseTemplate(conteudo) })
+    return getResend().emails.send({ from: FROM, to, subject: `Seu pedido de ${servicoLabel} ainda aguarda prestador`, html: baseTemplate(conteudo) })
   },
 
   // Promoção / lançamento (envio manual para todos)
@@ -242,7 +244,7 @@ export const emails = {
         </a>
       </div>
     `
-    return resend.emails.send({ from: FROM, to, subject: assunto, html: baseTemplate(conteudo) })
+    return getResend().emails.send({ from: FROM, to, subject: assunto, html: baseTemplate(conteudo) })
   },
 
   // Lançamento AgroOS
@@ -265,7 +267,7 @@ export const emails = {
         </a>
       </div>
     `
-    return resend.emails.send({ from: FROM, to, subject: '🚀 AgroOS está chegando — seja o primeiro a saber!', html: baseTemplate(conteudo) })
+    return getResend().emails.send({ from: FROM, to, subject: '🚀 AgroOS está chegando — seja o primeiro a saber!', html: baseTemplate(conteudo) })
   },
 
   async contratoGerado(to: string, nome: string, tipoServico: string, valor: number, contratoUrl: string) {
@@ -287,6 +289,6 @@ export const emails = {
       </div>
       <p style="color:#6b7280;font-size:12px;text-align:center">O contrato também está disponível no seu painel em <a href="${APP_URL}/servicos" style="color:#15803d">agrocore.live/servicos</a></p>
     `
-    return resend.emails.send({ from: FROM, to, subject: `📄 Contrato gerado — ${tipoServico}`, html: baseTemplate(conteudo) })
+    return getResend().emails.send({ from: FROM, to, subject: `📄 Contrato gerado — ${tipoServico}`, html: baseTemplate(conteudo) })
   },
 }
