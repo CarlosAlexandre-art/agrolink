@@ -5,7 +5,7 @@ import { Resend } from 'resend'
 import { auditLog } from '@/lib/audit-log'
 import { z } from 'zod'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 
 const MOTIVOS_VALIDOS = ['FRAUDE', 'COMPORTAMENTO_INADEQUADO', 'SERVICO_NAO_PRESTADO', 'DADO_FALSO', 'OUTRO'] as const
 
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
 
     // Enviar email para o admin
     if (process.env.RESEND_API_KEY) {
-      await resend.emails.send({
+      await getResend().emails.send({
         from: 'AgroCore <onboarding@resend.dev>',
         to: 'alexandre@parceirosdeproposito.com',
         subject: `🚨 Nova denúncia: ${motivo}`,

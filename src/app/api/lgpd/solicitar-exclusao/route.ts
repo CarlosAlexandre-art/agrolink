@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 import { rateLimit, getClientIp } from '@/lib/rate-limit'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 
     const { motivo } = await req.json()
 
-    await resend.emails.send({
+    await getResend().emails.send({
       from: 'AgroCore <noreply@oryonag.com.br>',
       to: 'privacidade@oryonag.com.br',
       subject: `[LGPD] Solicitação de Exclusão de Dados — AgroCore`,
