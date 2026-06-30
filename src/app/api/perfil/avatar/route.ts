@@ -45,12 +45,29 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: `Erro ao fazer upload: ${uploadError.message}` }, { status: 500 })
     }
 
+    // Tenta URL pública primeiro; se bucket não for público, usa URL assinada com 10 anos
     const { data: { publicUrl } } = adminClient.storage
       .from('avatars')
       .getPublicUrl(path)
 
-    const urlComCache = `${publicUrl}?t=${Date.now()}`
-    return NextResponse.json({ url: urlComCache })
+    try {
+      const testRes = await fetch(`${publicUrl}?t=${Date.now()}`, { method: 'HEAD' })
+      if (testRes.ok) {
+        return NextResponse.json({ url: `${publicUrl}?t=${Date.now()}` })
+      }
+    } catch {}
+
+    // Fallback: URL assinada válida por 10 anos
+    const { data: signed, error: signErr } = await adminClient.storage
+      .from('avatars')
+      .createSignedUrl(path, 60 * 60 * 24 * 365 * 10)
+
+    if (signErr || !signed?.signedUrl) {
+      console.error('Signed URL error:', signErr)
+      return NextResponse.json({ error: 'Não foi possível gerar URL da imagem' }, { status: 500 })
+    }
+
+    return NextResponse.json({ url: signed.signedUrl })
   } catch (error) {
     console.error(error)
     return NextResponse.json({ error: 'Erro ao processar imagem' }, { status: 500 })
