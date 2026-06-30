@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Tailwind v4: usar classe .dark em vez de @media prefers-color-scheme */
+@custom-variant dark (&:is(.dark, .dark *));
+
 /* ─── AgroCore Brand Colors ─── */
 :root {
   --background: #ffffff;
@@ -92,6 +95,9 @@ html.dark .text-red-700    { color: #fca5a5 !important; }
 html.dark .text-red-500    { color: #f87171 !important; }
 html.dark .text-red-400    { color: #fca5a5 !important; }
 html.dark .text-orange-600 { color: #fb923c !important; }
+/* Verde da marca (#104e27) é quase preto — em dark fica branco */
+html.dark .text-green-700  { color: #f1f5f9 !important; }
+html.dark .text-green-600  { color: #86efac !important; }
 
 /* Bordas */
 html.dark .border-gray-100 { border-color: #334155 !important; }
