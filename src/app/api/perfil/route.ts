@@ -9,7 +9,7 @@ const atualizarPerfilSchema = z.object({
   estado: z.string().max(2).nullable().optional(),
   cidade: z.string().max(100).nullable().optional(),
   nomeFazenda: z.string().max(200).nullable().optional(),
-  avatarUrl: z.string().url().max(500).nullable().optional(),
+  avatarUrl: z.string().url().max(5000).nullable().optional(),
 })
 
 export async function PATCH(req: Request) {

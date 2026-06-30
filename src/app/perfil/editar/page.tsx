@@ -21,6 +21,7 @@ export default function EditarPerfilPage() {
   const [cidade, setCidade] = useState('')
   const [nomeFazenda, setNomeFazenda] = useState('')
   const [avatarUrl, setAvatarUrl] = useState('')
+  const [imgFailed, setImgFailed] = useState(false)
   const [tipo, setTipo] = useState('')
 
   useEffect(() => {
@@ -33,6 +34,7 @@ export default function EditarPerfilPage() {
         setCidade(data.cidade || '')
         setNomeFazenda(data.produtor?.nomeFazenda || '')
         setAvatarUrl(data.avatarUrl || '')
+        setImgFailed(false)
         setTipo(data.tipo || '')
         setLoading(false)
       })
@@ -51,6 +53,7 @@ export default function EditarPerfilPage() {
     const res = await fetch('/api/perfil/avatar', { method: 'POST', body: form })
     const data = await res.json()
     if (data.url) {
+      setImgFailed(false)
       setAvatarUrl(data.url)
       // Save immediately
       await fetch('/api/perfil', {
@@ -106,15 +109,12 @@ export default function EditarPerfilPage() {
         {/* Foto de perfil */}
         <div className="bg-white rounded-2xl p-6 shadow-sm text-center">
           <div className="relative inline-block mb-3">
-            {avatarUrl ? (
+            {avatarUrl && !imgFailed ? (
               <img
                 src={avatarUrl}
                 alt="Foto de perfil"
                 className="w-24 h-24 rounded-full object-cover mx-auto border-4 border-green-100"
-                onError={(e) => {
-                  setAvatarUrl('')
-                  ;(e.target as HTMLImageElement).style.display = 'none'
-                }}
+                onError={() => setImgFailed(true)}
               />
             ) : (
               <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center text-4xl font-bold text-green-700 mx-auto">

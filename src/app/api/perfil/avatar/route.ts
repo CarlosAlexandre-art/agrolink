@@ -45,19 +45,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: `Erro ao fazer upload: ${uploadError.message}` }, { status: 500 })
     }
 
-    // Tenta URL pública primeiro; se bucket não for público, usa URL assinada com 10 anos
-    const { data: { publicUrl } } = adminClient.storage
-      .from('avatars')
-      .getPublicUrl(path)
-
-    try {
-      const testRes = await fetch(`${publicUrl}?t=${Date.now()}`, { method: 'HEAD' })
-      if (testRes.ok) {
-        return NextResponse.json({ url: `${publicUrl}?t=${Date.now()}` })
-      }
-    } catch {}
-
-    // Fallback: URL assinada válida por 10 anos
     const { data: signed, error: signErr } = await adminClient.storage
       .from('avatars')
       .createSignedUrl(path, 60 * 60 * 24 * 365 * 10)
